@@ -1,4 +1,4 @@
-package com.freitagnx.fieldflow
+package com.housetech.automax.vendamais
 
 import android.app.Application
 import android.content.res.Configuration

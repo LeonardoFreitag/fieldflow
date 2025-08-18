@@ -109,9 +109,9 @@ android {
     buildToolsVersion rootProject.ext.buildToolsVersion
     compileSdk rootProject.ext.compileSdkVersion
 
-    namespace 'com.freitagnx.fieldflow'
+    namespace 'com.housetech.automax.vendamais'
     defaultConfig {
-        applicationId 'com.freitagnx.fieldflow'
+        applicationId 'com.housetech.automax.vendamais'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1

@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "fieldflow",
-    "slug": "fieldflow",
+    "name": "AutoMax Venda+",
+    "slug": "AutoMax Venda+",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -13,7 +13,7 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.freitagnx.fieldflow",
+      "bundleIdentifier": "com.housetech.automax.vendamais",
       "infoPlist": {
         "NSLocationWhenInUseUsageDescription": "Usamos sua localização para lhe mostrar sua distância da localização dos anunciantes.",
         "NSPhotoLibraryUsageDescription": "Usamos suas fotos para que você possa selecionar imagens que poderam ser utilizadas em seu perfil ou em seus anúncios caso você seja um anunciante.",
@@ -25,7 +25,7 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.freitagnx.fieldflow"
+      "package": "com.housetech.automax.vendamais"
     },
     "web": {
       "favicon": "./assets/favicon.png"

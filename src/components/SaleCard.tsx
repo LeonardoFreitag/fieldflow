@@ -1,47 +1,136 @@
 import {
   Heading,
   HStack,
-  Image,
   VStack,
   Text,
   Icon,
+  Button,
+  AlertDialog,
+  AlertDialogBackdrop,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogBody,
+  AlertDialogFooter,
+  ButtonText,
 } from '@gluestack-ui/themed';
-import { TouchableOpacity, type TouchableOpacityProps } from 'react-native';
-import { CheckCheck } from 'lucide-react-native';
-import { type SaleModel } from '../models/SaleModel';
+import { type TouchableOpacityProps } from 'react-native';
+import { Repeat } from 'lucide-react-native';
+import { useState } from 'react';
+import { type TravelClientOrdersModel } from '@models/TravelClientOrdersModel';
 
 type Props = TouchableOpacityProps & {
-  data: SaleModel;
-  handleSelectCustomer: () => void;
+  data: TravelClientOrdersModel;
+  handleSaleRepeat?: () => void;
 };
 
-export function SaleCard({ data, handleSelectCustomer, ...rest }: Props) {
+export function SaleCard({ data, handleSaleRepeat, ...rest }: Props) {
+  const [showRepeatConfirmDialog, setShowRepeatConfirmDialog] = useState(false);
+  const [saleIdForRepeat, setSaleIdForRepeat] = useState<string | null>(null);
+
+  const handleSaleRepeatClick = () => {
+    setSaleIdForRepeat(data.id);
+    setShowRepeatConfirmDialog(true);
+  };
+
   return (
-    <TouchableOpacity onPress={handleSelectCustomer} {...rest}>
-      <HStack
-        bg="$trueGray700"
-        alignItems="center"
-        p="$2"
-        pr="$4"
+    <HStack
+      bg="$trueGray700"
+      alignItems="center"
+      p="$2"
+      pr="$4"
+      rounded="$md"
+      mb="$3"
+      w="$full"
+      justifyContent="space-between"
+    >
+      <VStack flex={1}>
+        <Heading size="xs" color="$trueGray100">
+          {`Nro. pedido: ${data.id} - Data: ${data.orderDate.toLocaleDateString('pt-BR')}`}
+        </Heading>
+        <Text color="$trueGray400">
+          {data.total.toLocaleString('pt-BR', {
+            style: 'currency',
+            currency: 'BRL',
+          })}
+        </Text>
+        {data.TravelClientOrdersPaymentForm &&
+          data.TravelClientOrdersPaymentForm.map(payment => (
+            <Text key={payment.id} color="$trueGray400">
+              {`Forma de pagamento: ${payment.description} - Valor: ${payment.amount.toLocaleString(
+                'pt-BR',
+                {
+                  style: 'currency',
+                  currency: 'BRL',
+                },
+              )}`}
+            </Text>
+          ))}
+      </VStack>
+      <Button
+        height="$12"
+        variant="solid"
+        size="sm"
         rounded="$md"
-        mb="$3"
-        w="$full"
-        justifyContent="space-between"
+        p="$2"
+        bg="$trueGray800"
+        onPress={handleSaleRepeatClick}
       >
-        <VStack flex={1}>
-          <Heading size="xs" color="$trueGray100">
-            {`Nro. pedido: ${data.id} - Data: ${data.sale_date.toLocaleDateString('pt-BR')}`}
-          </Heading>
-          <Text color="$trueGray400">
-            {data.total.toLocaleString('pt-BR', {
-              style: 'currency',
-              currency: 'BRL',
-            })}
+        <Icon as={Repeat} color="$blue500" />
+      </Button>
+      <DialogConfirmRepeatSale
+        isOpen={showRepeatConfirmDialog}
+        onClose={() => {
+          setShowRepeatConfirmDialog(false);
+        }}
+        onConfirm={() => {
+          if (saleIdForRepeat) {
+            handleSaleRepeat?.();
+          }
+          setShowRepeatConfirmDialog(false);
+        }}
+      />
+    </HStack>
+  );
+}
+
+function DialogConfirmRepeatSale({
+  isOpen,
+  onClose,
+  onConfirm,
+}: {
+  isOpen: boolean;
+  onClose: () => void;
+  onConfirm: () => void;
+}) {
+  // Implement the dialog component here
+  // This is a placeholder for the actual dialog implementation
+  return (
+    <AlertDialog isOpen={isOpen} onClose={onClose} size="md">
+      <AlertDialogBackdrop />
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <Heading>Repetir o pedido?</Heading>
+        </AlertDialogHeader>
+        <AlertDialogBody>
+          <Text size="sm">
+            O pedido será lançado novamente para o cliente. Confirme para
+            continuar.
           </Text>
-          <Text color="$trueGray100">{data.paymentForm.name}</Text>
-        </VStack>
-        <Icon as={CheckCheck} color="$green400" />
-      </HStack>
-    </TouchableOpacity>
+        </AlertDialogBody>
+        <AlertDialogFooter justifyContent="space-between">
+          <Button
+            variant="outline"
+            action="secondary"
+            onPress={onConfirm}
+            size="sm"
+          >
+            <ButtonText>Confirmar</ButtonText>
+          </Button>
+          <Button size="sm" onPress={onClose}>
+            <ButtonText>Cancelar</ButtonText>
+          </Button>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
   );
 }

@@ -10,15 +10,96 @@ import {
 import { Input } from '@components/Input';
 import { CurrencyCircleDollar } from 'phosphor-react-native';
 import { Button } from '@components/Button';
-import { KeyboardAvoidingView, Platform } from 'react-native';
+import { Alert, KeyboardAvoidingView, Platform } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { useAuth } from '@hooks/useAuth';
+import { Controller, useForm } from 'react-hook-form';
+import * as yup from 'yup';
+import { useEffect } from 'react';
+import { AppError } from '@utils/AppError';
+
+const SignInSchema = yup.object().shape({
+  email: yup.string().email('E-mail inválido').required('Campo obrigatório'),
+  password: yup.string().required('Campo obrigatório'),
+});
+
+interface LoginFormData {
+  email: string;
+  password: string;
+}
 
 export function SignIn() {
   const navigation = useNavigation();
 
-  const handleLogin = () => {
-    navigation.navigate('AppRoutes', { screen: 'MenuRoutes' });
+  const { signIn, user } = useAuth();
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(SignInSchema),
+    defaultValues: {
+      email: 'antoniomelo@htcode.net',
+      password: '123',
+    },
+  });
+
+  const handleLogin = async (data: LoginFormData) => {
+    const { email, password } = data;
+
+    try {
+      const isAuth = await signIn(email, password);
+      if (!isAuth) {
+        return;
+      }
+
+      navigation.navigate('AppRoutes', { screen: 'MenuRoutes' });
+    } catch (error) {
+      const isApperror = error instanceof AppError;
+      if (isApperror) {
+        Alert.alert('Erro', error.message);
+      } else {
+        Alert.alert('Erro', 'Não foi possível realizar o login');
+      }
+    }
   };
+
+  // useEffect(() => {
+  //   const checkUser = async () => {
+  //     if (user?.user && user.user.id) {
+  //       try {
+  //         const response = await api.get<CustomerModel>(`/customer/byId`, {
+  //           params: {
+  //             id: user.customer_id,
+  //           },
+  //         });
+
+  //         if (response.status !== 200) {
+  //           return;
+  //         }
+
+  //         dispacth(addCustomerEdit(response.data));
+
+  //         navigation.navigate('AdmMenu');
+  //       } catch (error) {
+  //         Toast.show({
+  //           type: 'info',
+  //           text1: 'Login',
+  //           text2: 'Você precisa realizar novo login 👋',
+  //           position: 'bottom',
+  //         });
+  //       }
+  //     }
+  //   };
+  //   checkUser();
+  // }, [dispacth, navigation, user]);
+
+  // useEffect(() => {
+  //   if (user?.user && user.user.id) {
+  //     navigation.navigate('AppRoutes', { screen: 'MenuRoutes' });
+  //   }
+  // }, [navigation, user]);
 
   return (
     <KeyboardAvoidingView
@@ -42,17 +123,35 @@ export function SignIn() {
               <Heading size="sm" color="$trueGray400">
                 Acesse a conta
               </Heading>
-              <Input
-                placeholder="E-Mail"
-                keyboardType="email-address"
-                autoCapitalize="none"
+              <Controller
+                control={control}
+                name="email"
+                render={({ field: { onChange, value } }) => (
+                  <Input
+                    placeholder="E-Mail"
+                    keyboardType="email-address"
+                    autoCapitalize="none"
+                    onChangeText={onChange}
+                    value={value}
+                    // error={errors.email?.message}
+                  />
+                )}
               />
-              <Input
-                placeholder="Senha"
-                secureTextEntry
-                autoCapitalize="none"
+              <Controller
+                control={control}
+                name="password"
+                render={({ field: { onChange, value } }) => (
+                  <Input
+                    placeholder="Senha"
+                    secureTextEntry
+                    autoCapitalize="none"
+                    onChangeText={onChange}
+                    value={value}
+                    // error={errors.password?.message}
+                  />
+                )}
               />
-              <Button title="Acessar" onPress={handleLogin} />
+              <Button title="Acessar" onPress={handleSubmit(handleLogin)} />
             </Center>
           </VStack>
         </VStack>

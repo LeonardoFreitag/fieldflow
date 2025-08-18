@@ -7,103 +7,78 @@ import {
   Button,
   ButtonIcon,
 } from '@gluestack-ui/themed';
-import { type SaleItemCompositionModel } from '@models/SaleItemCompositionModel';
-import { updateSaleEdit } from '@store/slice/sale/saleEditSlice';
-import { updateSaleItemEdit } from '@store/slice/saleItem/saleItemEditSlice';
+import { type TravelClientOrdersItemsCompositionModel } from '@models/TravelClientOrdersitemsCompositionModel';
+import { updateTravelClientOrderEdit } from '@store/slice/travel/travelClientOrderEditSlice';
+import { updateTravelClientOrderItemsEdit } from '@store/slice/travel/travelClientOrderItemEditSlice';
 import { useAppSelector } from '@store/store';
-import { ArchiveRestore, Minus, Plus, Trash } from 'lucide-react-native';
-import React, { useMemo } from 'react';
-import { Alert } from 'react-native';
+import { ArchiveRestore, Trash } from 'lucide-react-native';
+import React, { useMemo, useState } from 'react';
 import { useDispatch } from 'react-redux';
+import productPlaceholder from '@assets/product.png'; // Placeholder for product image
 
 interface SaleItemCompositionCardProps {
-  saleItemComposition: SaleItemCompositionModel;
+  travelClientOrderItemComposition: TravelClientOrdersItemsCompositionModel;
 }
 
 export function SaleItemCompositionCard({
-  saleItemComposition,
+  travelClientOrderItemComposition,
 }: SaleItemCompositionCardProps) {
   const dispatch = useDispatch();
-  const saleEdit = useAppSelector(state => state.saleEdit);
-  const saleItemEdit = useAppSelector(state => state.saleItemEdit);
-
-  const totalProduct = useMemo(() => {
-    return saleItemComposition.quantity * saleItemComposition.price;
-  }, [saleItemComposition.quantity, saleItemComposition.price]);
-
-  const handleAskConfirmDelete = () => {
-    const title = saleItemComposition.is_deleted
-      ? 'Restaurar item'
-      : 'Deletar item';
-    const message = saleItemComposition.is_deleted
-      ? 'Confirma restaurar item?'
-      : 'Confirma deletar item?';
-    const buttonTitle = saleItemComposition.is_deleted
-      ? 'Restaurar'
-      : 'Deletar';
-    Alert.alert(title, message, [
-      {
-        text: 'Cancelar',
-        style: 'cancel',
-      },
-      {
-        text: buttonTitle,
-        style: 'destructive',
-        onPress: () => {
-          handleDeleteItemComposition();
-        },
-      },
-    ]);
-  };
+  const travelClientOrderEdit = useAppSelector(
+    state => state.travelClientOrderEdit,
+  );
+  const travelClientOrderItemEdit = useAppSelector(
+    state => state.travelClientOrderItemEdit,
+  );
+  const [imageError, setImageError] = useState(false);
 
   const handleDeleteItemComposition = () => {
-    dispatch(
-      updateSaleItemEdit({
-        ...saleItemEdit,
-        composition: saleItemEdit.composition.map(item => {
-          if (item.id === saleItemComposition.id) {
-            return {
-              ...item,
-              is_deleted: !item.is_deleted,
-            };
-          }
-          return item;
-        }),
-      }),
-    );
-    dispatch(
-      updateSaleEdit({
-        ...saleEdit,
-        saleItems: saleEdit.saleItems.map(item => {
-          if (item.id === saleItemComposition.id) {
-            return {
-              ...item,
-              is_deleted: true,
-            };
-          }
-          return item;
-        }),
-      }),
-    );
+    const updatedItemEdit = {
+      ...travelClientOrderItemEdit,
+      TravelClientOrdersItemsComposition:
+        travelClientOrderItemEdit.TravelClientOrdersItemsComposition?.map(
+          item =>
+            item.id === travelClientOrderItemComposition.id
+              ? { ...item, removed: !item.removed }
+              : item,
+        ) ?? [],
+    };
+    const updatedOrderEdit = {
+      ...travelClientOrderEdit,
+      TravelClientOrdersItems:
+        travelClientOrderEdit.TravelClientOrdersItems?.map(item =>
+          item.id === updatedItemEdit.id ? updatedItemEdit : item,
+        ),
+    };
+    dispatch(updateTravelClientOrderItemsEdit(updatedItemEdit));
+    dispatch(updateTravelClientOrderEdit(updatedOrderEdit));
   };
 
-  const handleUpQty = () => {};
-
-  const handleDownQty = () => {};
+  const getImageSource = () => {
+    if (
+      imageError ||
+      !travelClientOrderItemComposition.photoUrl ||
+      travelClientOrderItemComposition.photoUrl === ''
+    ) {
+      return productPlaceholder;
+    }
+    return { uri: travelClientOrderItemComposition.photoUrl };
+  };
 
   return (
     <HStack
-      bg={saleItemComposition.is_deleted ? '$red400' : '$trueGray700'}
-      alignItems="center"
+      bg={travelClientOrderItemComposition.removed ? '$red500' : '$trueGray700'}
+      alignItems="flex-start"
       p="$2"
       pr="$2"
       rounded="$md"
       mb="$3"
       w="$full"
       justifyContent="space-between"
+      position="relative"
     >
       <Image
-        source={{ uri: saleItemComposition.cover_image }}
+        source={getImageSource()}
         alt="Product"
         w="$20"
         h="$20"
@@ -116,87 +91,47 @@ export function SaleItemCompositionCard({
         alignItems="flex-start"
       >
         <Heading size="xs" color="$trueGray100">
-          {`Produto: ${saleItemComposition.id} - ${saleItemComposition.product}`}
+          {`${travelClientOrderItemComposition.pCode} - ${travelClientOrderItemComposition.pDescription}`}
         </Heading>
         <Text color="$trueGray400">
-          {`${saleItemComposition.quantity.toLocaleString('pt-BR', {
-            maximumFractionDigits: 2,
-          })} ${saleItemComposition.unity} x ${saleItemComposition.price.toLocaleString(
+          {`${travelClientOrderItemComposition.pQuantity.toLocaleString(
+            'pt-BR',
+            {
+              maximumFractionDigits: 2,
+            },
+          )} ${travelClientOrderItemComposition.pUnity} x ${travelClientOrderItemComposition.pPrice.toLocaleString(
             'pt-BR',
             {
               style: 'currency',
               currency: 'BRL',
             },
-          )} = ${totalProduct.toLocaleString('pt-BR', {
+          )} = ${(
+            Number(travelClientOrderItemComposition.pQuantity) *
+              Number(travelClientOrderItemComposition.pPrice) || 0
+          ).toLocaleString('pt-BR', {
             style: 'currency',
             currency: 'BRL',
           })}`}
         </Text>
-        <HStack
-          marginTop="$1"
-          justifyContent="space-between"
-          alignItems="center"
-          w="$full"
-          gap={8}
-        >
-          <HStack gap={8}>
-            {saleItemComposition.is_deleted ? (
-              <Button
-                width="$10"
-                height="$10"
-                rounded="$md"
-                backgroundColor="$amber500"
-                $active-bg="$amber600"
-                onPress={handleAskConfirmDelete}
-              >
-                {!saleItemComposition.is_deleted && (
-                  <ButtonIcon as={Trash} size="xl" />
-                )}
-                {saleItemComposition.is_deleted && (
-                  <ButtonIcon as={ArchiveRestore} size="xl" />
-                )}
-              </Button>
-            ) : (
-              <Button
-                width="$10"
-                height="$10"
-                rounded="$md"
-                backgroundColor="$amber500"
-                $active-bg="$amber600"
-                onPress={handleAskConfirmDelete}
-              >
-                <ButtonIcon as={Trash} size="xl" />
-              </Button>
-            )}
-          </HStack>
-          <HStack gap={8}>
-            {!saleItemComposition.is_deleted && (
-              <>
-                <Button
-                  width="$10"
-                  height="$10"
-                  rounded="$md"
-                  backgroundColor="$green700"
-                  $active-bg="$green500"
-                  onPress={handleUpQty}
-                >
-                  <ButtonIcon as={Plus} size="xl" />
-                </Button>
-                <Button
-                  width="$10"
-                  height="$10"
-                  rounded="$md"
-                  backgroundColor="$red700"
-                  $active-bg="$red500"
-                  onPress={handleDownQty}
-                >
-                  <ButtonIcon as={Minus} size="xl" />
-                </Button>
-              </>
-            )}
-          </HStack>
-        </HStack>
       </VStack>
+      <Button
+        width="$10"
+        height="$10"
+        rounded="$md"
+        backgroundColor="$amber500"
+        $active-bg="$amber600"
+        onPress={handleDeleteItemComposition}
+        position="absolute"
+        bottom="$2"
+        right="$2"
+      >
+        {!travelClientOrderItemComposition.removed && (
+          <ButtonIcon as={Trash} size="xl" />
+        )}
+        {travelClientOrderItemComposition.removed && (
+          <ButtonIcon as={ArchiveRestore} size="xl" />
+        )}
+      </Button>
     </HStack>
   );
 }

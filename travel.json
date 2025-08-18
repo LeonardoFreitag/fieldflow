@@ -1,0 +1,19 @@
+{
+  "clientCode": "25013",
+  "clientId": "7bb44248-0ec0-4e75-abec-53c47ccc8eea",
+  "customerId": "765d1b56-f186-4a05-b1c2-f8012544c6cb",
+  "id": "64781b3b-55ab-4ee4-9e1e-a063d955fe1c",
+  "invoiceId": "120",
+  "latitude": "-15.554967",
+  "longitude": "-56.017523",
+  "nfeNumber": "2",
+  "nfeUrl": "https://cestaalves.s3.amazonaws.com/nfe/51250830846822000159550010000000021075371277-nfe.pdf",
+  "notes": "",
+  "orderDate": "2025-08-01T14:56:00.723Z",
+  "orderId": "1497ced1-f07f-4018-b8ce-a44d99f27b41",
+  "orderNumber": "8060",
+  "receberId": "094228c0-a35d-41d1-bcdb-0e06768ba3e0",
+  "routeCollectionId": "e8596bc8-d82a-4607-91cc-f988fb68eb71",
+  "status": "visited",
+  "visitOrder": 1
+}

@@ -1,13 +1,24 @@
+import { type ProductCompositionModel } from './ProductCompositionModel';
+import { type ProductPriceModel } from './ProductPriceModel';
+import { type ProductSimilarModel } from './ProductSimilarModel';
+
 export interface ProductModel {
-  id: number;
-  name: string;
-  price: number;
-  unity: string;
-  image: string;
-  category: string;
+  id: string;
+  customerId: string;
+  code: string;
+  reference: string;
   description: string;
-  is_composed: boolean;
-  selected: boolean;
-  qty: number;
-  brand: string;
+  unity: string;
+  groupId: string;
+  group: string;
+  price: number;
+  photoFileName?: string;
+  photoUrl?: string;
+  photoSize?: string;
+  isComposed?: boolean;
+  ProductPrice?: ProductPriceModel[];
+  ProductSimilar?: ProductSimilarModel[];
+  ProductComposition?: ProductCompositionModel[];
+  selected?: boolean;
+  qty?: number;
 }

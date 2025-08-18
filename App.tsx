@@ -9,6 +9,7 @@ import { Loading } from './src/components/Loading';
 import { Routes } from '@routes/index';
 import { StatusBar } from 'react-native';
 import { Providers } from '@store/provider';
+import { CombinedAuthProvider } from '@contexts/index';
 
 export default function App() {
   const [fontsLoaded] = useFonts({
@@ -23,7 +24,9 @@ export default function App() {
         backgroundColor="transparent"
         translucent
       />
-      <Providers>{fontsLoaded ? <Routes /> : <Loading />}</Providers>
+      <CombinedAuthProvider>
+        <Providers>{fontsLoaded ? <Routes /> : <Loading />}</Providers>
+      </CombinedAuthProvider>
     </GluestackUIProvider>
   );
 }

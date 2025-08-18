@@ -24,11 +24,11 @@ export function TextArea({ ...rest }: Props) {
       isDisabled={false}
     >
       <TextareaInput
+        {...rest}
         color="$trueGray100"
         fontSize="$sm"
         fontFamily="$body"
         placeholderTextColor="$trueGray400"
-        placeholder="Descreva o motivo da não realização da visita..."
       />
     </GTextarea>
   );

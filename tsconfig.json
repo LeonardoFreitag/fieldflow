@@ -14,7 +14,7 @@
       "@contexts/*": ["./src/contexts/*"],
       "@routes/*": ["./src/routes/*"],
       "@models/*": ["./src/models/*"],
-      "@store/*": ["./src/store/*"]
+      "@store/*": ["./src/store/*"],
     }
   }
 }

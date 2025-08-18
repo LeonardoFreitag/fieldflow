@@ -1,4 +1,4 @@
-import { type PaymentFormModel } from './PaumentFormModel';
+import { type PaymentFormModel } from './PaymentFormModel';
 import { type SaleItemModel } from './SaleItemModel';
 
 export interface SaleModel {

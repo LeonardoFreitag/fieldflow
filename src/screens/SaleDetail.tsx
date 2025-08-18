@@ -1,5 +1,4 @@
 import { Box, Button, ButtonIcon, Center, VStack } from '@gluestack-ui/themed';
-import { useNavigation } from '@react-navigation/native';
 import { CustomerHeader } from '@components/CustomerHeader';
 import { customerList } from '@utils/CustomerData';
 import { Plus } from 'lucide-react-native';

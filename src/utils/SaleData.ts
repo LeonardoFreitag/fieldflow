@@ -10,6 +10,8 @@ export const salesList: SaleModel[] = [
     saleItems: [
       {
         id: '1',
+        sale_id: '1',
+        product_id: '1',
         product: 'Cesta básica tipo 1',
         quantity: 1,
         unity: 'un',
@@ -44,6 +46,8 @@ export const salesList: SaleModel[] = [
       },
       {
         id: '2',
+        sale_id: '1',
+        product_id: '2',
         product: 'Feijão preto',
         quantity: 1,
         price: 100,
@@ -57,6 +61,8 @@ export const salesList: SaleModel[] = [
       },
       {
         id: '3',
+        sale_id: '1',
+        product_id: '3',
         product: 'Macarrão',
         quantity: 1,
         unity: 'un',
@@ -85,6 +91,8 @@ export const salesList: SaleModel[] = [
     saleItems: [
       {
         id: '2',
+        sale_id: '2',
+        product_id: '2',
         product: 'Cesta básica tipo 2',
         quantity: 2,
         unity: 'un',
@@ -119,6 +127,8 @@ export const salesList: SaleModel[] = [
       },
       {
         id: '3',
+        sale_id: '2',
+        product_id: '3',
         product: 'Macarrão',
         quantity: 2,
         unity: 'un',
@@ -132,6 +142,8 @@ export const salesList: SaleModel[] = [
       },
       {
         id: '4',
+        sale_id: '2',
+        product_id: '4',
         product: 'Arroz integral',
         quantity: 2,
         unity: 'un',
@@ -145,6 +157,8 @@ export const salesList: SaleModel[] = [
       },
       {
         id: '5',
+        sale_id: '2',
+        product_id: '5',
         product: 'Farinha de trigo',
         quantity: 2,
         unity: 'un',
@@ -158,6 +172,8 @@ export const salesList: SaleModel[] = [
       },
       {
         id: '6',
+        sale_id: '2',
+        product_id: '6',
         product: 'Açúcar',
         quantity: 2,
         unity: 'un',
@@ -171,6 +187,8 @@ export const salesList: SaleModel[] = [
       },
       {
         id: '7',
+        sale_id: '2',
+        product_id: '7',
         product: 'Sal',
         quantity: 2,
         unity: 'un',
@@ -184,6 +202,8 @@ export const salesList: SaleModel[] = [
       },
       {
         id: '8',
+        sale_id: '2',
+        product_id: '8',
         product: 'Café',
         quantity: 2,
         unity: 'un',
@@ -197,6 +217,8 @@ export const salesList: SaleModel[] = [
       },
       {
         id: '9',
+        sale_id: '2',
+        product_id: '9',
         product: 'Leite',
         quantity: 2,
         unity: 'un',
@@ -210,6 +232,8 @@ export const salesList: SaleModel[] = [
       },
       {
         id: '10',
+        sale_id: '2',
+        product_id: '10',
         product: 'Óleo de soja',
         quantity: 2,
         unity: 'un',
@@ -238,6 +262,8 @@ export const salesList: SaleModel[] = [
     saleItems: [
       {
         id: '3',
+        sale_id: '3',
+        product_id: '3',
         product: 'Cesta básica tipo 3',
         quantity: 3,
         unity: 'un',

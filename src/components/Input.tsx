@@ -15,6 +15,7 @@ export function Input({ ...rest }: Props) {
         borderWidth: 1,
         borderColor: '$green500',
       }}
+      flex={1}
     >
       <InputField
         color="$trueGray100"

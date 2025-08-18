@@ -5,15 +5,14 @@ import {
   VStack,
   Icon,
   Button,
+  ButtonIcon,
 } from '@gluestack-ui/themed';
 import { useNavigation } from '@react-navigation/native';
-import { UserPhoto } from './UserPhoto';
-import { ChevronLeft } from 'lucide-react-native';
-import { type CustomerModel } from '../models/CustomerModel';
-import { TouchableOpacity } from 'react-native';
+import { CalendarOff, ChevronLeft } from 'lucide-react-native';
+import { type ClientModel } from '@models/ClientModel';
 
 interface CustomerHeaderProps {
-  data: CustomerModel;
+  data: ClientModel;
   showBackButton?: boolean;
 }
 
@@ -27,36 +26,73 @@ export function CustomerHeader({
     navigation.goBack();
   }
 
+  function handleNavigateSaleBreak() {
+    navigation.navigate('SaleVisitFailure');
+  }
+
   return (
-    <TouchableOpacity>
-      <HStack
-        bg="$trueGray700"
-        pt="$16"
-        pb="$5"
-        px="$8"
-        alignItems="center"
-        gap="$4"
+    <HStack
+      bg="$trueGray700"
+      pt="$16"
+      pb="$5"
+      px="$8"
+      alignItems="center"
+      gap="$4"
+      justifyContent="space-between"
+    >
+      {/* <UserPhoto source={{ uri: data.logo }} h="$16" w="$16" alt="photo" /> */}
+      <VStack flex={1}>
+        <Heading
+          size="xs"
+          color="$trueGray100"
+          numberOfLines={1}
+          ellipsizeMode="tail"
+        >
+          {data.companyName}
+        </Heading>
+        <Text
+          color="$trueGray400"
+          size="xs"
+        >{`${data.streetName}, ${data.streetNumber}`}</Text>
+        <Text
+          color="$trueGray400"
+          size="xs"
+        >{`Bairro ${data.neighborhood}, ${data.streetNumber}`}</Text>
+        <Text
+          color="$trueGray400"
+          size="xs"
+        >{`${data.city} - ${data.state}, ${data.zipCode}`}</Text>
+        <Text
+          color="$trueGray400"
+          size="xs"
+        >{`Cel. ${data.cellphone ?? '-'}`}</Text>
+      </VStack>
+      <Button
+        size="lg"
+        rounded="$lg"
+        // position="absolute"
+        // top="$16"
+        // right="$6"
+        w="$16"
+        h="$16"
+        backgroundColor="$red700"
+        $active-bg="$red500"
+        onPress={handleNavigateSaleBreak}
       >
-        <UserPhoto source={{ uri: data.logo }} h="$16" w="$16" alt="photo" />
-        <VStack flex={1}>
-          <Heading size="sm" color="$trueGray100">
-            {data.name}
-          </Heading>
-          <Text color="$trueGray400">{data.address}</Text>
-        </VStack>
-        {showBackButton && (
-          <Button
-            size="lg"
-            backgroundColor="$trueGray700"
-            $active-bg="$trueGray700"
-            onPress={handleGoBack}
-            variant="outline"
-            borderColor="$trueGray400"
-          >
-            <Icon as={ChevronLeft} size="xl" color="$trueGray400" />
-          </Button>
-        )}
-      </HStack>
-    </TouchableOpacity>
+        <ButtonIcon as={CalendarOff} size="xl" />
+      </Button>
+      {showBackButton && (
+        <Button
+          size="lg"
+          backgroundColor="$trueGray700"
+          $active-bg="$trueGray700"
+          onPress={handleGoBack}
+          variant="outline"
+          borderColor="$trueGray400"
+        >
+          <Icon as={ChevronLeft} size="xl" color="$trueGray400" />
+        </Button>
+      )}
+    </HStack>
   );
 }

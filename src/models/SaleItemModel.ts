@@ -2,6 +2,8 @@ import { type SaleItemCompositionModel } from './SaleItemCompositionModel';
 
 export interface SaleItemModel {
   id: string;
+  sale_id: string;
+  product_id: string;
   product: string;
   quantity: number;
   unity: string;

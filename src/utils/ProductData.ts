@@ -1,16 +1,104 @@
 import { type ProductModel } from '@models/ProductModel';
+// import uuid from 'react-native-uuid';
 
 export const produtDataList: ProductModel[] = [
+  {
+    id: 21,
+    name: 'Cesta Básica Tipo 1',
+    price: 450.0,
+    unity: 'un',
+    cover_image:
+      'https://cdn.awsli.com.br/2500x2500/1192/1192624/produto/101387119/17-itens-9ec9d0bea8.jpg',
+    category: 'Cereais',
+    description: 'Cesta básica com 17 itens essenciais, ideal para famílias.',
+    is_composed: false,
+    composition: [
+      {
+        id: '1',
+        product: 'Arroz Branco Tipo 1',
+        quantity: 5,
+        price: 24.99,
+        unity: 'kg',
+        cover_image:
+          'https://cdn.awsli.com.br/2500x2500/1192/1192624/produto/101387119/17-itens-9ec9d0bea8.jpg',
+        is_deleted: false,
+      },
+      {
+        id: '2',
+        product: 'Feijão Carioca',
+        quantity: 1,
+        price: 18.5,
+        unity: 'kg',
+        cover_image:
+          'https://cdn.awsli.com.br/2500x2500/1192/1192624/produto/101387119/17-itens-9ec9d0bea8.jpg',
+        is_deleted: false,
+      },
+      {
+        id: '3',
+        product: 'Feijão Preto',
+        quantity: 1,
+        price: 17.99,
+        unity: 'kg',
+        cover_image:
+          'https://cdn.awsli.com.br/2500x2500/1192/1192624/produto/101387119/17-itens-9ec9d0bea8.jpg',
+        is_deleted: false,
+      },
+      {
+        id: '4',
+        product: 'Açúcar Refinado',
+        quantity: 1,
+        price: 4.99,
+        unity: 'kg',
+        cover_image:
+          'https://cdn.awsli.com.br/2500x2500/1192/1192624/produto/101387119/17-itens-9ec9d0bea8.jpg',
+        is_deleted: false,
+      },
+      {
+        id: '5',
+        product: 'Açúcar Mascavo',
+        quantity: 1,
+        price: 6.99,
+        unity: 'kg',
+        cover_image:
+          'https://cdn.awsli.com.br/2500x2500/1192/1192624/produto/101387119/17-itens-9ec9d0bea8.jpg',
+        is_deleted: false,
+      },
+      {
+        id: '6',
+        product: 'Sal Refinado',
+        quantity: 1,
+        price: 2.5,
+        unity: 'kg',
+        cover_image:
+          'https://cdn.awsli.com.br/2500x2500/1192/1192624/produto/101387119/17-itens-9ec9d0bea8.jpg',
+        is_deleted: false,
+      },
+      {
+        id: '7',
+        product: 'Óleo de Soja 900ml',
+        quantity: 1,
+        price: 9.99,
+        unity: 'ml',
+        cover_image:
+          'https://cdn.awsli.com.br/2500x2500/1192/1192624/produto/101387119/17-itens-9ec9d0bea8.jpg',
+        is_deleted: false,
+      },
+    ],
+    selected: false,
+    qty: 1,
+    brand: 'Tio João',
+  },
   {
     id: 1,
     name: 'Arroz Branco Tipo 1',
     price: 24.99,
     unity: 'kg',
-    image:
+    cover_image:
       'https://cdn.awsli.com.br/2500x2500/1192/1192624/produto/101387119/17-itens-9ec9d0bea8.jpg',
     category: 'Cereais',
     description: 'Arroz branco de alta qualidade, tipo 1, pacote de 5kg.',
     is_composed: false,
+    composition: [],
     selected: false,
     qty: 1,
     brand: 'Tio João',
@@ -20,12 +108,13 @@ export const produtDataList: ProductModel[] = [
     name: 'Feijão Carioca',
     price: 18.5,
     unity: 'kg',
-    image:
+    cover_image:
       'https://cdn.awsli.com.br/2500x2500/1192/1192624/produto/101387119/17-itens-9ec9d0bea8.jpg',
     category: 'Cereais',
     description:
       'Feijão carioca selecionado, rico em proteínas, pacote de 1kg.',
     is_composed: false,
+    composition: [],
     selected: false,
     qty: 1,
     brand: 'Tio João',
@@ -35,11 +124,12 @@ export const produtDataList: ProductModel[] = [
     name: 'Feijão Preto',
     price: 17.99,
     unity: 'kg',
-    image:
+    cover_image:
       'https://cdn.awsli.com.br/2500x2500/1192/1192624/produto/101387119/17-itens-9ec9d0bea8.jpg',
     category: 'Cereais',
     description: 'Feijão preto ideal para feijoadas, pacote de 1kg.',
     is_composed: false,
+    composition: [],
     selected: false,
     qty: 1,
     brand: 'Tio João',
@@ -49,11 +139,12 @@ export const produtDataList: ProductModel[] = [
     name: 'Açúcar Refinado',
     price: 4.99,
     unity: 'kg',
-    image:
+    cover_image:
       'https://cdn.awsli.com.br/2500x2500/1192/1192624/produto/101387119/17-itens-9ec9d0bea8.jpg',
     category: 'Açúcares',
     description: 'Açúcar refinado tradicional, pacote de 1kg.',
     is_composed: false,
+    composition: [],
     selected: false,
     qty: 1,
     brand: 'União',
@@ -63,12 +154,13 @@ export const produtDataList: ProductModel[] = [
     name: 'Açúcar Mascavo',
     price: 6.99,
     unity: 'kg',
-    image:
+    cover_image:
       'https://cdn.awsli.com.br/2500x2500/1192/1192624/produto/101387119/17-itens-9ec9d0bea8.jpg',
     category: 'Açúcares',
     description:
       'Açúcar mascavo natural, sem aditivos químicos, pacote de 1kg.',
     is_composed: false,
+    composition: [],
     selected: false,
     qty: 1,
     brand: 'União',
@@ -78,11 +170,12 @@ export const produtDataList: ProductModel[] = [
     name: 'Sal Refinado',
     price: 2.5,
     unity: 'kg',
-    image:
+    cover_image:
       'https://cdn.awsli.com.br/2500x2500/1192/1192624/produto/101387119/17-itens-9ec9d0bea8.jpg',
     category: 'Temperos',
     description: 'Sal refinado iodado, pacote de 1kg.',
     is_composed: false,
+    composition: [],
     selected: false,
     qty: 1,
     brand: 'Cisne',
@@ -92,11 +185,12 @@ export const produtDataList: ProductModel[] = [
     name: 'Óleo de Soja 900ml',
     price: 9.99,
     unity: 'ml',
-    image:
+    cover_image:
       'https://cdn.awsli.com.br/2500x2500/1192/1192624/produto/101387119/17-itens-9ec9d0bea8.jpg',
     category: 'Óleos e Gorduras',
     description: 'Óleo de soja refinado, embalagem de 900ml.',
     is_composed: false,
+    composition: [],
     selected: false,
     qty: 1,
     brand: 'Soya',
@@ -106,11 +200,12 @@ export const produtDataList: ProductModel[] = [
     name: 'Macarrão Espaguete',
     price: 6.49,
     unity: 'g',
-    image:
+    cover_image:
       'https://cdn.awsli.com.br/2500x2500/1192/1192624/produto/101387119/17-itens-9ec9d0bea8.jpg',
     category: 'Massas',
     description: 'Macarrão tipo espaguete, pacote de 500g.',
     is_composed: false,
+    composition: [],
     selected: false,
     qty: 1,
     brand: 'Barilla',
@@ -120,12 +215,13 @@ export const produtDataList: ProductModel[] = [
     name: 'Farinha de Trigo',
     price: 5.99,
     unity: 'kg',
-    image:
+    cover_image:
       'https://cdn.awsli.com.br/2500x2500/1192/1192624/produto/101387119/17-itens-9ec9d0bea8.jpg',
     category: 'Farinhas',
     description:
       'Farinha de trigo enriquecida com ferro e ácido fólico, pacote de 1kg.',
     is_composed: false,
+    composition: [],
     selected: false,
     qty: 1,
     brand: 'Dona Benta',
@@ -135,12 +231,13 @@ export const produtDataList: ProductModel[] = [
     name: 'Farinha de Mandioca',
     price: 7.49,
     unity: 'kg',
-    image:
+    cover_image:
       'https://cdn.awsli.com.br/2500x2500/1192/1192624/produto/101387119/17-itens-9ec9d0bea8.jpg',
     category: 'Farinhas',
     description:
       'Farinha de mandioca torrada, ideal para farofas, pacote de 1kg.',
     is_composed: false,
+    composition: [],
     selected: false,
     qty: 1,
     brand: 'Yoki',
@@ -150,12 +247,13 @@ export const produtDataList: ProductModel[] = [
     name: 'Leite em Pó Integral',
     price: 25.99,
     unity: 'g',
-    image:
+    cover_image:
       'https://cdn.awsli.com.br/2500x2500/1192/1192624/produto/101387119/17-itens-9ec9d0bea8.jpg',
     category: 'Laticínios',
     description:
       'Leite em pó integral, fortificado com vitaminas A e D, pacote de 400g.',
     is_composed: false,
+    composition: [],
     selected: false,
     qty: 1,
     brand: 'Ninho',
@@ -165,11 +263,12 @@ export const produtDataList: ProductModel[] = [
     name: 'Café Tradicional',
     price: 16.5,
     unity: 'g',
-    image:
+    cover_image:
       'https://cdn.awsli.com.br/2500x2500/1192/1192624/produto/101387119/17-itens-9ec9d0bea8.jpg',
     category: 'Bebidas',
     description: 'Café torrado e moído, pacote de 500g.',
     is_composed: false,
+    composition: [],
     selected: false,
     qty: 1,
     brand: 'Pilão',
@@ -179,11 +278,12 @@ export const produtDataList: ProductModel[] = [
     name: 'Extrato de Tomate',
     price: 4.99,
     unity: 'g',
-    image:
+    cover_image:
       'https://cdn.awsli.com.br/2500x2500/1192/1192624/produto/101387119/17-itens-9ec9d0bea8.jpg',
     category: 'Molhos',
     description: 'Extrato de tomate puro, sem conservantes, embalagem de 340g.',
     is_composed: false,
+    composition: [],
     selected: false,
     qty: 1,
     brand: 'Elefante',
@@ -193,11 +293,12 @@ export const produtDataList: ProductModel[] = [
     name: 'Milho Verde em Conserva',
     price: 5.5,
     unity: 'g',
-    image:
+    cover_image:
       'https://cdn.awsli.com.br/2500x2500/1192/1192624/produto/101387119/17-itens-9ec9d0bea8.jpg',
     category: 'Conservas',
     description: 'Milho verde em conserva, pronto para consumo, lata de 200g.',
     is_composed: false,
+    composition: [],
     selected: false,
     qty: 1,
     brand: 'Bonduelle',
@@ -207,11 +308,12 @@ export const produtDataList: ProductModel[] = [
     name: 'Sardinha em Óleo',
     price: 8.99,
     unity: 'g',
-    image:
+    cover_image:
       'https://cdn.awsli.com.br/2500x2500/1192/1192624/produto/101387119/17-itens-9ec9d0bea8.jpg',
     category: 'Enlatados',
     description: 'Sardinha em óleo comestível, lata de 125g.',
     is_composed: false,
+    composition: [],
     selected: false,
     qty: 1,
     brand: 'Gomes da Costa',
@@ -221,11 +323,12 @@ export const produtDataList: ProductModel[] = [
     name: 'Sabonete Neutro',
     price: 2.99,
     unity: 'g',
-    image:
+    cover_image:
       'https://cdn.awsli.com.br/2500x2500/1192/1192624/produto/101387119/17-itens-9ec9d0bea8.jpg',
     category: 'Higiene',
     description: 'Sabonete neutro com glicerina, 90g.',
     is_composed: false,
+    composition: [],
     selected: false,
     qty: 1,
     brand: 'Granado',
@@ -235,11 +338,12 @@ export const produtDataList: ProductModel[] = [
     name: 'Papel Higiênico 4 Rolos',
     price: 12.99,
     unity: 'un',
-    image:
+    cover_image:
       'https://cdn.awsli.com.br/2500x2500/1192/1192624/produto/101387119/17-itens-9ec9d0bea8.jpg',
     category: 'Higiene',
     description: 'Papel higiênico folha dupla, pacote com 4 rolos.',
     is_composed: false,
+    composition: [],
     selected: false,
     qty: 1,
     brand: 'Neve',
@@ -249,11 +353,12 @@ export const produtDataList: ProductModel[] = [
     name: 'Sabão em Barra',
     price: 7.99,
     unity: 'un',
-    image:
+    cover_image:
       'https://cdn.awsli.com.br/2500x2500/1192/1192624/produto/101387119/17-itens-9ec9d0bea8.jpg',
     category: 'Limpeza',
     description: 'Sabão em barra glicerinado, pacote com 5 unidades.',
     is_composed: false,
+    composition: [],
     selected: false,
     qty: 1,
     brand: 'Ypê',
@@ -263,11 +368,12 @@ export const produtDataList: ProductModel[] = [
     name: 'Detergente Líquido',
     price: 4.5,
     unity: 'ml',
-    image:
+    cover_image:
       'https://cdn.awsli.com.br/2500x2500/1192/1192624/produto/101387119/17-itens-9ec9d0bea8.jpg',
     category: 'Limpeza',
     description: 'Detergente líquido neutro, embalagem de 500ml.',
     is_composed: false,
+    composition: [],
     selected: false,
     qty: 1,
     brand: 'Ypê',
@@ -277,11 +383,12 @@ export const produtDataList: ProductModel[] = [
     name: 'Creme Dental 90g',
     price: 5.99,
     unity: 'g',
-    image:
+    cover_image:
       'https://cdn.awsli.com.br/2500x2500/1192/1192624/produto/101387119/17-itens-9ec9d0bea8.jpg',
     category: 'Higiene',
     description: 'Creme dental com flúor, combate cáries e placa bacteriana.',
     is_composed: false,
+    composition: [],
     selected: false,
     qty: 1,
     brand: 'Colgate',

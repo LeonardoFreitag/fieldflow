@@ -13,7 +13,12 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.freitagnx.fieldflow"
+      "bundleIdentifier": "com.freitagnx.fieldflow",
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "Usamos sua localização para lhe mostrar sua distância da localização dos anunciantes.",
+        "NSPhotoLibraryUsageDescription": "Usamos suas fotos para que você possa selecionar imagens que poderam ser utilizadas em seu perfil ou em seus anúncios caso você seja um anunciante.",
+        "NSPhosoLibraryAddUsageDescription": "Usamos suas fotos para que você possa selecionar imagens que poderam ser utilizadas em seu perfil ou em seus anúncios caso você seja um anunciante."
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -26,7 +31,21 @@
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
-      "expo-font"
+      "expo-font",
+      [
+        "react-native-vision-camera",
+        {
+          "cameraPermissionText": "$(PRODUCT_NAME) needs access to your Camera.",
+          "enableMicrophonePermission": true,
+          "microphonePermissionText": "$(PRODUCT_NAME) needs access to your Microphone."
+        }
+      ],
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location."
+        }
+      ]
     ]
   }
 }

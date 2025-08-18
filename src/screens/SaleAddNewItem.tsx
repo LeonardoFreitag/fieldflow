@@ -3,12 +3,13 @@ import {
   ButtonIcon,
   Center,
   Heading,
+  HStack,
   VStack,
+  Text,
 } from '@gluestack-ui/themed';
 import { useNavigation } from '@react-navigation/native';
 import { CustomerHeader } from '@components/CustomerHeader';
-import { customerList } from '@utils/CustomerData';
-import { ChevronLeft, Plus } from 'lucide-react-native';
+import { CheckCheck, ChevronLeft, X } from 'lucide-react-native';
 import { useAppSelector } from '../store/store';
 import { FlatList } from 'react-native';
 import React, { useCallback, useEffect, useMemo } from 'react';
@@ -19,23 +20,26 @@ import {
   updateProductList,
 } from '@store/slice/product/productListSlice';
 import { type ProductModel } from '@models/ProductModel';
-import { produtDataList } from '@utils/ProductData';
+import uuid from 'react-native-uuid';
+import { updateTravelClientOrderEdit } from '@store/slice/travel/travelClientOrderEditSlice';
+import { api } from '@services/api';
+import { Input } from '@components/Input';
 
 export function SaleAddNewItem() {
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const [textTyped, setTextTyped] = React.useState('');
-  const produtList = useAppSelector(state => state.productList);
+  const productList = useAppSelector(state => state.productList);
+  const clientEdit = useAppSelector(state => state.clientEdit);
+  const travelClientOrderEdit = useAppSelector(
+    state => state.travelClientOrderEdit,
+  );
 
   const filteredProducts = useMemo(() => {
-    return produtList.filter(product =>
-      product.name.toLowerCase().includes(textTyped.toLowerCase()),
+    return productList.filter(product =>
+      product.description.toLowerCase().includes(textTyped.toLowerCase()),
     );
-  }, [produtList, textTyped]);
-
-  useEffect(() => {
-    dispatch(loadProductList(produtDataList));
-  }, []);
+  }, [productList, textTyped]);
 
   const handleSelectProduct = useCallback(
     (item: ProductModel) => {
@@ -49,31 +53,170 @@ export function SaleAddNewItem() {
     [dispatch],
   );
 
-  const handleUpQty = useCallback((item: ProductModel) => {
-    dispatch(
-      updateProductList({
-        ...item,
-        qty: item.qty + 1,
-      }),
-    );
-  }, []);
+  const handleUpQty = useCallback(
+    (item: ProductModel) => {
+      dispatch(
+        updateProductList({
+          ...item,
+          qty: Number(item.qty) + 1,
+        }),
+      );
+    },
+    [dispatch],
+  );
 
-  const handleDownQty = useCallback((item: ProductModel) => {
+  const handleDownQty = useCallback(
+    (item: ProductModel) => {
+      dispatch(
+        updateProductList({
+          ...item,
+          qty: Number(item.qty) - 1,
+        }),
+      );
+    },
+    [dispatch],
+  );
+
+  const productsSelected = useMemo(() => {
+    return productList.filter(product => product.selected);
+  }, [productList]);
+
+  const totalProductsSelected = useMemo(() => {
+    return productsSelected.reduce(
+      (acc, product) => acc + Number(product.qty) * Number(product.price),
+      0,
+    );
+  }, [productsSelected]);
+
+  const handleInsertProducts = useCallback(() => {
     dispatch(
-      updateProductList({
-        ...item,
-        qty: item.qty - 1,
+      updateTravelClientOrderEdit({
+        ...travelClientOrderEdit,
+        TravelClientOrdersItems: [
+          ...(travelClientOrderEdit.TravelClientOrdersItems ?? []),
+          ...productsSelected.map(product => {
+            const travelClientOrderItemId = uuid.v4().toString();
+            return {
+              id: travelClientOrderItemId,
+              travelClientOrderId: travelClientOrderEdit.id,
+              productId: product.id,
+              code: product.code,
+              reference: product.reference,
+              description: product.description,
+              unity: product.unity,
+              price: product.price ?? 0,
+              quantity: product.qty ?? 0,
+              amount: Number(product.qty) * Number(product.price ?? 0),
+              notes: null,
+              isDeleted: false,
+              isComposed: product.isComposed ?? false,
+              tableCode: clientEdit.tableCode ?? '',
+              TravelClientOrdersItemsComposition:
+                product.ProductComposition?.map(composition => ({
+                  id: composition.id ?? uuid.v4().toString(),
+                  travelClientOrdersItemsId: travelClientOrderItemId,
+                  productId: composition.productId,
+                  stockId: composition.stockId,
+                  pCode: composition.pCode,
+                  pReference: composition.pReference,
+                  pDescription: composition.pDescription,
+                  pUnity: composition.pUnity,
+                  pQuantity: composition.pQuantity,
+                  pPrice: composition.pPrice,
+                  pAmount: composition.pAmount,
+                  removed: false,
+                  tableCode: clientEdit.tableCode ?? '',
+                })),
+            };
+          }),
+        ],
       }),
     );
-  }, []);
+    navigation.goBack();
+  }, [dispatch, navigation, productsSelected, travelClientOrderEdit]);
+
+  useEffect(() => {
+    const fechtProducts = async () => {
+      try {
+        const response = await api.get<ProductModel[]>(
+          '/product/listByTablePriceCode',
+          {
+            params: {
+              customerId: clientEdit.customerId,
+              tableCode: clientEdit.tableCode,
+            },
+          },
+        );
+        const products: ProductModel[] = response.data.map(product => ({
+          ...product,
+          selected: false,
+          price: product.ProductPrice?.[0]?.price ?? 0,
+          qty: 1,
+        }));
+        dispatch(loadProductList(products));
+      } catch (error) {
+        console.error('Error fetching products:', error);
+      }
+    };
+    fechtProducts();
+  }, [
+    clientEdit,
+    clientEdit.customerId,
+    clientEdit.id,
+    clientEdit.tableCode,
+    dispatch,
+  ]);
 
   return (
     <VStack flex={1}>
-      <CustomerHeader data={customerList[0]} showBackButton={false} />
-      <Heading size="lg" mx="$2" mt="$4" color="$trueGray100">
+      <CustomerHeader data={clientEdit} showBackButton={false} />
+      <Heading size="sm" mx="$1" mt="$1" color="$trueGray100">
         Adicionar produto
       </Heading>
-      <Center mt="$4" mx="$2">
+      <HStack justifyContent="space-between">
+        <Heading size="xs" mx="$1" mt="$1" color="$trueGray100">
+          {`Selecionados: ${productsSelected.length}`}
+        </Heading>
+        <Heading size="xs" mx="$1" mt="$1" color="$green500">
+          {`Total: ${totalProductsSelected.toLocaleString('pt-BR', {
+            style: 'currency',
+            currency: 'BRL',
+          })}`}
+        </Heading>
+      </HStack>
+      <HStack
+        mx="$1"
+        mt="$1"
+        mb="$1"
+        w="$full"
+        backgroundColor="$trueGray600"
+        p="$2"
+        rounded="$md"
+        gap="$2"
+      >
+        <Input
+          placeholder="Pesquise por produto..."
+          keyboardType="default"
+          autoCapitalize="none"
+          onChangeText={setTextTyped}
+          value={textTyped}
+          w="$full"
+        />
+        <Button
+          size="lg"
+          rounded="$md"
+          w="$12"
+          h="$12"
+          onPress={() => {
+            setTextTyped('');
+          }}
+          gap="$1"
+        >
+          <ButtonIcon as={X} size="xl" />
+        </Button>
+      </HStack>
+
+      <Center mt="$2" mx="$2">
         <FlatList
           data={filteredProducts}
           keyExtractor={prod => prod.id.toString()}
@@ -93,35 +236,49 @@ export function SaleAddNewItem() {
           )}
         />
       </Center>
-      <Button
-        size="lg"
-        rounded="$full"
+      <HStack
+        justifyContent="space-between"
         position="absolute"
-        bottom="$6"
-        right="$6"
-        w="$16"
-        h="$16"
-        backgroundColor="$green700"
-        $active-bg="$green500"
+        bottom="$0"
+        left="$0"
+        backgroundColor="$trueGray900"
+        width="100%"
+        height="$24"
+        padding="$2"
       >
-        <ButtonIcon as={Plus} size="xl" />
-      </Button>
-      <Button
-        size="lg"
-        rounded="$full"
-        position="absolute"
-        bottom="$6"
-        left="$6"
-        w="$16"
-        h="$16"
-        backgroundColor="$blue500"
-        $active-bg="$blue700"
-        onPress={() => {
-          navigation.goBack();
-        }}
-      >
-        <ButtonIcon as={ChevronLeft} size="xl" />
-      </Button>
+        <Button
+          size="lg"
+          rounded="$md"
+          w="$24"
+          h="$12"
+          backgroundColor="$blue500"
+          $active-bg="$blue700"
+          onPress={() => {
+            navigation.goBack();
+          }}
+          gap="$1"
+        >
+          <ButtonIcon as={ChevronLeft} size="xl" />
+          <Text color="$trueGray100" size="xs">
+            Voltar
+          </Text>
+        </Button>
+        <Button
+          size="lg"
+          rounded="$md"
+          w="$24"
+          h="$12"
+          backgroundColor="$green700"
+          $active-bg="$green500"
+          onPress={handleInsertProducts}
+          gap="$1"
+        >
+          <ButtonIcon as={CheckCheck} size="xl" />
+          <Text color="$trueGray100" size="xs">
+            Inserir
+          </Text>
+        </Button>
+      </HStack>
     </VStack>
   );
 }

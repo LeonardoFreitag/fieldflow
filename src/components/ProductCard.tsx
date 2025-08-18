@@ -12,22 +12,15 @@ import {
   ModalContent,
   ModalHeader,
   ModalBody,
-  ModalCloseButton,
-  ModalFooter,
 } from '@gluestack-ui/themed';
 import { type ProductModel } from '@models/ProductModel';
-import {
-  CheckCheck,
-  Disc,
-  Minus,
-  Plus,
-  Save,
-  Sigma,
-  X,
-} from 'lucide-react-native';
+import { Minus, Plus, Save, Sigma, X } from 'lucide-react-native';
 import { HandTap } from 'phosphor-react-native';
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Input } from './Input';
+import { useDispatch } from 'react-redux';
+import { updateProductList } from '@store/slice/product/productListSlice';
+import productPlaceholder from '@assets/product.png'; // Placeholder for product image
 
 interface ProductCardProps {
   product: ProductModel;
@@ -43,15 +36,23 @@ export function ProductCard({
   handleDownQty,
 }: ProductCardProps) {
   const totalProduct = useMemo(
-    () => product.qty * product.price,
+    () => Number(product.qty) * Number(product.price ?? 0),
     [product.qty, product.price],
   );
-  const [showModalQuantity, setShowModalQuantity] = React.useState(false);
-  const [itemEdit, setItemEdit] = React.useState<ProductModel | null>(null);
+  const [showModalQuantity, setShowModalQuantity] = useState(false);
+  const [itemEdit, setItemEdit] = useState<ProductModel | null>(null);
+  const [imageError, setImageError] = useState(false);
 
   const handleShowModalQuantity = (item: ProductModel) => {
     setItemEdit(item);
     setShowModalQuantity(true);
+  };
+
+  const getImageSource = () => {
+    if (imageError || !product.photoUrl || product.photoUrl === '') {
+      return productPlaceholder;
+    }
+    return { uri: product.photoUrl };
   };
 
   return (
@@ -66,12 +67,13 @@ export function ProductCard({
       justifyContent="space-between"
     >
       <Image
-        source={{ uri: product.image }}
+        source={getImageSource()}
         alt="Product"
         w="$20"
         h="$20"
         rounded="$md"
       />
+
       <VStack
         flex={1}
         padding={8}
@@ -79,15 +81,18 @@ export function ProductCard({
         alignItems="flex-start"
       >
         <Heading size="xs" color="$trueGray100">
-          {`${product.id} - ${product.name}`}
+          {`${product.code} - ${product.description}`}
         </Heading>
         <Text color="$trueGray400">
-          {`${product.qty.toLocaleString('pt-BR', {
+          {`${Number(product.qty).toLocaleString('pt-BR', {
             maximumFractionDigits: 2,
-          })} ${product.unity} x ${product.price.toLocaleString('pt-BR', {
-            style: 'currency',
-            currency: 'BRL',
-          })} = ${totalProduct.toLocaleString('pt-BR', {
+          })} ${product.unity} x ${Number(product.price ?? 0).toLocaleString(
+            'pt-BR',
+            {
+              style: 'currency',
+              currency: 'BRL',
+            },
+          )} = ${totalProduct.toLocaleString('pt-BR', {
             style: 'currency',
             currency: 'BRL',
           })}`}
@@ -142,12 +147,11 @@ export function ProductCard({
               width="$10"
               height="$10"
               rounded="$md"
-              backgroundColor={product.selected ? '$green700' : '$blueGray600'}
-              $active-bg="$green500"
+              backgroundColor={product.selected ? '$green500' : '$blueGray600'}
+              // $active-bg="$green500"
               onPress={handleSelectProduct}
             >
-              {!product.selected && <ButtonIcon as={HandTap} size="xl" />}
-              {product.selected && <ButtonIcon as={CheckCheck} size="xl" />}
+              <ButtonIcon as={HandTap} size="xl" />
             </Button>
           </HStack>
         </HStack>
@@ -157,6 +161,7 @@ export function ProductCard({
         handleCloseModal={() => {
           setShowModalQuantity(false);
         }}
+        itemEdit={itemEdit}
       />
     </HStack>
   );
@@ -165,10 +170,28 @@ export function ProductCard({
 interface ModalQuantityProps {
   visible: boolean;
   handleCloseModal: () => void;
+  itemEdit: ProductModel | null;
 }
 
-function ModalQuantity({ visible, handleCloseModal }: ModalQuantityProps) {
+function ModalQuantity({
+  visible,
+  handleCloseModal,
+  itemEdit,
+}: ModalQuantityProps) {
+  const dispatch = useDispatch();
+  const [qtyTyped, setQtyTyped] = useState(
+    Number(itemEdit?.qty ?? 1).toString(),
+  );
+
   const handleSaveData = () => {
+    if (itemEdit) {
+      dispatch(
+        updateProductList({
+          ...itemEdit,
+          qty: Number(qtyTyped),
+        }),
+      );
+    }
     handleCloseModal();
   };
 
@@ -179,7 +202,13 @@ function ModalQuantity({ visible, handleCloseModal }: ModalQuantityProps) {
         <ModalHeader />
         <ModalBody>
           <Heading color="$blueGray300">Quantidade</Heading>
-          <Input />
+          <Input
+            autoFocus
+            keyboardType="numeric"
+            defaultValue={Number(itemEdit?.qty ?? 1).toString()}
+            value={qtyTyped}
+            onChangeText={setQtyTyped}
+          />
           <HStack mt="$2" justifyContent="flex-end" gap="$2">
             <Button
               width="$20"

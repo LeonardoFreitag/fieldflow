@@ -1,0 +1,47 @@
+import { type ClientModel } from './ClientModel';
+import { type ReceberParcialModel } from './ReceberParcial';
+import { type TravelClientOrdersModel } from './TravelClientOrdersModel';
+
+export interface ReceberModel {
+  id: string;
+  customerId: string;
+  codigo: string;
+  historico: string;
+  portador?: string | null;
+  documento: string;
+  clientId: string;
+  clientCode: string;
+  Client: ClientModel;
+  emissao: Date;
+  vencimento: Date;
+  valorDuplicata: number;
+  recebimento?: Date | null;
+  valorRecebido?: number | null;
+  valorJuros?: number | null;
+  valorDesconto?: number | null;
+  ativo: boolean;
+  status: string;
+  notaFiscal?: string | null;
+  notaFiscalFileName?: string | null;
+  notaFiscalFileUrl?: string | null;
+  tipo?: string | null;
+  boleto?: boolean | null;
+  boletoFileName?: string | null;
+  boletoFileUrl?: string | null;
+  vlrAtualizado?: number | null;
+  travelClientOrdersId: string;
+  travelClientOrdersNumber: string;
+  TrabelClientOrders: TravelClientOrdersModel;
+  invoiceId?: string | null;
+  paymentFormId?: string | null;
+  txid?: string | null;
+  nossoNumero?: string | null;
+  qrCode?: string | null;
+  linhaDigitavel?: string | null;
+  codigoBarras?: string | null;
+  cooperativa?: string | null;
+  posto?: string | null;
+  registradoApi: boolean;
+  ReceberParcial: ReceberParcialModel[];
+  selected?: boolean;
+}

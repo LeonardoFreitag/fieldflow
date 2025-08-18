@@ -42,6 +42,20 @@
       <key>NSAllowsLocalNetworking</key>
       <true/>
     </dict>
+    <key>NSCameraUsageDescription</key>
+    <string>$(PRODUCT_NAME) needs access to your Camera.</string>
+    <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+    <string>Allow $(PRODUCT_NAME) to use your location.</string>
+    <key>NSLocationAlwaysUsageDescription</key>
+    <string>Allow $(PRODUCT_NAME) to access your location</string>
+    <key>NSLocationWhenInUseUsageDescription</key>
+    <string>Usamos sua localização para lhe mostrar sua distância da localização dos anunciantes.</string>
+    <key>NSMicrophoneUsageDescription</key>
+    <string>$(PRODUCT_NAME) needs access to your Microphone.</string>
+    <key>NSPhosoLibraryAddUsageDescription</key>
+    <string>Usamos suas fotos para que você possa selecionar imagens que poderam ser utilizadas em seu perfil ou em seus anúncios caso você seja um anunciante.</string>
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>Usamos suas fotos para que você possa selecionar imagens que poderam ser utilizadas em seu perfil ou em seus anúncios caso você seja um anunciante.</string>
     <key>UILaunchStoryboardName</key>
     <string>SplashScreen</string>
     <key>UIRequiredDeviceCapabilities</key>

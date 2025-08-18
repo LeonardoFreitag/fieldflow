@@ -1,0 +1,52 @@
+import { type ClientContactModel } from './ClientContactModel';
+import { type ClientPaymentFormModel } from './ClientPaymentFormModel';
+import { type ClientPhotosModel } from './ClientPhotosModel';
+import { type TravelClientOrdersModel } from './TravelClientOrdersModel';
+
+export interface ClientModel {
+  id: string;
+  customerId: string;
+  code: string;
+  companyName: string;
+  comercialName: string;
+  zipCode: string;
+  streetName: string;
+  streetNumber: string;
+  neighborhood: string;
+  complement: string;
+  cnpj: string;
+  ie: string;
+  cityCode: string;
+  city: string;
+  stateCode: string;
+  state: string;
+  financialPendency: boolean;
+  isNew: boolean;
+  isActivated: boolean;
+  sellerId: string;
+  phone?: string;
+  cellphone?: string;
+  email?: string;
+  latitude?: number;
+  longitude?: number;
+  aproximateCoordenates?: boolean;
+  riscoCredito?: string;
+  scoreInterno?: number;
+  prazoPagamentoDias?: number;
+  routeId?: number;
+  frequenciaVisitaId?: number;
+  diaSemana?: number;
+  paymentFormId?: string;
+  lastVisitDate?: Date;
+  lastSaleDate?: Date;
+  tableCode?: string;
+  createdAt: Date;
+  updatedAt: Date;
+  ClientContact: ClientContactModel[];
+  ClientPaymentForm: ClientPaymentFormModel[];
+  LastOrders: TravelClientOrdersModel[];
+  ClientPhotos: ClientPhotosModel[];
+  isSelected: boolean;
+  status?: string; // 'not_visited', 'visited', 'pending', 'failure'
+  dataFrom: string;
+}

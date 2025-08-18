@@ -109,7 +109,7 @@ android {
     buildToolsVersion rootProject.ext.buildToolsVersion
     compileSdk rootProject.ext.compileSdkVersion
 
-    namespace "com.fieldflow"
+    namespace 'com.freitagnx.fieldflow'
     defaultConfig {
         applicationId 'com.freitagnx.fieldflow'
         minSdkVersion rootProject.ext.minSdkVersion

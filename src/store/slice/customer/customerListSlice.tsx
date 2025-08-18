@@ -1,25 +1,25 @@
 import { type PayloadAction, createSlice } from '@reduxjs/toolkit';
-import { type CustomerModel } from '@models/CustomerModel';
+import { type ClientModel } from '@models/ClientModel';
 
-const customerListSlice = createSlice({
-  name: 'customerList',
-  initialState: [] as CustomerModel[],
+const currentSaleRouteListSlice = createSlice({
+  name: 'currentSaleRouteList',
+  initialState: [] as ClientModel[],
   reducers: {
-    loadCustomerList: (
-      state: CustomerModel[],
-      action: PayloadAction<CustomerModel[]>,
+    loadCurrentSaleRouteList: (
+      state: ClientModel[],
+      action: PayloadAction<ClientModel[]>,
     ) => {
       return action.payload;
     },
-    addCustomerList: (
-      state: CustomerModel[],
-      action: PayloadAction<CustomerModel>,
+    addCurrentSaleRouteList: (
+      state: ClientModel[],
+      action: PayloadAction<ClientModel>,
     ) => {
       state.push(action.payload);
     },
-    updateCustomerList: (
-      state: CustomerModel[],
-      action: PayloadAction<CustomerModel>,
+    updateCurrentSaleRouteList: (
+      state: ClientModel[],
+      action: PayloadAction<ClientModel>,
     ) => {
       return state.map(product => {
         if (product.id === action.payload.id) {
@@ -28,9 +28,9 @@ const customerListSlice = createSlice({
         return product;
       });
     },
-    deleteCustomerList: (
-      state: CustomerModel[],
-      action: PayloadAction<CustomerModel>,
+    deleteCurrentSaleRouteList: (
+      state: ClientModel[],
+      action: PayloadAction<ClientModel>,
     ) => {
       return state.filter(product => product.id !== action.payload.id);
     },
@@ -38,10 +38,10 @@ const customerListSlice = createSlice({
 });
 
 export const {
-  loadCustomerList,
-  addCustomerList,
-  updateCustomerList,
-  deleteCustomerList,
-} = customerListSlice.actions;
+  loadCurrentSaleRouteList,
+  addCurrentSaleRouteList,
+  updateCurrentSaleRouteList,
+  deleteCurrentSaleRouteList,
+} = currentSaleRouteListSlice.actions;
 
-export default customerListSlice.reducer;
+export default currentSaleRouteListSlice.reducer;

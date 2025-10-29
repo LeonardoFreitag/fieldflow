@@ -34,12 +34,12 @@ export function ReceberCard({ data, handleSelectReceber }: ReceberCardProps) {
 
   const receivedValue = useMemo(() => {
     return data.ReceberParcial?.reduce((total, parcial) => {
-      return total + (parcial.valorRecebido || 0);
+      return Number(total) + (Number(parcial.valorRecebido) || 0);
     }, 0);
   }, [data.ReceberParcial]);
 
   const balance = useMemo(() => {
-    return data.valorDuplicata - receivedValue;
+    return Number(data.valorDuplicata) - Number(receivedValue);
   }, [data.valorDuplicata, receivedValue]);
 
   return (

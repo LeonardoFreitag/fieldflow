@@ -481,7 +481,9 @@ export const DeliveryDrive: React.FC = () => {
             }}
           >
             {routeInitialized &&
-              deliveryRouteEdit.DeliveryItems.map((deliveryItem, idx) => (
+              deliveryRouteEdit.DeliveryItems &&
+              deliveryRouteEdit.DeliveryItems.length > 0 &&
+              deliveryRouteEdit.DeliveryItems?.map((deliveryItem, idx) => (
                 <Marker
                   key={idx}
                   coordinate={{
@@ -606,7 +608,8 @@ export const DeliveryDrive: React.FC = () => {
             </VStack>
           </AlertDialogHeader>
           <AlertDialogBody>
-            {deliveryRouteEdit.DeliveryItems.length > 0 &&
+            {deliveryRouteEdit.DeliveryItems &&
+              deliveryRouteEdit.DeliveryItems.length > 0 &&
               deliveryRouteEdit.DeliveryItems.map((item, index) => (
                 <VStack style={styles.itemContainer} key={item.id}>
                   <Button

@@ -15,7 +15,7 @@ export interface ProductModel {
   photoFileName?: string;
   photoUrl?: string;
   photoSize?: string;
-  isComposed?: boolean;
+  isComposed: boolean;
   ProductPrice?: ProductPriceModel[];
   ProductSimilar?: ProductSimilarModel[];
   ProductComposition?: ProductCompositionModel[];

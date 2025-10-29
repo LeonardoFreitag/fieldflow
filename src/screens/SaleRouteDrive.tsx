@@ -36,7 +36,7 @@ import {
   UserList,
   UserPlus,
 } from 'phosphor-react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { type ClientModel } from '@models/ClientModel';
 import { api } from '@services/api';
 import { type TravelModel } from '@models/TravelModel';
@@ -89,7 +89,9 @@ export const SaleRouteDrive: React.FC = () => {
   const canChangeRouteEdit = useAppSelector(state => state.canChangeRouteEdit);
 
   const clientList = useAppSelector(state => state.clientList);
+  const allClientList = useAppSelector(state => state.allClientList);
   const travelEdit = useAppSelector(state => state.travelEdit);
+  const existsTravelEdit = useAppSelector(state => state.existsTravelEdit);
 
   const {
     fetchRota,
@@ -102,12 +104,14 @@ export const SaleRouteDrive: React.FC = () => {
   } = useHandleSaleRoute();
 
   useEffect(() => {
+    // Solicita permissão de localização ao montar o componente
     requestForegroundPermission();
 
     return () => {};
   }, [requestForegroundPermission]);
 
   useEffect(() => {
+    // Inicia o monitoramento da localização se a permissão for concedida
     if (!locationForegroundPermission?.granted) {
       return;
     }
@@ -132,9 +136,11 @@ export const SaleRouteDrive: React.FC = () => {
     };
   }, [dispatch, locationForegroundPermission?.granted]);
 
-  useEffect(() => {
-    fetchRota();
-  }, [fetchRota]);
+  useFocusEffect(
+    useCallback(() => {
+      fetchRota();
+    }, [fetchRota]),
+  );
 
   useEffect(() => {
     if (mapRef.current && rota.length > 0) {
@@ -288,52 +294,71 @@ export const SaleRouteDrive: React.FC = () => {
   ]);
 
   const handleBackToSaleRoute = async () => {
-    console.log('handleBackToSaleRoute');
     navigation.reset({
       index: 0,
       routes: [{ name: 'SaleRoute' }],
     });
   };
 
+  const handleAddNewClient = () => {
+    if (existsTravelEdit.exists) {
+      navigation.navigate('SaleClientList');
+    } else {
+      Alert.alert(
+        'Atenção',
+        'Não é possível adicionar novos clientes durante uma rota em andamento.',
+      );
+    }
+  };
+
   return (
     <>
       <VStack display="flex" position="relative" flex={1}>
-        {coordsEdit && (
-          <MapView
-            ref={mapRef}
-            style={styles.map}
-            zoomEnabled={true}
-            region={{
-              latitude: coordsEdit.latitude,
-              longitude: coordsEdit.longitude,
-              latitudeDelta: 0.01,
-              longitudeDelta: 0.01,
-            }}
-          >
-            {clientList.map((cliente, idx) => (
-              <Marker
-                key={idx}
-                coordinate={{
-                  latitude: Number(cliente.latitude),
-                  longitude: Number(cliente.longitude),
-                }}
-                pinColor={getMarkerColor(cliente.status)}
-                title={`${idx + 1}. ${cliente.companyName}`}
-                onCalloutPress={() => {
-                  iniciarNavegacao(cliente);
-                }}
-              />
-            ))}
-            {rota.length > 0 && (
-              <Polyline coordinates={rota} strokeColor="#000" strokeWidth={3} />
-            )}
-            {coordsEdit && (
+        {coordsEdit &&
+          typeof coordsEdit.latitude === 'number' &&
+          typeof coordsEdit.longitude === 'number' &&
+          !isNaN(coordsEdit.latitude) &&
+          !isNaN(coordsEdit.longitude) && (
+            <MapView
+              ref={mapRef}
+              style={styles.map}
+              zoomEnabled={true}
+              region={{
+                latitude: coordsEdit.latitude,
+                longitude: coordsEdit.longitude,
+                latitudeDelta: 0.01,
+                longitudeDelta: 0.01,
+              }}
+            >
+              {clientList.length > 0 &&
+                clientList
+                  .filter(client => client.dataFrom !== 'ad_hoc')
+                  .map((cliente, idx) => (
+                    <Marker
+                      key={idx}
+                      coordinate={{
+                        latitude: Number(cliente.latitude),
+                        longitude: Number(cliente.longitude),
+                      }}
+                      pinColor={getMarkerColor(cliente.status)}
+                      title={`${idx + 1}. ${cliente.companyName}`}
+                      onCalloutPress={() => {
+                        iniciarNavegacao(cliente);
+                      }}
+                    />
+                  ))}
+              {routeInitialized && rota && rota.length > 0 && (
+                <Polyline
+                  coordinates={rota}
+                  strokeColor="#2196F3"
+                  strokeWidth={3}
+                />
+              )}
               <Marker coordinate={coordsEdit} title="Minha posição">
                 <CarMarker />
               </Marker>
-            )}
-          </MapView>
-        )}
+            </MapView>
+          )}
         <Button
           position="absolute"
           top="$12"
@@ -350,9 +375,7 @@ export const SaleRouteDrive: React.FC = () => {
           left="$4"
           rounded="$md"
           opacity={0.4}
-          onPress={() => {
-            navigation.navigate('SaleClientList');
-          }}
+          onPress={handleAddNewClient}
         >
           <ButtonIcon as={UserPlus} size="xl" />
         </Button>
@@ -415,15 +438,15 @@ export const SaleRouteDrive: React.FC = () => {
       </VStack>
       <AlertDialog isOpen={showAlertDialog} onClose={handleClose} size="lg">
         <AlertDialogBackdrop />
-        <AlertDialogContent>
+        <AlertDialogContent maxHeight={height * 0.9}>
           <AlertDialogHeader>
             <Heading size="md">
-              {`Selecione o cliente para iniciar o atendimento`}
+              {`Selecione o cliente para iniciar o atendimento ${allClientList.length}`}
             </Heading>
           </AlertDialogHeader>
-          <AlertDialogBody>
-            {clientList.length > 0 &&
-              clientList.map((item, index) => (
+          <AlertDialogBody style={{ maxHeight: height * 0.6 }}>
+            {allClientList.length > 0 &&
+              allClientList.map((item, index) => (
                 <VStack style={styles.itemContainer} key={item.id}>
                   <Button
                     width="100%"

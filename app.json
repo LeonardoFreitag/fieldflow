@@ -1,31 +1,39 @@
 {
   "expo": {
-    "name": "AutoMax Venda+",
-    "slug": "AutoMax Venda+",
+    "name": "AutoMax Go",
+    "slug": "AutoMaxGo",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "splash": {
       "image": "./assets/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "resizeMode": "cover",
+      "backgroundColor": "#404040"
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.housetech.automax.vendamais",
+      "bundleIdentifier": "com.housetech.automax.go",
       "infoPlist": {
         "NSLocationWhenInUseUsageDescription": "Usamos sua localização para lhe mostrar sua distância da localização dos anunciantes.",
         "NSPhotoLibraryUsageDescription": "Usamos suas fotos para que você possa selecionar imagens que poderam ser utilizadas em seu perfil ou em seus anúncios caso você seja um anunciante.",
-        "NSPhosoLibraryAddUsageDescription": "Usamos suas fotos para que você possa selecionar imagens que poderam ser utilizadas em seu perfil ou em seus anúncios caso você seja um anunciante."
+        "NSPhosoLibraryAddUsageDescription": "Usamos suas fotos para que você possa selecionar imagens que poderam ser utilizadas em seu perfil ou em seus anúncios caso você seja um anunciante.",
+        "NSCameraUsageDescription": "$(PRODUCT_NAME) precisa de acesso à sua câmera para capturas as imgens que serão utilizadas no aplicativo.",
+        "NSMicrophoneUsageDescription": "$(PRODUCT_NAME) precisa de acsso ao seu microfone para captura de áudio que será utilizado no aplicativo."
       }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#404040"
       },
-      "package": "com.housetech.automax.vendamais"
+      "package": "com.housetech.automax.go",
+      "permissions": [
+        "android.permission.CAMERA",
+        "android.permission.RECORD_AUDIO",
+        "android.permission.ACCESS_COARSE_LOCATION",
+        "android.permission.ACCESS_FINE_LOCATION"
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -46,6 +54,11 @@
           "locationAlwaysAndWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location."
         }
       ]
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "a8a2814b-ad67-4222-93e5-0d507c0d46de"
+      }
+    }
   }
 }

@@ -40,7 +40,7 @@ export function MenuRoutes() {
   }, [user?.user.UserRules]);
 
   const handleCallSaleRoute = async () => {
-    handleSaleRoute();
+    await handleSaleRoute();
     navigation.navigate('SaleRoute');
   };
 

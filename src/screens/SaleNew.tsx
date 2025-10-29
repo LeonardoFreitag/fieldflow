@@ -35,31 +35,30 @@ export function SaleNew() {
     if (!travelClientOrderEdit.TravelClientOrdersItems) {
       return 0;
     }
-    return travelClientOrderEdit.TravelClientOrdersItems.reduce(
-      (acc: number, saleItem: TravelClientOrdersItemsModel) => {
-        let itemPrice = Number(saleItem.price);
+    return (
+      travelClientOrderEdit.TravelClientOrdersItems as unknown as TravelClientOrdersItemsModel[]
+    ).reduce((acc: number, saleItem: TravelClientOrdersItemsModel) => {
+      let itemPrice = Number(saleItem.price);
 
-        // Se o item tem composições, calcula o preço baseado nelas
-        if (
-          saleItem.TravelClientOrdersItemsComposition &&
-          saleItem.TravelClientOrdersItemsComposition.length > 0
-        ) {
-          itemPrice = saleItem.TravelClientOrdersItemsComposition.reduce(
-            (compAcc, composition) => {
-              if (composition.removed) return compAcc;
-              return (
-                compAcc +
-                Number(composition.pQuantity) * Number(composition.pPrice)
-              );
-            },
-            0,
-          );
-        }
+      // Se o item tem composições, calcula o preço baseado nelas
+      if (
+        saleItem.TravelClientOrdersItemsComposition &&
+        saleItem.TravelClientOrdersItemsComposition.length > 0
+      ) {
+        itemPrice = saleItem.TravelClientOrdersItemsComposition.reduce(
+          (compAcc: number, composition: any) => {
+            if (composition.removed) return compAcc;
+            return (
+              compAcc +
+              Number(composition.pQuantity) * Number(composition.pPrice)
+            );
+          },
+          0,
+        );
+      }
 
-        return acc + Number(saleItem.quantity) * itemPrice;
-      },
-      0,
-    );
+      return acc + Number(saleItem.quantity) * itemPrice;
+    }, 0);
   }, [travelClientOrderEdit.TravelClientOrdersItems]);
 
   function handleSaleFinish() {

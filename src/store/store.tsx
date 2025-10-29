@@ -10,6 +10,8 @@ import receivableEditSlice from './slice/receivable/receivableEditSlice';
 import receivableListSlice from './slice/receivable/receivableListSlice';
 import clientEditSlice from './slice/client/clientEditSlice';
 import clientListSlice from './slice/client/clientListSlice';
+import allClientListSlice from './slice/client/allClientListSlice';
+import clientAdHocListSlice from './slice/client/clientAdHocListSlice';
 import clientRouteListSlice from './slice/client/clientRouteListSlice';
 import coordsEditSlice from './slice/coords/coordsEditSlice';
 import saleRouteListSlice from './slice/saleRoute/saleRouteListSlice';
@@ -52,6 +54,8 @@ const rootReducer = combineReducers({
   receivableList: receivableListSlice,
   clientEdit: clientEditSlice,
   clientList: clientListSlice,
+  allClientList: allClientListSlice,
+  clientAdHocList: clientAdHocListSlice,
   clientRouteList: clientRouteListSlice,
   coordsEdit: coordsEditSlice,
   saleRouteList: saleRouteListSlice,

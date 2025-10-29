@@ -72,16 +72,6 @@ export function SaleCheckIn() {
         )}
       </VStack>
       <VStack px="$2" gap="$2" flex={1}>
-        {/* <HStack
-          width="100%"
-          height="$48"
-          px="$4"
-          alignItems="center"
-          justifyContent="center"
-        >
-          <Heading>Fotos</Heading>
-        </HStack> */}
-
         <Card backgroundColor="$trueGray800" height="$72" px="$4" py="$2">
           <Heading size="sm" color="$white" mb="$2" px="$4">
             Pedidos anteriores

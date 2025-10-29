@@ -5,6 +5,8 @@ import {
   Heading,
   Text,
   ScrollView,
+  Switch,
+  HStack,
 } from '@gluestack-ui/themed';
 // import BackgroundImage from '@assets/background.png';
 import { Input } from '@components/Input';
@@ -16,8 +18,12 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { useAuth } from '@hooks/useAuth';
 import { Controller, useForm } from 'react-hook-form';
 import * as yup from 'yup';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { AppError } from '@utils/AppError';
+import { loginGet } from '@storage/login/loginGet';
+import { loginCreate } from '@storage/login/loginCreate';
+import { loginDelete } from '@storage/login/loginDelete';
+import { type LoginModel } from '@models/LoginModel';
 
 const SignInSchema = yup.object().shape({
   email: yup.string().email('E-mail inválido').required('Campo obrigatório'),
@@ -31,17 +37,20 @@ interface LoginFormData {
 
 export function SignIn() {
   const navigation = useNavigation();
+  const [remember, setRemember] = useState(false);
 
   const { signIn, user } = useAuth();
   const {
     control,
     handleSubmit,
     formState: { errors },
+    setValue,
+    getValues,
   } = useForm({
     resolver: yupResolver(SignInSchema),
     defaultValues: {
-      email: 'antoniomelo@htcode.net',
-      password: '123',
+      email: '',
+      password: '',
     },
   });
 
@@ -52,6 +61,18 @@ export function SignIn() {
       const isAuth = await signIn(email, password);
       if (!isAuth) {
         return;
+      }
+
+      // Salva ou apaga o login conforme o estado do Switch
+      if (remember) {
+        const dataLogin: LoginModel = {
+          email,
+          password,
+          rememberMe: true,
+        };
+        await loginCreate(dataLogin);
+      } else {
+        await loginDelete();
       }
 
       navigation.navigate('AppRoutes', { screen: 'MenuRoutes' });
@@ -65,41 +86,21 @@ export function SignIn() {
     }
   };
 
-  // useEffect(() => {
-  //   const checkUser = async () => {
-  //     if (user?.user && user.user.id) {
-  //       try {
-  //         const response = await api.get<CustomerModel>(`/customer/byId`, {
-  //           params: {
-  //             id: user.customer_id,
-  //           },
-  //         });
+  useEffect(() => {
+    const tryLoadLogin = async () => {
+      const dataLogin = await loginGet();
+      if (dataLogin.email && dataLogin.password) {
+        setValue('email', dataLogin.email);
+        setValue('password', dataLogin.password);
+        setRemember(dataLogin.rememberMe);
+      }
+    };
+    tryLoadLogin();
+  }, [user, navigation, setValue]);
 
-  //         if (response.status !== 200) {
-  //           return;
-  //         }
-
-  //         dispacth(addCustomerEdit(response.data));
-
-  //         navigation.navigate('AdmMenu');
-  //       } catch (error) {
-  //         Toast.show({
-  //           type: 'info',
-  //           text1: 'Login',
-  //           text2: 'Você precisa realizar novo login 👋',
-  //           position: 'bottom',
-  //         });
-  //       }
-  //     }
-  //   };
-  //   checkUser();
-  // }, [dispacth, navigation, user]);
-
-  // useEffect(() => {
-  //   if (user?.user && user.user.id) {
-  //     navigation.navigate('AppRoutes', { screen: 'MenuRoutes' });
-  //   }
-  // }, [navigation, user]);
+  const handleSwitchRemember = (value: boolean) => {
+    setRemember(value);
+  };
 
   return (
     <KeyboardAvoidingView
@@ -114,7 +115,7 @@ export function SignIn() {
           <Center w={'$full'} mt={'$1/2'}>
             <CurrencyCircleDollar size={52} weight="fill" color="green" />
             <Heading size="2xl" color="$trueGray100">
-              FieldFlow
+              AutoMax GO
             </Heading>
             <Text color="$trueGray100">Vendas, Entrega e Cobrança</Text>
           </Center>
@@ -151,6 +152,23 @@ export function SignIn() {
                   />
                 )}
               />
+              <HStack
+                w="$full"
+                justifyContent="flex-start"
+                alignItems="center"
+                mt="$2"
+                mb="$4"
+                gap="$2"
+              >
+                <Switch
+                  size="md"
+                  isDisabled={false}
+                  onValueChange={handleSwitchRemember}
+                  value={remember}
+                  bgColor="$trueGray600"
+                />
+                <Text color="$white">Lembrar login</Text>
+              </HStack>
               <Button title="Acessar" onPress={handleSubmit(handleLogin)} />
             </Center>
           </VStack>

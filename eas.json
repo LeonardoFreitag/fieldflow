@@ -1,0 +1,52 @@
+{
+  "cli": {
+    "version": ">= 13.3.0",
+    "appVersionSource": "remote"
+  },
+  "build": {
+    "development": {
+      "developmentClient": true,
+      "distribution": "internal"
+    },
+    "preview": {
+      "distribution": "internal",
+      "android": {
+        "buildType": "apk"
+      },
+      "env": {
+        "ANDROID_HOME": "/Users/leonardofreitag/Android/Sdk",
+        "EXPO_PUBLIC_CLIENT_ID": "pukr9LFCXWLjV66glV9m",
+        "EXPO_PUBLIC_CLIENT_SECRET": "Dp8J9kaIM5Li0vHBnXiVH2njUDh0KAztCTwunZr2",
+        "EXPO_PUBLIC_SCOPE": "empresa cep cnpj",
+        "EXPO_PUBLIC_AUTHENTICATE_URL": "https://auth.nuvemfiscal.com.br/oauth/token",
+        "EXPO_PUBLIC_HOSTNAME_NUVEM": "https://api.nuvemfiscal.com.br"
+      }
+    },
+    "production": {
+      "env": {
+        "ANDROID_HOME": "/Users/leonardofreitag/Android/Sdk",
+        "EXPO_PUBLIC_CLIENT_ID": "pukr9LFCXWLjV66glV9m",
+        "EXPO_PUBLIC_CLIENT_SECRET": "Dp8J9kaIM5Li0vHBnXiVH2njUDh0KAztCTwunZr2",
+        "EXPO_PUBLIC_SCOPE": "empresa cep cnpj",
+        "EXPO_PUBLIC_AUTHENTICATE_URL": "https://auth.nuvemfiscal.com.br/oauth/token",
+        "EXPO_PUBLIC_HOSTNAME_NUVEM": "https://api.nuvemfiscal.com.br"
+      },
+      "android": {
+        "autoIncrement": true,
+        "credentialsSource": "remote"
+      },
+      "ios": {
+        "image": "latest",
+        "autoIncrement": true,
+        "credentialsSource": "remote",
+        "env": {
+          "XCODE_VERSION": "16.2"
+        }
+      }
+    }
+  },
+  "submit": {
+    "production": {
+    }
+  }
+}

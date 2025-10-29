@@ -119,7 +119,7 @@ export function SaleFinish() {
         amount: Number(item.amount),
         notes: item.notes,
         isDeleted: item.isDeleted ?? false,
-        isComposed: item.isComposed ?? false,
+        isComposed: item.isComposed,
         tableCode: item.tableCode,
         TravelClientOrdersItemsComposition:
           item.TravelClientOrdersItemsComposition?.map(composition => ({
@@ -171,6 +171,7 @@ export function SaleFinish() {
         '/travel/travelClients',
         checkOutClient,
       );
+      console.log('chegou aqui 2');
 
       const updateTravelClientOrder = response.data;
 
@@ -211,6 +212,23 @@ export function SaleFinish() {
 
       CreateTravel(updatedTravel);
 
+      console.log('chegou aqui 3', {
+        clientEditDataFrom: clientEdit.dataFrom,
+        travelClientEditDataFrom: travelClientEdit.dataFrom,
+      });
+
+      // Verificar tanto no clientEdit quanto no travelClientEdit
+      if (
+        clientEdit.dataFrom === 'ad_hoc' ||
+        travelClientEdit.dataFrom === 'ad_hoc'
+      ) {
+        navigation.reset({
+          index: 0,
+          routes: [{ name: 'SaleRoute' }],
+        });
+        return;
+      }
+
       navigation.reset({
         index: 0,
         routes: [{ name: 'SaleRouteDrive' }],
@@ -218,19 +236,7 @@ export function SaleFinish() {
     } catch (error) {
       console.error('Erro ao enviar o pedido:', error);
       // Aqui você pode tratar o erro, exibir uma mensagem ao usuário, etc.
-      return;
     }
-
-    // atualizar o estado no redux
-
-    // marcar o cliente como atendido
-
-    // salva tudo no local storage
-
-    navigation.reset({
-      index: 0,
-      routes: [{ name: 'SaleRouteDrive' }],
-    });
   };
 
   const selectOptions = useMemo(() => {

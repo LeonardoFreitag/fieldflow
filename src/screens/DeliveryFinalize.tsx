@@ -347,21 +347,21 @@ export function DeliveryFinalize() {
     }
   };
 
-  const handlePrintCanhoto = () => {
-    // Implement print canhoto logic here
-    Alert.alert(
-      'Imprimir Canhoto',
-      'Funcionalidade de impressão ainda não implementada.',
-    );
-  };
+  // const handlePrintCanhoto = () => {
+  //   // Implement print canhoto logic here
+  //   Alert.alert(
+  //     'Imprimir Canhoto',
+  //     'Funcionalidade de impressão ainda não implementada.',
+  //   );
+  // };
 
-  const handlePrintBoleto = () => {
-    // Implement print boleto logic here
-    Alert.alert(
-      'Imprimir Boleto',
-      'Funcionalidade de impressão ainda não implementada.',
-    );
-  };
+  // const handlePrintBoleto = () => {
+  //   // Implement print boleto logic here
+  //   Alert.alert(
+  //     'Imprimir Boleto',
+  //     'Funcionalidade de impressão ainda não implementada.',
+  //   );
+  // };
 
   return (
     <>
@@ -386,7 +386,7 @@ export function DeliveryFinalize() {
           }}
         />
         <CustomerHeaderDelivery data={clientEdit} showBackButton={false} />
-        <HStack gap="$4" justifyContent="center" alignItems="center" mt="$4">
+        {/* <HStack gap="$4" justifyContent="center" alignItems="center" mt="$4">
           <Button
             backgroundColor="$blue700"
             $active-bg="$blue900"
@@ -405,7 +405,7 @@ export function DeliveryFinalize() {
             <ButtonIcon as={Printer} size="md" color="$white" />
             <Text color="$white">Imprimir Boleto</Text>
           </Button>
-        </HStack>
+        </HStack> */}
         <ScrollView style={{ flex: 1, width: '100%' }}>
           <VStack p="$2" mb="$48">
             <Heading size="lg" color="$trueGray100">

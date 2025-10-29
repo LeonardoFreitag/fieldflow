@@ -2,6 +2,7 @@ export declare global {
   namespace ReactNavigation {
     interface RootParamList {
       AppRoutes: { screen: string };
+      AuthRoutes: { screen: string };
       MenuRoutes: undefined;
       SignIn: undefined;
       SaleRoute: undefined;

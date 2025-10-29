@@ -19,7 +19,7 @@ export function HomeHeader() {
   const navigation = useNavigation();
 
   function handleSignOut() {
-    navigation.navigate('SignIn');
+    navigation.navigate('AuthRoutes', { screen: 'SignIn' });
   }
 
   return (

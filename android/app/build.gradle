@@ -109,9 +109,9 @@ android {
     buildToolsVersion rootProject.ext.buildToolsVersion
     compileSdk rootProject.ext.compileSdkVersion
 
-    namespace 'com.housetech.automax.vendamais'
+    namespace "com.housetech.automax.go"
     defaultConfig {
-        applicationId 'com.housetech.automax.vendamais'
+        applicationId 'com.housetech.automax.go'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1

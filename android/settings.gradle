@@ -44,7 +44,7 @@ if (getRNMinorVersion() >= 75) {
   }
 }
 
-rootProject.name = "AutoMax Venda+"
+rootProject.name = 'AutoMax Go'
 
 dependencyResolutionManagement {
   versionCatalogs {

@@ -96,9 +96,10 @@ export function SaleAddNewItem() {
           ...(travelClientOrderEdit.TravelClientOrdersItems ?? []),
           ...productsSelected.map(product => {
             const travelClientOrderItemId = uuid.v4().toString();
+            // const now = new Date().toISOString();
             return {
               id: travelClientOrderItemId,
-              travelClientOrderId: travelClientOrderEdit.id,
+              travelClientOrderId: travelClientOrderEdit.id ?? '',
               productId: product.id,
               code: product.code,
               reference: product.reference,
@@ -109,12 +110,12 @@ export function SaleAddNewItem() {
               amount: Number(product.qty) * Number(product.price ?? 0),
               notes: null,
               isDeleted: false,
-              isComposed: product.isComposed ?? false,
+              isComposed: product.isComposed,
               tableCode: clientEdit.tableCode ?? '',
               TravelClientOrdersItemsComposition:
                 product.ProductComposition?.map(composition => ({
                   id: composition.id ?? uuid.v4().toString(),
-                  travelClientOrdersItemsId: travelClientOrderItemId,
+                  travelClientOrdersItemsId: travelClientOrderItemId ?? '',
                   productId: composition.productId,
                   stockId: composition.stockId,
                   pCode: composition.pCode,
@@ -133,7 +134,13 @@ export function SaleAddNewItem() {
       }),
     );
     navigation.goBack();
-  }, [dispatch, navigation, productsSelected, travelClientOrderEdit]);
+  }, [
+    clientEdit.tableCode,
+    dispatch,
+    navigation,
+    productsSelected,
+    travelClientOrderEdit,
+  ]);
 
   useEffect(() => {
     const fechtProducts = async () => {

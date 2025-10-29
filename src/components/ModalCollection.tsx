@@ -13,7 +13,7 @@ import {
   Image,
 } from '@gluestack-ui/themed';
 // import { useState } from 'react';
-import { Camera, Save, X } from 'lucide-react-native';
+import { Camera, Check, Save, X } from 'lucide-react-native';
 import { Controller, useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -33,6 +33,7 @@ import { updateRouteCollectionItemsEdit } from '@store/slice/routeCollection/rou
 
 const SchenduleSchema = yup.object().shape({
   reason: yup.string().required('Campo obrigatório'),
+  clientNotFound: yup.boolean(),
 });
 
 interface ModalSchenduleProps {
@@ -65,10 +66,13 @@ export function ModalCollection({
     handleSubmit,
     formState: { errors },
     reset,
+    watch,
+    setValue,
   } = useForm({
     resolver: yupResolver(SchenduleSchema),
     defaultValues: {
       reason: '',
+      clientNotFound: false,
     },
   });
 
@@ -164,6 +168,8 @@ export function ModalCollection({
     setIsTakingPhoto(false);
   }
 
+  const ausent = watch('clientNotFound');
+
   return (
     <>
       {working && <Working visible={working} />}
@@ -186,6 +192,23 @@ export function ModalCollection({
             <Text color="$trueGray100" size="sm" mt="$2">
               Motivo
             </Text>
+            <Button
+              flex={1}
+              rounded="$md"
+              backgroundColor={ausent ? '$red700' : '$trueGray700'}
+              $active-bg="$red500"
+              mb="$2"
+              gap="$2"
+              onPress={() => {
+                setValue('clientNotFound', !ausent);
+              }}
+              onPressIn={() => {}}
+            >
+              <ButtonIcon as={Check} size="md" />
+              <Text color="$trueGray100" size="xs">
+                {ausent ? 'Cliente ausente' : 'Cliente presente'}
+              </Text>
+            </Button>
             <Controller
               control={control}
               name="reason"

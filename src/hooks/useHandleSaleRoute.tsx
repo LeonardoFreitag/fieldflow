@@ -19,6 +19,8 @@ import polyline from '@mapbox/polyline';
 import { addClientEdit } from '@store/slice/client/clientEditSlice';
 import { addTravelClientEdit } from '@store/slice/travel/travelClientEditSlice';
 import { Alert } from 'react-native';
+import { loadAllClientList } from '@store/slice/client/allClientListSlice';
+import { loadClientAdHocList } from '@store/slice/client/clientAdHocListSlice';
 
 export function useHandleSaleRoute() {
   const dispatch = useDispatch();
@@ -30,6 +32,7 @@ export function useHandleSaleRoute() {
   const existsTravelEdit = useAppSelector(state => state.existsTravelEdit);
   const travelEdit = useAppSelector(state => state.travelEdit);
   const clientList = useAppSelector(state => state.clientList);
+  const clientAdHocList = useAppSelector(state => state.clientAdHocList);
   const [routeInitialized, setRouteInitialized] = useState(false);
   const coordsEdit = useAppSelector(state => state.coordsEdit);
   const [shouldAutoSaveAfterReopen, setShouldAutoSaveAfterReopen] =
@@ -55,7 +58,7 @@ export function useHandleSaleRoute() {
     });
     return listOrdenated;
   }
-  const handleSaleRoute = async () => {
+  const handleSaleRoute = async (): Promise<TravelModel> => {
     // verifica na API se existe uma viagem ativa
     try {
       const response = await api.get<TravelModel>('/travel/current', {
@@ -64,6 +67,8 @@ export function useHandleSaleRoute() {
           routeId: user?.user.routeId,
         },
       });
+
+      // console.log('response travel', response.data.TravelClients?.length);
 
       if (response.data) {
         dispatch(addExistsTravelEdit({ exists: true }));
@@ -127,9 +132,15 @@ export function useHandleSaleRoute() {
             };
           });
 
+        dispatch(
+          loadClientAdHocList(
+            recoveryClientList.filter(client => client.dataFrom === 'ad_hoc'),
+          ),
+        );
+
         dispatch(loadClientList(recoveryClientList));
         // navigation.navigate('SaleRoute');
-        return;
+        return response.data;
       }
     } catch (error) {
       dispatch(
@@ -154,17 +165,17 @@ export function useHandleSaleRoute() {
         canChangeRoute: true,
       }),
     );
+    return {} as TravelModel;
 
     // navigation.navigate('SaleRoute');
   };
 
   const handleCreateAndSaveTravel = useCallback(
     async (
-      clientList: ClientModel[],
-      dataFrom: 'route' | 'manual' | undefined,
-    ) => {
+      listOfClients: ClientModel[],
+      dataFrom: 'route' | 'manual' | 'ad_hoc' | undefined,
+    ): Promise<TravelModel> => {
       if (canChangeRouteEdit.canChangeRoute) {
-        console.log('caminho 1');
         const newTravel: TravelModel = {
           customerId: user?.user.customer.id ?? '',
           userId: user?.user.id ?? '',
@@ -173,7 +184,7 @@ export function useHandleSaleRoute() {
           endDate: new Date(),
           notes: '',
           status: 'open',
-          TravelClients: clientList.map((cliente, index) => ({
+          TravelClients: listOfClients.map((cliente, index) => ({
             clientId: cliente.id,
             clientCode: cliente.code,
             orderInRoute: index + 1,
@@ -192,7 +203,7 @@ export function useHandleSaleRoute() {
 
           const travelLocalSaved: TravelModel = {
             ...response.data,
-            orderedClients: clientList,
+            orderedClients: listOfClients,
             route: rota.map(coord => ({
               latitude: coord.latitude,
               longitude: coord.longitude,
@@ -203,20 +214,19 @@ export function useHandleSaleRoute() {
           dispatch(addTravelEdit(travelLocalSaved));
           dispatch(addExistsTravelEdit({ exists: true }));
           dispatch(addCanChangeRouteEdit({ canChangeRoute: false }));
+          return travelLocalSaved;
         } catch (error) {
           console.error('Erro ao criar viagem:', error);
         }
       } else {
-        console.log('caminho 2');
-
         const travelLocalSaved: TravelModel = {
           ...travelEdit,
-          orderedClients: clientList,
+          orderedClients: listOfClients,
           route: rota.map(coord => ({
             latitude: coord.latitude,
             longitude: coord.longitude,
           })),
-          TravelClients: clientList.map((cliente, index) => ({
+          TravelClients: listOfClients.map((cliente, index) => ({
             clientId: cliente.id,
             clientCode: cliente.code,
             orderInRoute: index + 1,
@@ -234,7 +244,9 @@ export function useHandleSaleRoute() {
         dispatch(addTravelEdit(travelLocalSaved));
         dispatch(addExistsTravelEdit({ exists: true }));
         dispatch(addCanChangeRouteEdit({ canChangeRoute: false }));
+        return travelLocalSaved;
       }
+      return travelEdit;
     },
     [
       canChangeRouteEdit.canChangeRoute,
@@ -249,12 +261,14 @@ export function useHandleSaleRoute() {
 
   const fetchRota = useCallback(async () => {
     if (existsTravelEdit.exists && clientList.length > 0 && !routeInitialized) {
-      const waypoints = clientList.map(client => ({
-        id: client.id,
-        latitude: client.latitude ?? 0,
-        longitude: client.longitude ?? 0,
-        address: `${client.streetName}, ${client.streetNumber}, ${client.city}, ${client.state}, ${client.zipCode}`,
-      }));
+      const waypoints = clientList
+        .filter(client => client.dataFrom !== 'ad_hoc')
+        .map(client => ({
+          id: client.id,
+          latitude: client.latitude ?? 0,
+          longitude: client.longitude ?? 0,
+          address: `${client.streetName}, ${client.streetNumber}, ${client.city}, ${client.state}, ${client.zipCode}`,
+        }));
 
       const dataRequest: IRequestClientOptimizeDTO = {
         origin: {
@@ -267,6 +281,9 @@ export function useHandleSaleRoute() {
         },
         waypoints,
       };
+      if (waypoints.length === 0) {
+        return;
+      }
       try {
         const response = await api.post<RouteOptimizationResult>(
           '/client/routeOptimize',
@@ -283,7 +300,84 @@ export function useHandleSaleRoute() {
           latitude: p[0],
           longitude: p[1],
         }));
+
         setRota(coordenadas);
+
+        const clientsAdHoc = clientAdHocList
+          .filter(client => client.dataFrom === 'ad_hoc')
+          .map(client => ({
+            ...client,
+            latitude: client.latitude ?? 0,
+            longitude: client.longitude ?? 0,
+          }));
+
+        // console.log('ad_hoc', clientsAdHoc.length);
+
+        const clientesOrdenados = orderClientsByRoute(
+          clientList,
+          orderedClients,
+        );
+
+        // console.log([...clientesOrdenados, ...clientsAdHoc].length);
+
+        dispatch(loadClientList(clientesOrdenados));
+        dispatch(loadAllClientList([...clientesOrdenados, ...clientsAdHoc]));
+        setRouteInitialized(true);
+      } catch (error) {
+        // console.error('Erro ao buscar rota otimizada:', error);
+      }
+    } else if (!existsTravelEdit.exists && !routeInitialized) {
+      const waypoints = clientList
+        .filter(client => client.dataFrom !== 'ad_hoc')
+        .map(client => ({
+          id: client.id,
+          latitude: client.latitude ?? 0,
+          longitude: client.longitude ?? 0,
+          address: `${client.streetName}, ${client.streetNumber}, ${client.city}, ${client.state}, ${client.zipCode}`,
+        }));
+
+      if (waypoints.length === 0) {
+        return;
+      }
+
+      const dataRequest: IRequestClientOptimizeDTO = {
+        origin: {
+          latitude: coordsEdit.latitude,
+          longitude: coordsEdit.longitude,
+        },
+        destination: {
+          latitude: clientList[clientList.length - 1].latitude ?? 0,
+          longitude: clientList[clientList.length - 1].longitude ?? 0,
+        },
+        waypoints,
+      };
+
+      try {
+        const response = await api.post<RouteOptimizationResult>(
+          '/client/routeOptimize',
+          dataRequest,
+        );
+
+        const { orderedClients } = response.data;
+
+        const { optimizedRoute: rotaGoogle } = response.data;
+
+        const pontos = polyline.decode(rotaGoogle.overview_polyline.points);
+
+        const coordenadas = pontos.map((p: [number, number]) => ({
+          latitude: p[0],
+          longitude: p[1],
+        }));
+
+        setRota(coordenadas);
+
+        const clientsAdHoc = clientAdHocList
+          .filter(client => client.dataFrom === 'ad_hoc')
+          .map(client => ({
+            ...client,
+            latitude: client.latitude ?? 0,
+            longitude: client.longitude ?? 0,
+          }));
 
         const clientesOrdenados = orderClientsByRoute(
           clientList,
@@ -291,46 +385,33 @@ export function useHandleSaleRoute() {
         );
 
         dispatch(loadClientList(clientesOrdenados));
+        dispatch(loadAllClientList([...clientesOrdenados, ...clientsAdHoc]));
         setRouteInitialized(true);
       } catch (error) {
         // console.error('Erro ao buscar rota otimizada:', error);
       }
-    } else if (existsTravelEdit.exists && !routeInitialized) {
-      const { orderedClients } = travelEdit;
-      const { route } = travelEdit;
-
-      dispatch(loadClientList(orderedClients ?? []));
-
-      setRota(
-        route
-          ? route.map(coord => ({
-              latitude: coord.latitude,
-              longitude: coord.longitude,
-            }))
-          : [],
-      );
-      setRouteInitialized(true);
-
-      // Marcar para auto-salvar após reabrir a aplicação com viagem existente
-      setShouldAutoSaveAfterReopen(true);
     }
   }, [
+    clientAdHocList,
     clientList,
     coordsEdit.latitude,
     coordsEdit.longitude,
     dispatch,
     existsTravelEdit.exists,
     routeInitialized,
-    travelEdit,
   ]);
 
   const handleCheckIn = async (cliente: ClientModel) => {
+    console.log('handleCheckIn', cliente.id);
     try {
       const response = await api.get<ClientModel>('/client/details', {
         params: {
           clientId: cliente.id,
         },
       });
+      console.log('response', response.data.id);
+      console.log(travelEdit.TravelClients);
+
       const clientCheckIn = travelEdit.TravelClients?.find(
         c => c.clientId === cliente.id,
       );
@@ -355,6 +436,7 @@ export function useHandleSaleRoute() {
     routeInitialized,
     setRouteInitialized,
     rota,
+    setRota,
     handleCheckIn,
   };
 }

@@ -153,10 +153,14 @@ export function OrderItemCard({ productItem }: OrderItemCardProps) {
   };
 
   const getImageSource = () => {
-    if (imageError || !productItem.photoUrl || productItem.photoUrl === '') {
+    if (
+      imageError ||
+      !productItem.Product?.photoUrl ||
+      productItem.Product?.photoUrl === ''
+    ) {
       return productPlaceholder;
     }
-    return { uri: productItem.photoUrl };
+    return { uri: productItem.Product.photoUrl };
   };
 
   const totalItemFromComposition = useMemo(() => {

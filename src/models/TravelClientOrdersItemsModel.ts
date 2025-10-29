@@ -1,24 +1,21 @@
+import { type ProductModel } from './ProductModel';
 import { type TravelClientOrdersItemsCompositionModel } from './TravelClientOrdersitemsCompositionModel';
 
 export interface TravelClientOrdersItemsModel {
-  id: string;
-  routeCollectionId: string | null;
-  customerId: string;
-  clientId: string;
-  clientCode: string;
-  receberId: string;
-  orderId: string;
-  orderNumber: string;
-  orderDate: Date;
-  invoiceId?: string | null;
+  id?: string;
+  travelClientOrderId?: string;
+  productId: string;
+  Product?: ProductModel;
+  code: string;
+  reference: string;
+  description: string;
+  unity: string;
+  price: number;
+  quantity: number;
+  amount: number;
   notes?: string | null;
-  status: string; // "pending", "visited", "visited_received","not_visited", "canceled"
-  nfeNumber?: string | null;
-  nfeUrl?: string | null;
-  latitude?: number | null;
-  longitude?: number | null;
-  visitOrder: number;
-  checkInDate?: Date | null;
-  checkOutDate?: Date | null;
+  isComposed: boolean;
+  tableCode: string;
+  isDeleted: boolean;
   TravelClientOrdersItemsComposition?: TravelClientOrdersItemsCompositionModel[];
 }

@@ -177,7 +177,7 @@ export function useHandleSaleRoute() {
     ): Promise<TravelModel> => {
       if (canChangeRouteEdit.canChangeRoute) {
         const newTravel: TravelModel = {
-          customerId: user?.user.customer.id ?? '',
+          customerId: user?.user.customerId ?? '',
           userId: user?.user.id ?? '',
           routeId: user?.user.routeId ?? '',
           startDate: new Date(),
@@ -250,7 +250,7 @@ export function useHandleSaleRoute() {
     },
     [
       canChangeRouteEdit.canChangeRoute,
-      user?.user.customer.id,
+      user?.user.customerId,
       user?.user.id,
       user?.user.routeId,
       rota,

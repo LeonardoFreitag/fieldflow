@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Input as GluestackInput, InputField } from '@gluestack-ui/themed';
 import { type ComponentProps } from 'react';
 import { maskCurrency } from '@utils/masks';

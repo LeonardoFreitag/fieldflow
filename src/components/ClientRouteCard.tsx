@@ -7,7 +7,6 @@ import {
   ButtonIcon,
 } from '@gluestack-ui/themed';
 import { type TouchableOpacityProps } from 'react-native';
-import { CheckCheck } from 'lucide-react-native';
 import { type ClientModel } from '@models/ClientModel';
 import { HandTap, ImageBroken, Images } from 'phosphor-react-native';
 import { useAppSelector } from '@store/store';

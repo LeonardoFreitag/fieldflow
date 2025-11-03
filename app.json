@@ -2,7 +2,7 @@
   "expo": {
     "name": "AutoMax Go",
     "slug": "AutoMaxGo",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -15,9 +15,9 @@
       "supportsTablet": true,
       "bundleIdentifier": "com.housetech.automax.go",
       "infoPlist": {
-        "NSLocationWhenInUseUsageDescription": "Usamos sua localização para lhe mostrar sua distância da localização dos anunciantes.",
-        "NSPhotoLibraryUsageDescription": "Usamos suas fotos para que você possa selecionar imagens que poderam ser utilizadas em seu perfil ou em seus anúncios caso você seja um anunciante.",
-        "NSPhosoLibraryAddUsageDescription": "Usamos suas fotos para que você possa selecionar imagens que poderam ser utilizadas em seu perfil ou em seus anúncios caso você seja um anunciante.",
+        "NSLocationWhenInUseUsageDescription": "Usamos sua localização para lhe fornecer a melhor rota para atender seus clientes.",
+        "NSPhotoLibraryUsageDescription": "Usamos suas fotos para que você possa selecionar imagens que serão trocadas entre o aplicativo e o ERP.",
+        "NSPhosoLibraryAddUsageDescription": "Usamos suas fotos para que você possa selecionar imagens que serão trocadas entre o aplicativo e o ERP",
         "NSCameraUsageDescription": "$(PRODUCT_NAME) precisa de acesso à sua câmera para capturas as imgens que serão utilizadas no aplicativo.",
         "NSMicrophoneUsageDescription": "$(PRODUCT_NAME) precisa de acsso ao seu microfone para captura de áudio que será utilizado no aplicativo."
       }

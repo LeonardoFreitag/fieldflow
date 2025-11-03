@@ -39,12 +39,13 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
   }
 
   async function signIn(email: string, password: string): Promise<boolean> {
-    // console.log('SignIn email:', email, 'password:', password);
     try {
       const response = await api.post<UserAuthModel>('/users/sessions', {
         email,
         password,
       });
+
+      console.log('signIn response:', response.data);
 
       api.defaults.headers.common.Authorization = `Bearer ${response.data.token}`;
       const { token, refreshToken } = response.data;

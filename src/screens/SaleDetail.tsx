@@ -16,7 +16,7 @@ export function SaleDetail() {
 
   return (
     <VStack flex={1}>
-      <CustomerHeader data={customerList[0]} />
+      <CustomerHeader data={customerList[0] as any} />
       <Center mt="$4" mx="$2">
         <SaleCardDetail
           data={salesList[0]}

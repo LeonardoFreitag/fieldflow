@@ -12,7 +12,7 @@ import { updateTravelClientOrderEdit } from '@store/slice/travel/travelClientOrd
 import { updateTravelClientOrderItemsEdit } from '@store/slice/travel/travelClientOrderItemEditSlice';
 import { useAppSelector } from '@store/store';
 import { ArchiveRestore, Trash } from 'lucide-react-native';
-import React, { useMemo, useState } from 'react';
+import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import productPlaceholder from '@assets/product.png'; // Placeholder for product image
 

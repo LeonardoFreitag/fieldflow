@@ -1,19 +1,18 @@
 import {
   Heading,
   HStack,
-  Image,
   VStack,
   Text,
   Icon,
   Divider,
   Button,
 } from '@gluestack-ui/themed';
-import { TouchableOpacity, type TouchableOpacityProps } from 'react-native';
-import { CheckCheck, Edit, Trash } from 'lucide-react-native';
-import { type SaleItemsModel } from '../models/SaleItemsModel';
+import { type TouchableOpacityProps } from 'react-native';
+import { Edit, Trash } from 'lucide-react-native';
+import { type SaleItemModel } from '../models/SaleItemModel';
 
 type Props = TouchableOpacityProps & {
-  data: SaleItemsModel;
+  data: SaleItemModel;
   handleSelectCustomer: () => void;
 };
 

@@ -1,13 +1,5 @@
-import {
-  Heading,
-  HStack,
-  Image,
-  VStack,
-  Text,
-  Icon,
-} from '@gluestack-ui/themed';
-import { TouchableOpacity, type TouchableOpacityProps } from 'react-native';
-import { CheckCheck } from 'lucide-react-native';
+import { Heading, HStack, VStack, Text } from '@gluestack-ui/themed';
+import { type TouchableOpacityProps } from 'react-native';
 import { type SaleModel } from '../models/SaleModel';
 
 type Props = TouchableOpacityProps & {
@@ -38,7 +30,7 @@ export function SaleCardDetail({ data, handleSelectCustomer, ...rest }: Props) {
               currency: 'BRL',
             })}
           </Text>
-          <Text color="$trueGray100">{data.paymentForm.name}</Text>
+          <Text color="$trueGray100">{data.paymentForm.paymentForm}</Text>
         </VStack>
       </HStack>
     </VStack>

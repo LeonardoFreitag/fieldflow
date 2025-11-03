@@ -5,6 +5,7 @@ import {
   Heading,
   HStack,
   VStack,
+  Box,
 } from '@gluestack-ui/themed';
 import { useNavigation } from '@react-navigation/native';
 import { CustomerHeader } from '@components/CustomerHeader';
@@ -12,7 +13,7 @@ import { Save, X } from 'lucide-react-native';
 import { DateInput } from '@components/DateInput';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import DatePicker from 'react-native-date-picker';
+import DateTimePicker from '@react-native-community/datetimepicker';
 import { Controller, useForm } from 'react-hook-form';
 import { useState } from 'react';
 import { useAppSelector } from '@store/store';
@@ -28,7 +29,7 @@ import {
   addTravelEdit,
   updateTravelEdit,
 } from '@store/slice/travel/travelEditSlice';
-import { Keyboard } from 'react-native';
+import { Keyboard, Platform, Modal, useColorScheme } from 'react-native';
 import { addExistsTravelEdit } from '@store/slice/travel/existsTravelEditSlice';
 
 const SaleVisitFailureSchema = yup.object().shape({
@@ -48,10 +49,17 @@ export function SaleVisitFailure() {
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const [showScheduling, setShowScheduling] = useState(false);
-  const [newDate] = useState(new Date());
+  const [pickerDate, setPickerDate] = useState<Date>(new Date());
   const clientEdit = useAppSelector(state => state.clientEdit);
   const travelEdit = useAppSelector(state => state.travelEdit);
   const clientList = useAppSelector(state => state.clientList);
+  const colorScheme = useColorScheme();
+
+  // iOS-only visual theme for DateTimePicker to match app color scheme
+  const iosThemeProps =
+    Platform.OS === 'ios'
+      ? ({ themeVariant: colorScheme === 'dark' ? 'dark' : 'light' } as const)
+      : ({} as const);
 
   const { control, handleSubmit, setValue } = useForm({
     resolver: yupResolver(SaleVisitFailureSchema),
@@ -73,7 +81,6 @@ export function SaleVisitFailure() {
     if (!travelClientId) {
       return;
     }
-
     // Validar se os dados necessários existem
     if (!travelEdit.orderedClients || !travelEdit.TravelClients) {
       // Reconstrói orderedClients a partir de TravelClients se não existir
@@ -244,29 +251,73 @@ export function SaleVisitFailure() {
             <DateInput
               readOnly={true}
               buttonPress={() => {
+                setPickerDate(value ?? new Date());
                 setShowScheduling(true);
               }}
               value={value ? new Date(value).toLocaleDateString('pt-BR') : ''}
             />
           )}
         />
-        <DatePicker
-          modal
-          confirmText="Confirmar"
-          cancelText="Cancelar"
-          title="Selecione a data"
-          open={showScheduling}
-          date={new Date(newDate)}
-          locale="pt-BR"
-          mode="date"
-          onConfirm={date => {
-            setShowScheduling(false);
-            handleUpdateScheduling(date);
-          }}
-          onCancel={() => {
+        <Modal
+          visible={showScheduling}
+          animationType="slide"
+          transparent
+          onRequestClose={() => {
             setShowScheduling(false);
           }}
-        />
+        >
+          <Box
+            position="absolute"
+            left={0}
+            right={0}
+            top={0}
+            bottom={0}
+            bg="rgba(0,0,0,0.5)"
+            justifyContent="center"
+            alignItems="center"
+          >
+            <Box
+              w="90%"
+              maxWidth={420}
+              bg={colorScheme === 'dark' ? '$trueGray900' : '$white'}
+              rounded="$lg"
+              p="$4"
+            >
+              <DateTimePicker
+                {...iosThemeProps}
+                value={pickerDate}
+                mode="date"
+                display={Platform.OS === 'ios' ? 'spinner' : 'calendar'}
+                locale="pt-BR"
+                onChange={(event, date) => {
+                  if ((event as any)?.type === 'dismissed') {
+                    return;
+                  }
+                  const selectedDate = date ?? pickerDate;
+                  setPickerDate(selectedDate);
+                }}
+              />
+              <HStack w="$full" justifyContent="flex-end" mt="$3" gap={8}>
+                <Button
+                  variant="outline"
+                  onPress={() => {
+                    setShowScheduling(false);
+                  }}
+                >
+                  <ButtonIcon as={X} size="lg" />
+                </Button>
+                <Button
+                  onPress={() => {
+                    handleUpdateScheduling(pickerDate);
+                    setShowScheduling(false);
+                  }}
+                >
+                  <ButtonIcon as={Save} size="lg" />
+                </Button>
+              </HStack>
+            </Box>
+          </Box>
+        </Modal>
       </Center>
 
       <HStack w="$full" justifyContent="space-between" px="$4" py="$2">
@@ -298,3 +349,5 @@ export function SaleVisitFailure() {
     </VStack>
   );
 }
+
+// Removed StyleSheet styles in favor of themed Box components

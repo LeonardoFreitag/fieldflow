@@ -1,4 +1,4 @@
-import { Heading, HStack, VStack, Text } from '@gluestack-ui/themed';
+import { HStack, Text } from '@gluestack-ui/themed';
 import React from 'react';
 import { type ReceivableModel } from '@models/ReceivableModel';
 

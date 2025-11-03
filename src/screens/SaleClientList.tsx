@@ -44,7 +44,6 @@ export function SaleClientList() {
   const [textTyped, setTextTyped] = useState('');
   const clientRouteList = useAppSelector(state => state.clientRouteList);
   const clientList = useAppSelector(state => state.clientList);
-  const allClientList = useAppSelector(state => state.allClientList);
   const clientAdHocList = useAppSelector(state => state.clientAdHocList);
   const travelEdit = useAppSelector(state => state.travelEdit);
   const existsTravelEdit = useAppSelector(state => state.existsTravelEdit);

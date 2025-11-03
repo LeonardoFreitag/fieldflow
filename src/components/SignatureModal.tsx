@@ -1,5 +1,4 @@
 import {
-  Button,
   Heading,
   Modal,
   ModalBackdrop,
@@ -9,8 +8,6 @@ import {
   ModalFooter,
   ModalHeader,
   VStack,
-  Text,
-  Center,
   Icon,
   CloseIcon,
 } from '@gluestack-ui/themed';

@@ -1,11 +1,9 @@
-import {
-  HStack,
-  Text,
-  Heading,
-  VStack,
-  Icon,
-  Button,
-} from '@gluestack-ui/themed';
+import { Button } from '@ui/button';
+import { Icon } from '@ui/icon';
+import { VStack } from '@ui/vstack';
+import { Heading } from '@ui/heading';
+import { Text } from '@ui/text';
+import { HStack } from '@ui/hstack';
 import { useNavigation } from '@react-navigation/native';
 import { ChevronLeft } from 'lucide-react-native';
 import { type ClientModel } from '@models/ClientModel';
@@ -26,40 +24,32 @@ export function CustomerHeaderDelivery({
   }
 
   return (
-    <HStack
-      bg="$trueGray700"
-      pt="$16"
-      pb="$5"
-      px="$8"
-      alignItems="center"
-      gap="$4"
-      justifyContent="space-between"
-    >
+    <HStack className="bg-trueGray-700 pt-16 pb-5 px-8 items-center gap-4 justify-between">
       {/* <UserPhoto source={{ uri: data.logo }} h="$16" w="$16" alt="photo" /> */}
-      <VStack flex={1}>
+      <VStack className="flex-1">
         <Heading
           size="xs"
-          color="$trueGray100"
           numberOfLines={1}
           ellipsizeMode="tail"
+          className="text-trueGray-100"
         >
           {data.companyName}
         </Heading>
         <Text
-          color="$trueGray400"
           size="xs"
+          className="text-trueGray-400"
         >{`${data.streetName}, ${data.streetNumber}`}</Text>
         <Text
-          color="$trueGray400"
           size="xs"
+          className="text-trueGray-400"
         >{`Bairro ${data.neighborhood}, ${data.streetNumber}`}</Text>
         <Text
-          color="$trueGray400"
           size="xs"
+          className="text-trueGray-400"
         >{`${data.city} - ${data.state}, ${data.zipCode}`}</Text>
         <Text
-          color="$trueGray400"
           size="xs"
+          className="text-trueGray-400"
         >{`Cel. ${data.cellphone ?? '-'}`}</Text>
       </VStack>
       {/* <Button
@@ -79,13 +69,11 @@ export function CustomerHeaderDelivery({
       {showBackButton && (
         <Button
           size="lg"
-          backgroundColor="$trueGray700"
-          $active-bg="$trueGray700"
           onPress={handleGoBack}
           variant="outline"
-          borderColor="$trueGray400"
+          className="bg-trueGray-700  active:bg-trueGray-700 border-trueGray-400"
         >
-          <Icon as={ChevronLeft} size="xl" color="$trueGray400" />
+          <Icon as={ChevronLeft} size="xl" className="text-trueGray-400" />
         </Button>
       )}
     </HStack>

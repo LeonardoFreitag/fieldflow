@@ -1,15 +1,11 @@
-import {
-  Button,
-  ButtonIcon,
-  Heading,
-  VStack,
-  HStack,
-  Text,
-  Link,
-  LinkText,
-  Center,
-  Image,
-} from '@gluestack-ui/themed';
+import { Image } from "@/components/ui/image";
+import { Center } from "@/components/ui/center";
+import { Link, LinkText } from "@/components/ui/link";
+import { Text } from "@/components/ui/text";
+import { HStack } from "@/components/ui/hstack";
+import { VStack } from "@/components/ui/vstack";
+import { Heading } from "@/components/ui/heading";
+import { Button, ButtonIcon } from "@/components/ui/button";
 import { useNavigation } from '@react-navigation/native';
 import { CalendarClock, CheckCheck, ChevronLeft } from 'lucide-react-native';
 import { useAppSelector } from '../store/store';
@@ -366,7 +362,7 @@ export function DeliveryFinalize() {
   return (
     <>
       {working && <Working visible={working} />}
-      <VStack flex={1}>
+      <VStack className="flex-1">
         <SignatureModal
           isOpen={signatureModalOpen}
           onClose={handleSignatureClose}
@@ -407,11 +403,11 @@ export function DeliveryFinalize() {
           </Button>
         </HStack> */}
         <ScrollView style={{ flex: 1, width: '100%' }}>
-          <VStack p="$2" mb="$48">
-            <Heading size="lg" color="$trueGray100">
+          <VStack className="p-2 mb-48">
+            <Heading size="lg" className="text-trueGray-100">
               Fechamento entrega
             </Heading>
-            <HStack width="$full" justifyContent="space-between">
+            <HStack className="w-full justify-between">
               <Link href={deliveryItemEdit.nfeUrl}>
                 <LinkText size="md">{`Nota fiscal: ${deliveryItemEdit.nfeNumber}`}</LinkText>
               </Link>
@@ -419,23 +415,9 @@ export function DeliveryFinalize() {
                 <LinkText size="md">{`Pedido: ${deliveryItemEdit.orderNumber}`}</LinkText>
               </Link>
             </HStack>
-            <Center
-              w="$full"
-              h="$24"
-              bg="$trueGray700"
-              rounded="$md"
-              mb="$2"
-              p="$2"
-              mt="$2"
-            >
+            <Center className="w-full h-24 bg-trueGray-700 rounded-md mb-2 p-2 mt-2">
               <Center
-                w="$full"
-                h="$full"
-                borderStyle="dashed"
-                borderColor="$trueGray400"
-                borderWidth="$1"
-                rounded="$md"
-              >
+                className="w-full h-full border-dashed border-trueGray-400 border-1 rounded-md">
                 <TouchableOpacity
                   style={{
                     flex: 1,
@@ -446,13 +428,13 @@ export function DeliveryFinalize() {
                     setIsTakingPhoto(true);
                   }}
                 >
-                  <ButtonIcon as={Camera} size="xl" color="$amber400" />
+                  <ButtonIcon as={Camera} size="xl" className="text-amber-400" />
 
-                  <Text color="$amber400">Adicionar foto</Text>
+                  <Text className="text-amber-400">Adicionar foto</Text>
                 </TouchableOpacity>
               </Center>
             </Center>
-            <Heading size="md" color="$trueGray100">
+            <Heading size="md" className="text-trueGray-100">
               CPF/CNPJ
             </Heading>
             <Controller
@@ -470,27 +452,13 @@ export function DeliveryFinalize() {
               )}
             />
             {errors.cnpj_f && (
-              <Text color="$red400" size="xs" mb="$2">
+              <Text size="xs" className="text-red-400 mb-2">
                 {errors.cnpj_f.message}
               </Text>
             )}
-            <Center
-              w="$full"
-              h="$48"
-              bg="$trueGray700"
-              rounded="$md"
-              mb="$2"
-              p="$2"
-              mt="$2"
-            >
+            <Center className="w-full h-48 bg-trueGray-700 rounded-md mb-2 p-2 mt-2">
               <Center
-                w="$full"
-                h="$full"
-                borderStyle="dashed"
-                borderColor="$trueGray400"
-                borderWidth="$1"
-                rounded="$md"
-              >
+                className="w-full h-full border-dashed border-trueGray-400 border-1 rounded-md">
                 {!deliveryItemEdit.signatureBase64 ? (
                   <TouchableOpacity
                     style={{
@@ -500,9 +468,9 @@ export function DeliveryFinalize() {
                     }}
                     onPress={handleShowSignature}
                   >
-                    <ButtonIcon as={Signature} size="xl" color="$amber400" />
+                    <ButtonIcon as={Signature} size="xl" className="text-amber-400" />
 
-                    <Text color="$amber400">Coletar assinatura</Text>
+                    <Text className="text-amber-400">Coletar assinatura</Text>
                   </TouchableOpacity>
                 ) : (
                   <Image
@@ -515,53 +483,37 @@ export function DeliveryFinalize() {
               </Center>
             </Center>
             <Center>
-              <Heading size="md" color="$trueGray100">
+              <Heading size="md" className="text-trueGray-100">
                 Lista de fotos
               </Heading>
               {deliveryItemEdit.DeliveryItemsPhotos &&
               deliveryItemEdit.DeliveryItemsPhotos?.length > 0 ? (
                 deliveryItemEdit.DeliveryItemsPhotos.map(photo => (
                   <HStack
-                    width="$full"
                     // height="$48"
                     key={photo.id}
-                    bg="$trueGray700"
-                    p="$2"
-                    rounded="$md"
-                    mb="$2"
-                    justifyContent="space-between"
-                    position="relative"
-                  >
+                    className="w-full bg-trueGray-700 p-2 rounded-md mb-2 justify-between relative">
                     <Image
                       size="full"
-                      w={'$full'}
-                      h={200}
                       resizeMode="contain"
                       source={{
                         uri: photo.fileUrl,
                       }}
                       alt="image"
-                    />
+                      className="w-full h-[200px]" />
                     <Button
-                      position="absolute"
-                      top="$2"
-                      right="$2"
-                      // rounded="$full"
-                      opacity={0.4}
-                      backgroundColor="$red800"
-                      $active-bg="$red600"
                       onPress={() => {
                         // Handle delete photo logic here
                         handleDeletePhoto(photo.id);
                       }}
                       aria-label="Delete photo"
-                    >
-                      <ButtonIcon as={Trash} size="xl" color="$trueGray300" />
+                      className="absolute top-2 right-2 opacity-40 bg-red-800  active:bg-red-600">
+                      <ButtonIcon as={Trash} size="xl" className="text-trueGray-300" />
                     </Button>
                   </HStack>
                 ))
               ) : (
-                <Text color="$trueGray400" size="xs">
+                <Text size="xs" className="text-trueGray-400">
                   Nenhuma foto adicionada.
                 </Text>
               )}
@@ -569,60 +521,34 @@ export function DeliveryFinalize() {
           </VStack>
         </ScrollView>
         <HStack
-          justifyContent="space-between"
-          position="absolute"
-          bottom="$0"
-          left="$0"
-          backgroundColor="$trueGray900"
-          width="100%"
-          height="$24"
-          padding="$2"
-        >
+          className="justify-between absolute bottom-0 left-0 bg-trueGray-900 w-[100%] h-24 p-2">
           <Button
             size="lg"
-            rounded="$md"
-            w="$24"
-            h="$12"
-            backgroundColor="$blue500"
-            $active-bg="$blue700"
             onPress={() => {
               navigation.goBack();
             }}
-            gap="$1"
-          >
+            className="rounded-md w-24 h-12 bg-blue-500  active:bg-blue-700 gap-1">
             <ButtonIcon as={ChevronLeft} size="xl" />
-            <Text color="$trueGray100" size="xs">
+            <Text size="xs" className="text-trueGray-100">
               Voltar
             </Text>
           </Button>
           <Button
             size="lg"
-            rounded="$md"
-            w="$32"
-            h="$12"
-            backgroundColor="$red500"
-            $active-bg="$red700"
             onPress={handleShowModalSchedule}
-            gap="$1"
-          >
+            className="rounded-md w-32 h-12 bg-red-500  active:bg-red-700 gap-1">
             <ButtonIcon as={CalendarClock} size="xl" />
 
-            <Text color="$trueGray100" size="xs">
+            <Text size="xs" className="text-trueGray-100">
               Não entregue
             </Text>
           </Button>
           <Button
             size="lg"
-            rounded="$md"
-            w="$24"
-            h="$12"
-            backgroundColor="$green700"
-            $active-bg="$green500"
             onPress={handleSubmit(handleDeliveryFinish)}
-            gap="$1"
-          >
+            className="rounded-md w-24 h-12 bg-green-700  active:bg-green-500 gap-1">
             <ButtonIcon as={CheckCheck} size="lg" />
-            <Text color="$trueGray100" size="xs">
+            <Text size="xs" className="text-trueGray-100">
               Finalizar
             </Text>
           </Button>

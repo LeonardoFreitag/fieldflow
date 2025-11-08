@@ -1,32 +1,35 @@
-module.exports = function(api) {
+module.exports = function (api) {
   api.cache(true);
+
   return {
-    presets: ['babel-preset-expo'],
+    presets: [['babel-preset-expo'], 'nativewind/babel'],
+
     plugins: [
       [
         'module-resolver',
         {
-          root: ['./src'],
+          root: ['./'],
+
           alias: {
+            '@': './src',
+            '@/components/ui': './components/ui',
             '@components': './src/components',
-            '@screens': './src/screens',
-            '@utils': './src/utils',
-            '@services': './src/services',
-            '@assets': './src/assets',
-            '@config': './src/config',
-            '@redux': './src/redux',
-            '@constants': './src/constants',
-            '@storage': './src/storage',
-            '@theme': './src/theme',
             '@contexts': './src/contexts',
-            '@hooks': './src/hooks',
-            '@dtos': './src/dtos',
             '@models': './src/models',
+            '@hooks': './src/hooks',
             '@store': './src/store',
+            '@storage': './src/storage',
+            '@routes': './src/routes',
+            '@services': './src/services',
+            '@utils': './src/utils',
+            '@assets': './src/assets',
+            '@ui': './components/ui',
+            '@dtos': './src/dtos',
+            'tailwind.config': './tailwind.config.js'
           },
         },
-        'react-native-reanimated/plugin',
       ],
+      'react-native-worklets/plugin',
     ],
   };
 };

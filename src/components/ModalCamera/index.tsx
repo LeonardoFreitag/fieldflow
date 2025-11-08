@@ -1,3 +1,6 @@
+import { VStack } from '@ui/vstack';
+import { HStack } from '@ui/hstack';
+import { Button } from '@ui/button';
 import {
   Camera,
   type PhotoFile,
@@ -21,7 +24,6 @@ import {
 } from 'react-native-gesture-handler';
 import { useIsFocused } from '@react-navigation/native';
 import { useIsForeground } from '@hooks/useIsForeground';
-import { Button, HStack, VStack } from '@gluestack-ui/themed';
 
 interface ModalCameraProps {
   isVisible: boolean;
@@ -136,15 +138,7 @@ export function ModalCamera({
           </View>
         </GestureDetector>
       </GestureHandlerRootView>
-      <VStack
-        flex={1}
-        justifyContent="flex-end"
-        position="absolute"
-        top={56}
-        right={16}
-        opacity={0.6}
-        gap={6}
-      >
+      <VStack className="flex-1 justify-end absolute top-56 right-16 opacity-60 gap-[6px]">
         <Button onPress={onFlipCameraPressed}>
           <CameraRotate size={24} color="#fff" />
         </Button>
@@ -156,24 +150,14 @@ export function ModalCamera({
           )}
         </Button>
       </VStack>
-
-      <HStack
-        justifyContent="center"
-        position="absolute"
-        bottom={42}
-        left={0}
-        width="100%"
-      >
-        <Button onPress={handleTakePicture} size="lg" opacity={0.6}>
+      <HStack className="justify-center absolute bottom-42 left-0 w-[100%]">
+        <Button onPress={handleTakePicture} size="lg" className="opacity-60">
           <CameraIcon size={24} color="#fff" />
         </Button>
       </HStack>
       <Button
         onPress={closeModal}
-        position="absolute"
-        top={56}
-        left={16}
-        opacity={0.6}
+        className="absolute top-56 left-16 opacity-60"
       >
         <XCircle size={24} color="#fff" />
       </Button>

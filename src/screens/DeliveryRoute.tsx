@@ -1,12 +1,9 @@
+import { VStack } from '@/components/ui/vstack';
+import { Text } from '@/components/ui/text';
+import { HStack } from '@/components/ui/hstack';
+import { Heading } from '@/components/ui/heading';
+import { Button, ButtonIcon } from '@/components/ui/button';
 import { HomeHeader } from '@components/HomeHeader';
-import {
-  Button,
-  ButtonIcon,
-  Heading,
-  HStack,
-  Text,
-  VStack,
-} from '@gluestack-ui/themed';
 import { useNavigation } from '@react-navigation/native';
 import { Alert, FlatList } from 'react-native';
 import { useDispatch } from 'react-redux';
@@ -87,7 +84,7 @@ export function DeliveryRoute() {
       endDate: undefined,
       status: 'created',
       completedCharge: false,
-      dateTimeCoompletedCharge: undefined,
+      dateTimeCompletedCharge: undefined,
       DeliveryItems: selectedDeliveries.map((item: DeliveryQueueModel) => ({
         id: item.id,
         customerId: item.customerId,
@@ -140,14 +137,14 @@ export function DeliveryRoute() {
   }, [deliveryQueueList, dispatch]);
 
   return (
-    <VStack flex={1}>
+    <VStack className="flex-1">
       <HomeHeader />
-      <VStack flex={1} px="$4" py="$4">
-        <HStack gap="$4" justifyContent="space-between" mb="$4">
-          <Heading size="sm" color="$trueGray100">
+      <VStack className="flex-1 px-4 py-4">
+        <HStack className="gap-4 justify-between mb-4">
+          <Heading size="sm" className="text-trueGray-100">
             Rota de Entregas
           </Heading>
-          <Text color="$trueGray400">{`${deliveryQueueList.length} entregas`}</Text>
+          <Text className="text-trueGray-400">{`${deliveryQueueList.length} entregas`}</Text>
         </HStack>
         <FlatList
           data={deliveryQueueList}
@@ -160,41 +157,24 @@ export function DeliveryRoute() {
             />
           )}
           ListEmptyComponent={() => (
-            <Text color="$trueGray400" textAlign="center">
+            <Text className="text-trueGray-400 text-center">
               Nenhuma entrega na fila.
             </Text>
           )}
         />
       </VStack>
-      <HStack
-        bg="$trueGray800"
-        p="$4"
-        justifyContent="space-around"
-        alignItems="center"
-        borderTopWidth={1}
-        borderColor="$trueGray700"
-      >
+      <HStack className="bg-trueGray-800 p-4 justify-around items-center border border-trueGray-700">
         <Button
           size="lg"
-          rounded="$md"
-          h="$12"
-          w="$1/3"
-          backgroundColor="$green500"
-          $active-bg="$green700"
-          display="flex"
           onPress={handleSelectAllDeliveries}
+          className="rounded-md h-12 w-1/3 bg-green-500  active:bg-green-700 flex"
         >
           <ButtonIcon as={HandTap} size="xl" />
         </Button>
         <Button
           size="lg"
-          rounded="$md"
-          h="$12"
-          w="$1/3"
-          backgroundColor="$blue500"
-          $active-bg="$blue700"
-          display="flex"
           onPress={handleCreateDeliveryDrive}
+          className="rounded-md h-12 w-1/3 bg-blue-500  active:bg-blue-700 flex"
         >
           <ButtonIcon as={Truck} size="xl" />
         </Button>

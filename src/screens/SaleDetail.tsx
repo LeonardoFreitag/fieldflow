@@ -1,4 +1,7 @@
-import { Box, Button, ButtonIcon, Center, VStack } from '@gluestack-ui/themed';
+import { VStack } from "@/components/ui/vstack";
+import { Center } from "@/components/ui/center";
+import { Button, ButtonIcon } from "@/components/ui/button";
+import { Box } from "@/components/ui/box";
 import { CustomerHeader } from '@components/CustomerHeader';
 import { customerList } from '@utils/CustomerData';
 import { Plus } from 'lucide-react-native';
@@ -15,15 +18,15 @@ export function SaleDetail() {
   }
 
   return (
-    <VStack flex={1}>
+    <VStack className="flex-1">
       <CustomerHeader data={customerList[0] as any} />
-      <Center mt="$4" mx="$2">
+      <Center className="mt-4 mx-2">
         <SaleCardDetail
           data={salesList[0]}
           handleSelectCustomer={handleSaleSelect}
         />
       </Center>
-      <Box mt="$4" mx="$2">
+      <Box className="mt-4 mx-2">
         <FlatList
           data={items}
           keyExtractor={item => item.id}
@@ -32,18 +35,9 @@ export function SaleDetail() {
           )}
         />
       </Box>
-
       <Button
         size="lg"
-        rounded="$full"
-        position="absolute"
-        bottom="$6"
-        right="$6"
-        w="$16"
-        h="$16"
-        backgroundColor="$green700"
-        $active-bg="$green500"
-      >
+        className="rounded-full absolute bottom-6 right-6 w-16 h-16 bg-green-700  active:bg-green-500">
         <ButtonIcon as={Plus} />
       </Button>
     </VStack>

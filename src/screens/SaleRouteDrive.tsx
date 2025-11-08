@@ -1,3 +1,18 @@
+import { HStack } from "@/components/ui/hstack";
+import { Text } from "@/components/ui/text";
+import { VStack } from "@/components/ui/vstack";
+import { Heading } from "@/components/ui/heading";
+import { Button, ButtonIcon } from "@/components/ui/button";
+
+import {
+  AlertDialog,
+  AlertDialogBackdrop,
+  AlertDialogBody,
+  AlertDialogContent,
+  AlertDialogFooter,
+  AlertDialogHeader,
+} from "@/components/ui/alert-dialog";
+
 import React, {
   useCallback,
   useEffect,
@@ -16,20 +31,6 @@ import {
 import { useDispatch } from 'react-redux';
 import { useAppSelector } from '@store/store';
 import { addCoordsEdit } from '@store/slice/coords/coordsEditSlice';
-import {
-  AlertDialog,
-  AlertDialogBackdrop,
-  AlertDialogBody,
-  AlertDialogContent,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  Button,
-  ButtonIcon,
-  Heading,
-  VStack,
-  Text,
-  HStack,
-} from '@gluestack-ui/themed';
 import {
   CaretLeft,
   RoadHorizon,
@@ -302,7 +303,7 @@ export const SaleRouteDrive: React.FC = () => {
 
   const handleAddNewClient = () => {
     if (existsTravelEdit.exists) {
-      navigation.navigate('SaleClientList');
+      navigation.navigate('SaleMain');
     } else {
       Alert.alert(
         'Atenção',
@@ -313,7 +314,7 @@ export const SaleRouteDrive: React.FC = () => {
 
   return (
     <>
-      <VStack display="flex" position="relative" flex={1}>
+      <VStack className="flex relative flex-1">
         {coordsEdit &&
           typeof coordsEdit.latitude === 'number' &&
           typeof coordsEdit.longitude === 'number' &&
@@ -360,34 +361,17 @@ export const SaleRouteDrive: React.FC = () => {
             </MapView>
           )}
         <Button
-          position="absolute"
-          top="$12"
-          left="$4"
-          rounded="$md"
-          opacity={0.4}
           onPress={handleBackToSaleRoute}
-        >
+          className="absolute top-12 left-4 rounded-md opacity-40">
           <ButtonIcon as={CaretLeft} size="xl" />
         </Button>
         <Button
-          position="absolute"
-          bottom="$12"
-          left="$4"
-          rounded="$md"
-          opacity={0.4}
           onPress={handleAddNewClient}
-        >
+          className="absolute bottom-12 left-4 rounded-md opacity-40">
           <ButtonIcon as={UserPlus} size="xl" />
         </Button>
         <Button
-          bg="$green600"
-          $active-bg="$green700"
           variant="solid"
-          position="absolute"
-          top="$12"
-          right="$4"
-          rounded="$md"
-          opacity={0.5}
           onPress={() => {
             // Encontra o próximo cliente com status "pending"
             const nextPendingClient = clientList.find(
@@ -417,28 +401,21 @@ export const SaleRouteDrive: React.FC = () => {
               );
             }
           }}
-        >
+          className="bg-green-600  active:bg-green-700 absolute top-12 right-4 rounded-md opacity-50">
           <ButtonIcon as={RoadHorizon} size="xl" />
         </Button>
 
         <Button
-          bg="$orange600"
-          $active-bg="$orange800"
-          position="absolute"
-          bottom="$12"
-          right="$4"
-          rounded="$md"
-          opacity={0.4}
           onPress={() => {
             setShowAlertDialog(true);
           }}
-        >
+          className="bg-orange-600  active:bg-orange-800 absolute bottom-12 right-4 rounded-md opacity-40">
           <ButtonIcon as={UserList} size="xl" />
         </Button>
       </VStack>
       <AlertDialog isOpen={showAlertDialog} onClose={handleClose} size="lg">
         <AlertDialogBackdrop />
-        <AlertDialogContent maxHeight={height * 0.9}>
+        <AlertDialogContent className={` maxHeight-${height * 0.9} `}>
           <AlertDialogHeader>
             <Heading size="md">
               {`Selecione o cliente para iniciar o atendimento ${allClientList.length}`}
@@ -449,25 +426,15 @@ export const SaleRouteDrive: React.FC = () => {
               allClientList.map((item, index) => (
                 <VStack style={styles.itemContainer} key={item.id}>
                   <Button
-                    width="100%"
-                    bg={
-                      item.status === 'not_visited'
-                        ? '$red600'
-                        : item.status === 'visited'
-                          ? '$green600'
-                          : '$blue600'
-                    }
                     onPress={async () => {
                       await handleCallCheckIn(item);
                     }}
-                  >
+                    className={` ${item.status === 'not_visited' ? "bg-red-600" : item.status === 'visited' ? "bg-green-600" : "bg-blue-600"} w-[100%] `}>
                     <Text
                       numberOfLines={1}
-                      textAlign="center"
-                      color="$white"
                       size="md"
                       style={styles.buttonText}
-                    >
+                      className="text-center text-white">
                       {index + 1}. {item.companyName}
                     </Text>
                   </Button>
@@ -475,43 +442,26 @@ export const SaleRouteDrive: React.FC = () => {
               ))}
           </AlertDialogBody>
           <AlertDialogFooter>
-            <HStack
-              gap="$4"
-              justifyContent="space-between"
-              alignItems="center"
-              flexWrap="wrap"
-            >
+            <HStack className="gap-4 justify-between items-center flex-wrap">
               {listIsCompleted && (
                 <Button
-                  bg="$blue600"
-                  $active-bg="$blue800"
-                  rounded="$md"
-                  opacity={0.6}
                   onPress={handleCompleteTravel}
-                >
+                  className="bg-blue-600  active:bg-blue-800 rounded-md opacity-60">
                   <ButtonIcon as={ListCheck} size="xl" />
                 </Button>
               )}
               {canChangeRouteEdit.canChangeRoute && (
                 <Button
-                  bg="$green600"
-                  $active-bg="$green800"
-                  rounded="$md"
-                  opacity={0.6}
                   onPress={async () => {
                     await handleCreateAndSaveTravel(clientList, 'route');
                   }}
-                >
+                  className="bg-green-600  active:bg-green-800 rounded-md opacity-60">
                   <ButtonIcon as={SaveAll} size="xl" />
                 </Button>
               )}
               <Button
-                bg="$red600"
-                $active-bg="$red800"
-                rounded="$md"
-                opacity={0.6}
                 onPress={handleClose}
-              >
+                className="bg-red-600  active:bg-red-800 rounded-md opacity-60">
                 <ButtonIcon as={DoorClosed} size="xl" />
               </Button>
             </HStack>

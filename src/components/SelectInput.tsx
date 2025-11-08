@@ -9,7 +9,7 @@ import {
   SelectPortal,
   SelectTrigger,
   SelectInput as BaseSelectInput,
-} from '@gluestack-ui/themed';
+} from '@ui/select';
 import { type SelectOptionsModel } from '@models/SelectOptionsModel';
 import { ChevronDownIcon } from 'lucide-react-native';
 
@@ -29,8 +29,8 @@ export function SelectInput({
   return (
     <Select selectedValue={value ?? ''} onValueChange={onValueChange}>
       <SelectTrigger variant="outline" size="md">
-        <BaseSelectInput placeholder={placeholder} color="$white" />
-        <SelectIcon as={ChevronDownIcon} size="lg" mr="$2" />
+        <BaseSelectInput placeholder={placeholder} className="color-white" />
+        <SelectIcon as={ChevronDownIcon} size="lg" className="mr-2" />
       </SelectTrigger>
       <SelectPortal>
         <SelectBackdrop />

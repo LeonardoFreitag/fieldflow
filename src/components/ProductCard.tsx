@@ -1,18 +1,17 @@
 import {
-  Heading,
-  HStack,
-  Image,
-  VStack,
-  Text,
-  Button,
-  ButtonIcon,
-  Divider,
   Modal,
   ModalBackdrop,
   ModalContent,
   ModalHeader,
   ModalBody,
-} from '@gluestack-ui/themed';
+} from '@ui/modal';
+import { Divider } from '@ui/divider';
+import { Button, ButtonIcon } from '@ui/button';
+import { Text } from '@ui/text';
+import { VStack } from '@ui/vstack';
+import { Image } from '@ui/image';
+import { HStack } from '@ui/hstack';
+import { Heading } from '@ui/heading';
 import { type ProductModel } from '@models/ProductModel';
 import { Minus, Plus, Save, Sigma, X } from 'lucide-react-native';
 import { HandTap } from 'phosphor-react-native';
@@ -56,34 +55,17 @@ export function ProductCard({
   };
 
   return (
-    <HStack
-      bg="$trueGray700"
-      alignItems="center"
-      p="$2"
-      pr="$2"
-      rounded="$md"
-      mb="$3"
-      w="$full"
-      justifyContent="space-between"
-    >
+    <HStack className="bg-trueGray-700 items-center p-2 pr-2 rounded-md mb-3 w-full justify-between">
       <Image
         source={getImageSource()}
         alt="Product"
-        w="$20"
-        h="$20"
-        rounded="$md"
+        className="w-20 h-20 rounded-md"
       />
-
-      <VStack
-        flex={1}
-        padding={8}
-        justifyContent="space-between"
-        alignItems="flex-start"
-      >
-        <Heading size="xs" color="$trueGray100">
+      <VStack className="flex-1 p-[8px] justify-between items-start">
+        <Heading size="xs" className="text-trueGray-100">
           {`${product.code} - ${product.description}`}
         </Heading>
-        <Text color="$trueGray400">
+        <Text className="text-trueGray-400">
           {`${Number(product.qty).toLocaleString('pt-BR', {
             maximumFractionDigits: 2,
           })} ${product.unity} x ${Number(product.price ?? 0).toLocaleString(
@@ -97,59 +79,38 @@ export function ProductCard({
             currency: 'BRL',
           })}`}
         </Text>
-        <Divider my="$0.5" bgColor="$trueGray500" mb="$0.5" />
+        <Divider className="my-0.5 bg-trueGray-500 mb-0.5" />
 
-        <HStack
-          marginTop="$1"
-          justifyContent="space-between"
-          alignItems="center"
-          w="$full"
-          gap={8}
-        >
-          <HStack gap={8}>
+        <HStack className="mt-1 justify-between items-center w-full gap-[8px]">
+          <HStack className="gap-[8px]">
             <>
               <Button
-                width="$10"
-                height="$10"
-                rounded="$md"
-                backgroundColor="$green700"
-                $active-bg="$green500"
                 onPress={handleUpQty}
+                className="w-10 h-10 rounded-md bg-green-700  active:bg-green-500"
               >
                 <ButtonIcon as={Plus} size="xl" />
               </Button>
               <Button
-                width="$10"
-                height="$10"
-                rounded="$md"
-                backgroundColor="$red700"
-                $active-bg="$red500"
                 onPress={handleDownQty}
+                className="w-10 h-10 rounded-md bg-red-700  active:bg-red-500"
               >
                 <ButtonIcon as={Minus} size="xl" />
               </Button>
               <Button
-                width="$10"
-                height="$10"
-                rounded="$md"
-                backgroundColor="$blueGray500"
-                $active-bg="$blueGray400"
                 onPress={() => {
                   handleShowModalQuantity(product);
                 }}
+                className="w-10 h-10 rounded-md bg-blueGray-500  active:bg-blueGray-400"
               >
                 <ButtonIcon as={Sigma} size="xl" />
               </Button>
             </>
           </HStack>
-          <HStack gap={8}>
+          <HStack className="gap-[8px]">
             <Button
-              width="$10"
-              height="$10"
-              rounded="$md"
-              backgroundColor={product.selected ? '$green500' : '$blueGray600'}
               // $active-bg="$green500"
               onPress={handleSelectProduct}
+              className={` ${product.selected ? 'bg-green-500' : 'bg-blueGray-600'} w-10 h-10 rounded-md `}
             >
               <ButtonIcon as={HandTap} size="xl" />
             </Button>
@@ -198,10 +159,10 @@ function ModalQuantity({
   return (
     <Modal isOpen={visible}>
       <ModalBackdrop />
-      <ModalContent bg="$trueGray600" rounded="$md">
+      <ModalContent className="bg-trueGray-600 rounded-md">
         <ModalHeader />
         <ModalBody>
-          <Heading color="$blueGray300">Quantidade</Heading>
+          <Heading className="text-blueGray-300">Quantidade</Heading>
           <Input
             autoFocus
             keyboardType="numeric"
@@ -209,24 +170,16 @@ function ModalQuantity({
             value={qtyTyped}
             onChangeText={setQtyTyped}
           />
-          <HStack mt="$2" justifyContent="flex-end" gap="$2">
+          <HStack className="mt-2 justify-end gap-2">
             <Button
-              width="$20"
-              height="$10"
-              rounded="$md"
-              backgroundColor="$green700"
-              $active-bg="$green500"
               onPress={handleSaveData}
+              className="w-20 h-10 rounded-md bg-green-700  active:bg-green-500"
             >
               <ButtonIcon as={Save} size="xl" />
             </Button>
             <Button
-              width="$20"
-              height="$10"
-              rounded="$md"
-              backgroundColor="$red700"
-              $active-bg="$red500"
               onPress={handleCloseModal}
+              className="w-20 h-10 rounded-md bg-red-700  active:bg-red-500"
             >
               <ButtonIcon as={X} size="xl" />
             </Button>

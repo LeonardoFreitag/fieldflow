@@ -1,17 +1,16 @@
+import { Image } from '@ui/image';
+import { Text } from '@ui/text';
 import {
-  Button,
-  ButtonIcon,
-  Center,
-  Heading,
-  HStack,
   Modal,
   ModalBackdrop,
   ModalBody,
   ModalContent,
   ModalHeader,
-  Text,
-  Image,
-} from '@gluestack-ui/themed';
+} from '@ui/modal';
+import { HStack } from '@ui/hstack';
+import { Heading } from '@ui/heading';
+import { Center } from '@ui/center';
+import { Button, ButtonIcon } from '@ui/button';
 // import { useState } from 'react';
 import { Camera, Check, Save, X } from 'lucide-react-native';
 import { Controller, useForm } from 'react-hook-form';
@@ -182,30 +181,25 @@ export function ModalCollection({
       />
       <Modal isOpen={visible}>
         <ModalBackdrop />
-        <ModalContent bg="$trueGray600" rounded="$md" width="$80">
+        <ModalContent className="bg-trueGray-600 rounded-md w-80">
           <ModalHeader>
-            <Heading color="$trueGray100" size="sm">
+            <Heading size="sm" className="text-trueGray-100">
               Motivo da não realização da visita
             </Heading>
           </ModalHeader>
           <ModalBody scrollEnabled={false}>
-            <Text color="$trueGray100" size="sm" mt="$2">
+            <Text size="sm" className="text-trueGray-100 mt-2">
               Motivo
             </Text>
             <Button
-              flex={1}
-              rounded="$md"
-              backgroundColor={ausent ? '$red700' : '$trueGray700'}
-              $active-bg="$red500"
-              mb="$2"
-              gap="$2"
               onPress={() => {
                 setValue('clientNotFound', !ausent);
               }}
               onPressIn={() => {}}
+              className={` ${ausent ? 'bg-red-700' : 'bg-trueGray-700'} flex-1 rounded-md  active:bg-red-500 mb-2 gap-2 `}
             >
               <ButtonIcon as={Check} size="md" />
-              <Text color="$trueGray100" size="xs">
+              <Text size="xs" className="text-trueGray-100">
                 {ausent ? 'Cliente ausente' : 'Cliente presente'}
               </Text>
             </Button>
@@ -214,51 +208,29 @@ export function ModalCollection({
               name="reason"
               render={({ field: { onChange, value } }) => (
                 <Input
+                  className="font-size-sm font-family-body placeholder-text-trueGray400"
                   value={value}
                   onChangeText={onChange}
                   placeholder="Descreva o motivo da não realização da visita..."
-                  fontSize="$sm"
-                  fontFamily="$body"
-                  placeholderTextColor="$trueGray400"
                 />
               )}
             />
-            <Center
-              w="$full"
-              h="$40"
-              bg="$trueGray700"
-              rounded="$md"
-              mb="$2"
-              p="$2"
-              mt="$2"
-            >
-              <Center
-                w="$full"
-                h="$full"
-                borderStyle="dashed"
-                borderColor="$trueGray400"
-                borderWidth="$1"
-                rounded="$md"
-                position="relative"
-              >
+            <Center className="w-full h-40 bg-trueGray-700 rounded-md mb-2 p-2 mt-2">
+              <Center className="w-full h-full border-dashed border-trueGray-400 border-1 rounded-md relative">
                 {pendingPhoto ? (
                   <>
                     <Button
-                      borderColor="$trueGray400"
-                      rounded="$md"
-                      position="absolute"
-                      bottom="$2"
-                      right="$2"
-                      zIndex={1}
-                      $active-bg="$trueGray500"
-                      backgroundColor="$trueGray600"
-                      opacity={0.8}
                       onPress={() => {
                         setIsTakingPhoto(true);
                       }}
+                      className="border-trueGray-400 rounded-md absolute bottom-2 right-2 z-1  active:bg-trueGray-500 bg-trueGray-600 opacity-80"
                     >
-                      <ButtonIcon as={Camera} size="xl" color="$amber400" />
-                      <Text color="$amber400">Trocar foto</Text>
+                      <ButtonIcon
+                        as={Camera}
+                        size="xl"
+                        className="text-amber-400"
+                      />
+                      <Text className="text-amber-400">Trocar foto</Text>
                     </Button>
                     <Image
                       source={{ uri: pendingPhoto.path }}
@@ -278,33 +250,29 @@ export function ModalCollection({
                       setIsTakingPhoto(true);
                     }}
                   >
-                    <ButtonIcon as={Camera} size="xl" color="$amber400" />
-                    <Text color="$amber400">Adicionar foto</Text>
-                    <Text color="$amber400" size="2xs">
+                    <ButtonIcon
+                      as={Camera}
+                      size="xl"
+                      className="text-amber-400"
+                    />
+                    <Text className="text-amber-400">Adicionar foto</Text>
+                    <Text size="2xs" className="text-amber-400">
                       Preferencialmente horizontal
                     </Text>
                   </TouchableOpacity>
                 )}
               </Center>
             </Center>
-            <HStack mt="$2" justifyContent="flex-end" gap="$2">
+            <HStack className="mt-2 justify-end gap-2">
               <Button
-                width="$20"
-                height="$10"
-                rounded="$md"
-                backgroundColor="$green700"
-                $active-bg="$green500"
                 onPress={handleSubmit(handleSave)}
+                className="w-20 h-10 rounded-md bg-green-700  active:bg-green-500"
               >
                 <ButtonIcon as={Save} size="xl" />
               </Button>
               <Button
-                width="$20"
-                height="$10"
-                rounded="$md"
-                backgroundColor="$red700"
-                $active-bg="$red500"
                 onPress={handleCloseModal}
+                className="w-20 h-10 rounded-md bg-red-700  active:bg-red-500"
               >
                 <ButtonIcon as={X} size="xl" />
               </Button>

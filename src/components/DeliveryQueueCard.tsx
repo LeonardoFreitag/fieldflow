@@ -1,14 +1,9 @@
-import {
-  Heading,
-  HStack,
-  VStack,
-  Text,
-  Badge,
-  BadgeText,
-  BadgeIcon,
-  Button,
-  ButtonIcon,
-} from '@gluestack-ui/themed';
+import { Button, ButtonIcon } from '@ui/button';
+import { Badge, BadgeText, BadgeIcon } from '@ui/badge';
+import { Text } from '@ui/text';
+import { VStack } from '@ui/vstack';
+import { HStack } from '@ui/hstack';
+import { Heading } from '@ui/heading';
 import { Truck } from 'lucide-react-native';
 import { type DeliveryQueueModel } from '@models/DeliveryQueueModel';
 import { HandTap } from 'phosphor-react-native';
@@ -20,58 +15,45 @@ interface Props {
 
 export function DeliveryQueueCard({ data, handleSelectDeliveryQueue }: Props) {
   return (
-    <HStack
-      bg="$trueGray700"
-      alignItems="center"
-      p="$2"
-      rounded="$md"
-      mb="$3"
-      w="$full"
-      justifyContent="space-between"
-      position="relative"
-    >
-      <VStack flex={1}>
+    <HStack className="bg-trueGray-700 items-center p-2 rounded-md mb-3 w-full justify-between relative">
+      <VStack className="flex-1">
         <BadgeStatus status={data.status} />
-        <HStack width="$full" justifyContent="space-between">
-          <Heading size="sm" color="$green500" mb="$1">
+        <HStack className="w-full justify-between">
+          <Heading size="sm" className="text-green-500 mb-1">
             {data.Client.companyName}
           </Heading>
         </HStack>
         <Text
-          color="$trueGray100"
           size="xs"
+          className="text-trueGray-100"
         >{`${data.Client.streetName}, ${data.Client.streetNumber}, ${data.Client.neighborhood}`}</Text>
         <Text
-          color="$trueGray100"
           size="xs"
+          className="text-trueGray-100"
         >{`${data.Client.city}, ${data.Client.zipCode} - Fone: ${data.Client.cellphone}`}</Text>
-        <HStack justifyContent="flex-start" gap="$2">
+        <HStack className="justify-start gap-2">
           <Text
-            color="$trueGray100"
             size="xs"
+            className="text-trueGray-100"
           >{`Pedido: ${String(data.orderNumber).padStart(8, '0')}`}</Text>
           <Text
-            color="$trueGray100"
             size="xs"
+            className="text-trueGray-100"
           >{`Nf-e: ${String(data.nfeNumber).padStart(8, '0')}`}</Text>
         </HStack>
         <Text
-          color="$trueGray100"
           size="xs"
+          className="text-trueGray-100"
         >{`Lt: ${data.Client.latitude} Lng: ${data.Client.longitude}`}</Text>
-        <Text color="$trueGray100" size="xs">{`Rota: ${data.routeId}`}</Text>
+        <Text
+          size="xs"
+          className="text-trueGray-100"
+        >{`Rota: ${data.routeId}`}</Text>
         <Button
-          width="$12"
-          height="$12"
-          rounded="$md"
-          backgroundColor={data.isSelected ? '$green700' : '$blueGray600'}
-          $active-bg="$green500"
           onPress={() => {
             handleSelectDeliveryQueue(data);
           }}
-          position="absolute"
-          bottom="$1"
-          right="$1"
+          className={` ${data.isSelected ? 'bg-green-700' : 'bg-blueGray-600'} w-12 h-12 rounded-md  active:bg-green-500 absolute bottom-1 right-1 `}
         >
           <ButtonIcon as={HandTap} size="xl" />
         </Button>
@@ -93,10 +75,7 @@ function BadgeStatus({ status }: { status: string }) {
       size="md"
       variant="solid"
       action="muted"
-      width="$32"
-      bgColor={color}
-      justifyContent="space-between"
-      mb="$2"
+      className={` bgColor-${color} w-32 justify-between mb-2 `}
     >
       <BadgeText>
         {status === 'pending'

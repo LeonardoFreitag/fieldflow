@@ -1,13 +1,10 @@
-import {
-  VStack,
-  // Image,
-  Center,
-  Heading,
-  Text,
-  ScrollView,
-  Switch,
-  HStack,
-} from '@gluestack-ui/themed';
+import { HStack } from "@/components/ui/hstack";
+import { Switch } from "@/components/ui/switch";
+import { ScrollView } from "@/components/ui/scroll-view";
+import { Text } from "@/components/ui/text";
+import { Heading } from "@/components/ui/heading";
+import { Center } from "@/components/ui/center";
+import { VStack } from "@/components/ui/vstack";
 // import BackgroundImage from '@assets/background.png';
 import { Input } from '@components/Input';
 import { CurrencyCircleDollar } from 'phosphor-react-native';
@@ -111,17 +108,17 @@ export function SignIn() {
         contentContainerStyle={{ flexGrow: 1 }}
         showsVerticalScrollIndicator={false}
       >
-        <VStack flex={1}>
-          <Center w={'$full'} mt={'$1/2'}>
+        <VStack className="flex-1">
+          <Center className="w-full mt-1/2">
             <CurrencyCircleDollar size={52} weight="fill" color="green" />
-            <Heading size="2xl" color="$trueGray100">
+            <Heading size="2xl" className="text-trueGray-100">
               AutoMax GO
             </Heading>
-            <Text color="$trueGray100">Vendas, Entrega e Cobrança</Text>
+            <Text className="text-trueGray-100">Vendas, Entrega e Cobrança</Text>
           </Center>
-          <VStack flex={1} px="$10" pb="$16">
-            <Center w={'$full'} gap="$2" mt="$1/5">
-              <Heading size="sm" color="$trueGray400">
+          <VStack className="flex-1 px-10 pb-16">
+            <Center className="w-full gap-2 mt-1/5">
+              <Heading size="sm" className="text-trueGray-400">
                 Acesse a conta
               </Heading>
               <Controller
@@ -152,22 +149,15 @@ export function SignIn() {
                   />
                 )}
               />
-              <HStack
-                w="$full"
-                justifyContent="flex-start"
-                alignItems="center"
-                mt="$2"
-                mb="$4"
-                gap="$2"
-              >
+              <HStack className="w-full justify-start items-center mt-2 mb-4 gap-2">
                 <Switch
                   size="md"
                   isDisabled={false}
                   onValueChange={handleSwitchRemember}
                   value={remember}
-                  bgColor="$trueGray600"
+                  className="bg-trueGray-600"
                 />
-                <Text color="$white">Lembrar login</Text>
+                <Text className="text-white">Lembrar login</Text>
               </HStack>
               <Button title="Acessar" onPress={handleSubmit(handleLogin)} />
             </Center>

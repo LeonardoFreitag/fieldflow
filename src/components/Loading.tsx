@@ -1,9 +1,10 @@
-import { Center, Spinner } from '@gluestack-ui/themed';
+import { Spinner } from '@ui/spinner';
+import { Center } from '@ui/center';
 
 export function Loading() {
   return (
-    <Center bg="$trueGray800" flex={1}>
-      <Spinner color={'$green500'} />
+    <Center className="bg-trueGray-800 flex-1">
+      <Spinner className="text-green-500" />
     </Center>
   );
 }

@@ -1,13 +1,10 @@
-import {
-  Button,
-  ButtonIcon,
-  Center,
-  Heading,
-  HStack,
-  VStack,
-  Text,
-  Card,
-} from '@gluestack-ui/themed';
+import { Card } from "@/components/ui/card";
+import { Text } from "@/components/ui/text";
+import { VStack } from "@/components/ui/vstack";
+import { HStack } from "@/components/ui/hstack";
+import { Heading } from "@/components/ui/heading";
+import { Center } from "@/components/ui/center";
+import { Button, ButtonIcon } from "@/components/ui/button";
 import { useNavigation } from '@react-navigation/native';
 import { CustomerHeader } from '@components/CustomerHeader';
 import { ChevronLeft, Plus } from 'lucide-react-native';
@@ -53,27 +50,22 @@ export function SaleCheckIn() {
   }, [clientEdit.ClientPhotos]);
 
   return (
-    <VStack
-      flex={1}
-      justifyContent="flex-start"
-      backgroundColor="$trueGray900"
-      gap="$2"
-    >
+    <VStack className="flex-1 justify-start bg-trueGray-900 gap-2">
       <CustomerHeader data={clientEdit} showBackButton={false} />
-      <VStack height="$64" bgColor="$trueGray800" px="$2" py="$2">
+      <VStack className="h-64 bg-trueGray-800 px-2 py-2">
         {fotosList && fotosList.length > 0 ? (
           <SliderMainPage photos={fotosList} />
         ) : (
-          <Center height="$full">
-            <Heading size="md" color="$trueGray100">
+          <Center className="h-full">
+            <Heading size="md" className="text-trueGray-100">
               Nenhuma foto encontrada
             </Heading>
           </Center>
         )}
       </VStack>
-      <VStack px="$2" gap="$2" flex={1}>
-        <Card backgroundColor="$trueGray800" height="$72" px="$4" py="$2">
-          <Heading size="sm" color="$white" mb="$2" px="$4">
+      <VStack className="px-2 gap-2 flex-1">
+        <Card className="bg-trueGray-800 h-72 px-4 py-2">
+          <Heading size="sm" className="text-white mb-2 px-4">
             Pedidos anteriores
           </Heading>
           <FlatList
@@ -92,8 +84,8 @@ export function SaleCheckIn() {
             showsVerticalScrollIndicator={false}
             contentContainerStyle={{ paddingBottom: 100 }}
             ListEmptyComponent={() => (
-              <Center mt="$1">
-                <Heading size="md" color="$trueGray100">
+              <Center className="mt-1">
+                <Heading size="md" className="text-trueGray-100">
                   Nenhum pedido encontrado
                 </Heading>
               </Center>
@@ -101,44 +93,23 @@ export function SaleCheckIn() {
           />
         </Card>
       </VStack>
-
       <HStack
-        justifyContent="space-between"
-        position="absolute"
-        bottom="$0"
-        left="$0"
-        backgroundColor="$trueGray900"
-        width="100%"
-        height="$24"
-        padding="$2"
-      >
+        className="justify-between absolute bottom-0 left-0 bg-trueGray-900 w-[100%] h-24 p-2">
         <Button
           size="lg"
-          rounded="$md"
-          w="$24"
-          h="$12"
-          backgroundColor="$blue500"
-          $active-bg="$blue700"
           onPress={handleBack}
-          gap="$1"
-        >
+          className="rounded-md w-24 h-12 bg-blue-500  active:bg-blue-700 gap-1">
           <ButtonIcon as={ChevronLeft} size="xl" />
-          <Text color="$trueGray100" size="xs">
+          <Text size="xs" className="text-trueGray-100">
             Voltar
           </Text>
         </Button>
         <Button
           size="lg"
-          rounded="$md"
-          w="$24"
-          h="$12"
-          backgroundColor="$green700"
-          $active-bg="$green500"
           onPress={handleSaleNew}
-          gap="$1"
-        >
+          className="rounded-md w-24 h-12 bg-green-700  active:bg-green-500 gap-1">
           <ButtonIcon as={Plus} size="xl" />
-          <Text color="$trueGray100" size="xs">
+          <Text size="xs" className="text-trueGray-100">
             Pedido
           </Text>
         </Button>

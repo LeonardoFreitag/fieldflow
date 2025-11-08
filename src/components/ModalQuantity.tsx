@@ -1,14 +1,13 @@
 import {
-  Button,
-  ButtonIcon,
-  Heading,
-  HStack,
   Modal,
   ModalBackdrop,
   ModalBody,
   ModalContent,
   ModalHeader,
-} from '@gluestack-ui/themed';
+} from '@ui/modal';
+import { HStack } from '@ui/hstack';
+import { Heading } from '@ui/heading';
+import { Button, ButtonIcon } from '@ui/button';
 // import { useState } from 'react';
 import { Input } from './Input';
 import { Save, X } from 'lucide-react-native';
@@ -38,10 +37,10 @@ export function ModalQuantity({
   return (
     <Modal isOpen={visible}>
       <ModalBackdrop />
-      <ModalContent bg="$trueGray600" rounded="$md">
+      <ModalContent className="bg-trueGray-600 rounded-md">
         <ModalHeader />
         <ModalBody>
-          <Heading color="$blueGray300">Quantidade</Heading>
+          <Heading className="text-blueGray-300">Quantidade</Heading>
           <Input
             autoFocus
             keyboardType="numeric"
@@ -49,24 +48,16 @@ export function ModalQuantity({
             value={qtyTyped ?? ''}
             onChangeText={setQtyTyped}
           />
-          <HStack mt="$2" justifyContent="flex-end" gap="$2">
+          <HStack className="mt-2 justify-end gap-2">
             <Button
-              width="$20"
-              height="$10"
-              rounded="$md"
-              backgroundColor="$green700"
-              $active-bg="$green500"
               onPress={handleSave}
+              className="w-20 h-10 rounded-md bg-green-700  active:bg-green-500"
             >
               <ButtonIcon as={Save} size="xl" />
             </Button>
             <Button
-              width="$20"
-              height="$10"
-              rounded="$md"
-              backgroundColor="$red700"
-              $active-bg="$red500"
               onPress={handleCloseModal}
+              className="w-20 h-10 rounded-md bg-red-700  active:bg-red-500"
             >
               <ButtonIcon as={X} size="xl" />
             </Button>

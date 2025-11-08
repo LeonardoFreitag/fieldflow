@@ -4,6 +4,7 @@ export declare global {
       AppRoutes: { screen: string };
       AuthRoutes: { screen: string };
       MenuRoutes: undefined;
+      SaleMain: undefined;
       SignIn: undefined;
       SaleRoute: undefined;
       SaleCheckIn: undefined;
@@ -18,7 +19,6 @@ export declare global {
       ReceberDrive: undefined;
       ReceberFinalize: undefined;
       SaleRouteDrive: undefined;
-      SaleClientList: undefined;
       DeliveryDrive: undefined;
     }
   }

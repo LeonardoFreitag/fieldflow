@@ -1,11 +1,7 @@
-import {
-  Heading,
-  HStack,
-  VStack,
-  Text,
-  Button,
-  ButtonIcon,
-} from '@gluestack-ui/themed';
+import { Button, ButtonIcon } from '@/components/ui/button';
+import { Text } from '@/components/ui/text';
+import { VStack } from '@/components/ui/vstack';
+import { HStack } from '@/components/ui/hstack';
 import { type TouchableOpacityProps } from 'react-native';
 import { type ClientModel } from '@models/ClientModel';
 import { HandTap, ImageBroken, Images } from 'phosphor-react-native';
@@ -21,30 +17,32 @@ export function ClientCard({ data, handleSelectCustomer, ...rest }: Props) {
 
   return (
     <VStack {...rest}>
-      <HStack
-        bg="$trueGray700"
-        alignItems="center"
-        p="$4"
-        pr="$4"
-        rounded="$md"
-        mb="$3"
-        w="$full"
-        justifyContent="space-between"
-        position="relative"
-      >
-        <VStack flex={1}>
-          <Heading size="sm" color="$trueGray100">
+      <HStack className="bg-trueGray-700 items-center p-4 pr-4 rounded-md mb-3 w-full justify-between relative">
+        <VStack className="flex-1">
+          <Text size="xs" className="text-trueGray-100 font-bold">
             {data.companyName}
-          </Heading>
+          </Text>
           <Text
-            color="$trueGray400"
             size="xs"
-          >{`${data.streetName}, ${data.streetNumber} - ${data.neighborhood}`}</Text>
+            numberOfLines={1}
+            ellipsizeMode="tail"
+            className="text-trueGray-400"
+          >
+            {`${data.streetName}, ${data.streetNumber}`}
+          </Text>
           <Text
-            color="$trueGray400"
             size="xs"
+            numberOfLines={1}
+            ellipsizeMode="tail"
+            className="text-trueGray-400"
+          >
+            {`Bairro: ${data.neighborhood}`}
+          </Text>
+          <Text
+            size="xs"
+            className="text-trueGray-400"
           >{`${data.city} - ${data.state}`}</Text>
-          {data.latitude &&
+          {/* {data.latitude &&
             data.longitude &&
             data.latitude !== 0 &&
             data.longitude !== 0 &&
@@ -57,29 +55,20 @@ export function ClientCard({ data, handleSelectCustomer, ...rest }: Props) {
             )}
           {!data.latitude && !data.longitude && (
             <Text color="$red400">{`Lat. - |   Long. -`}</Text>
-          )}
+          )} */}
           {data.dataFrom === 'manual' ? (
-            <Text color="$blue500" size="xs">
+            <Text size="xs" className="text-blue-500">
               {`Adicionado manualmente`}
             </Text>
           ) : (
-            <Text color="$green500" size="xs">
+            <Text size="xs" className="text-green-500">
               {`Rota do dia`}
             </Text>
           )}
         </VStack>
-        <VStack
-          alignItems="center"
-          justifyContent="center"
-          width={40}
-          height={40}
-          borderRadius="$md"
-          position="absolute"
-          top="$1"
-          right="$1"
-        >
+        <VStack className="items-center justify-center w-[40px] h-[40px] rounded-md absolute top-1 right-1">
           {data.ClientPhotos && data.ClientPhotos.length > 0 ? (
-            <Images size={40} color="$trueGray400" />
+            <Images color="white" />
           ) : (
             <ImageBroken
               size={40}
@@ -89,17 +78,10 @@ export function ClientCard({ data, handleSelectCustomer, ...rest }: Props) {
         </VStack>
         {canChangeRouteEdit && (
           <Button
-            width="$10"
-            height="$10"
-            rounded="$md"
-            backgroundColor={data.isSelected ? '$green700' : '$blueGray600'}
-            $active-bg="$green500"
             onPress={() => {
               handleSelectCustomer(data);
             }}
-            position="absolute"
-            bottom="$1"
-            right="$1"
+            className={` ${data.isSelected ? 'bg-green-700' : 'bg-blueGray-600'} w-10 h-10 rounded-md  active:bg-green-500 absolute bottom-1 right-1 `}
           >
             <ButtonIcon as={HandTap} size="xl" />
           </Button>

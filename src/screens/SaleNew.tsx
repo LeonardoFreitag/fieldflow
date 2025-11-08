@@ -1,12 +1,9 @@
-import {
-  Button,
-  ButtonIcon,
-  Center,
-  Heading,
-  VStack,
-  HStack,
-  Text,
-} from '@gluestack-ui/themed';
+import { Text } from "@/components/ui/text";
+import { HStack } from "@/components/ui/hstack";
+import { VStack } from "@/components/ui/vstack";
+import { Heading } from "@/components/ui/heading";
+import { Center } from "@/components/ui/center";
+import { Button, ButtonIcon } from "@/components/ui/button";
 import { useNavigation } from '@react-navigation/native';
 import { CustomerHeader } from '@components/CustomerHeader';
 import { ChevronLeft, Plus, Save } from 'lucide-react-native';
@@ -66,27 +63,27 @@ export function SaleNew() {
   }
 
   return (
-    <VStack flex={1}>
+    <VStack className="flex-1">
       <CustomerHeader data={clientEdit} showBackButton={false} />
-      <Heading size="sm" mx="$1" mt="$1" color="$trueGray100">
+      <Heading size="sm" className="mx-1 mt-1 text-trueGray-100">
         Novo pedido
       </Heading>
-      <HStack justifyContent="space-between">
-        <Heading size="sm" mx="$1" mt="$1" color="$trueGray100">
+      <HStack className="justify-between">
+        <Heading size="sm" className="mx-1 mt-1 text-trueGray-100">
           {`Itens: ${
             travelClientOrderEdit.TravelClientOrdersItems
               ? travelClientOrderEdit.TravelClientOrdersItems.length
               : 0
           }`}
         </Heading>
-        <Heading size="sm" mx="$1" mt="$1" color="$green500">
+        <Heading size="sm" className="mx-1 mt-1 text-green-500">
           {`Total: ${orderTotal.toLocaleString('pt-BR', {
             style: 'currency',
             currency: 'BRL',
           })}`}
         </Heading>
       </HStack>
-      <Center mt="$1" mx="$2" flex={1} mb="$24">
+      <Center className="mt-1 mx-2 flex-1 mb-24">
         <FlatList
           data={travelClientOrderEdit.TravelClientOrdersItems}
           keyExtractor={orderItem =>
@@ -98,59 +95,33 @@ export function SaleNew() {
         />
       </Center>
       <HStack
-        justifyContent="space-between"
-        position="absolute"
-        bottom="$0"
-        left="$0"
-        backgroundColor="$trueGray900"
-        width="100%"
-        height="$24"
-        padding="$2"
-      >
+        className="justify-between absolute bottom-0 left-0 bg-trueGray-900 w-[100%] h-24 p-2">
         <Button
           size="lg"
-          rounded="$md"
-          w="$24"
-          h="$12"
-          backgroundColor="$blue500"
-          $active-bg="$blue700"
           onPress={() => {
             navigation.goBack();
           }}
-          gap="$1"
-        >
+          className="rounded-md w-24 h-12 bg-blue-500  active:bg-blue-700 gap-1">
           <ButtonIcon as={ChevronLeft} size="xl" />
-          <Text color="$trueGray100" size="xs">
+          <Text size="xs" className="text-trueGray-100">
             Voltar
           </Text>
         </Button>
         <Button
           size="lg"
-          rounded="$md"
-          w="$24"
-          h="$12"
-          backgroundColor="$green700"
-          $active-bg="$green500"
           onPress={handleSaleFinish}
-          gap="$1"
-        >
+          className="rounded-md w-24 h-12 bg-green-700  active:bg-green-500 gap-1">
           <ButtonIcon as={Save} size="lg" />
-          <Text color="$trueGray100" size="xs">
+          <Text size="xs" className="text-trueGray-100">
             Finalizar
           </Text>
         </Button>
         <Button
           size="lg"
-          rounded="$md"
-          w="$24"
-          h="$12"
-          backgroundColor="$green700"
-          $active-bg="$green500"
           onPress={handleAddSaleItem}
-          gap="$1"
-        >
+          className="rounded-md w-24 h-12 bg-green-700  active:bg-green-500 gap-1">
           <ButtonIcon as={Plus} size="xl" />
-          <Text color="$trueGray100" size="xs">
+          <Text size="xs" className="text-trueGray-100">
             Produto
           </Text>
         </Button>

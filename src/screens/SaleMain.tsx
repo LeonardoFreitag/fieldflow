@@ -1,3 +1,8 @@
+import { Heading } from "@/components/ui/heading";
+import { Text } from "@/components/ui/text";
+import { VStack } from "@/components/ui/vstack";
+import { HStack } from "@/components/ui/hstack";
+import { Button, ButtonIcon } from "@/components/ui/button";
 import { ClientRouteCard } from '@components/ClientRouteCard';
 import { HomeHeader } from '@components/HomeHeader';
 import { Input } from '@components/Input';
@@ -7,15 +12,6 @@ import {
   type OrderedClient,
   type RouteOptimizationResult,
 } from '@dtos/IResponseClientOptimizeDTO';
-import {
-  Button,
-  ButtonIcon,
-  HStack,
-  VStack,
-  Text,
-  Switch,
-  Heading,
-} from '@gluestack-ui/themed';
 import { useAuth } from '@hooks/useAuth';
 import { useHandleSaleRoute } from '@hooks/useHandleSaleRoute';
 import polyline from '@mapbox/polyline';
@@ -38,7 +34,9 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Alert, FlatList } from 'react-native';
 import { useDispatch } from 'react-redux';
 
-export function SaleClientList() {
+export type FilterType = 'suggested' | 'all';
+
+export function SaleMain() {
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const [textTyped, setTextTyped] = useState('');
@@ -288,12 +286,8 @@ export function SaleClientList() {
   }, [dispatch, user?.user.customerId, user?.user.routeId]);
 
   useEffect(() => {
-    if (routeToday) {
-      handleGetClientRoutToDay();
-    } else {
-      loadClientsByRoute();
-    }
-  }, [handleGetClientRoutToDay, loadClientsByRoute, routeToday]);
+    loadClientsByRoute();
+  }, [loadClientsByRoute]);
 
   const handleSelectCustomer = (clientItem: ClientModel) => {
     dispatch(
@@ -372,34 +366,34 @@ export function SaleClientList() {
     }
   };
 
-  const handleAddNewSale = async () => {
-    const selectedClients = clientRouteList.filter(client => client.isSelected);
+  const handleAddNewSale = async (clientItem: ClientModel) => {
+    // const selectedClients = clientRouteList.filter(client => client.isSelected);
 
-    if (selectedClients.length === 0) {
-      return;
-    }
+    // if (selectedClients.length === 0) {
+    //   return;
+    // }
 
-    if (selectedClients.length > 1) {
-      Alert.alert(
-        'Atenção',
-        'Por favor, selecione apenas um cliente para iniciar um novo pedido.',
-      );
-      return;
-    }
+    // if (selectedClients.length > 1) {
+    //   Alert.alert(
+    //     'Atenção',
+    //     'Por favor, selecione apenas um cliente para iniciar um novo pedido.',
+    //   );
+    //   return;
+    // }
 
-    const clientSelectedForSale = selectedClients[0];
+    // const clientSelectedForSale = selectedClients[0];
 
-    dispatch(addClientEdit(clientSelectedForSale));
+    dispatch(addClientEdit(clientItem));
 
     if (!existsTravelEdit.exists) {
       try {
         setWorking(true);
-        const clientsWithStatus: ClientModel[] = selectedClients.map(
-          client => ({
-            ...client,
-            status: client.status ? client.status : 'pending',
-          }),
-        );
+        const clientsWithStatus: ClientModel[] = [];
+        clientsWithStatus.push({
+          ...clientItem,
+          dataFrom: 'ad_hoc',
+          status: clientItem.status ? clientItem.status : 'pending',
+        });
 
         const dataClients = await fetchRota(clientsWithStatus);
 
@@ -409,8 +403,7 @@ export function SaleClientList() {
 
         // Usar o cliente específico ao invés do primeiro da lista
         const targetClient =
-          dataClients.find(client => client.id === clientSelectedForSale.id) ??
-          clientSelectedForSale;
+          dataClients.find(client => client.id === clientItem.id) ?? clientItem;
 
         await handleCheckIn(targetClient, dataTravel);
 
@@ -428,11 +421,11 @@ export function SaleClientList() {
       setWorking(true);
       const newClient: TravelClientsModel = {
         travelId: travelEdit.id ?? '',
-        clientId: clientSelectedForSale.id,
-        clientCode: clientSelectedForSale.code,
+        clientId: clientItem.id,
+        clientCode: clientItem.code,
         orderInRoute: (travelEdit.TravelClients?.length ?? 0) + 1,
-        latitude: Number(clientSelectedForSale.latitude),
-        longitude: Number(clientSelectedForSale.longitude),
+        latitude: Number(clientItem.latitude),
+        longitude: Number(clientItem.longitude),
         checkInDate: new Date(),
         checkOutDate: new Date(),
         notes: '',
@@ -452,14 +445,14 @@ export function SaleClientList() {
 
       // Incluir o cliente ad hoc na lista para buscar a rota otimizada
       const clientAsModel: ClientModel = {
-        ...clientSelectedForSale,
+        ...clientItem,
         dataFrom: 'ad_hoc',
       };
 
       const dataClients = await fetchRota([...clientList, clientAsModel]);
 
       const targetClient = dataClients.find(
-        client => client.id === clientSelectedForSale.id,
+        client => client.id === clientItem.id,
       );
 
       if (!targetClient) {
@@ -468,7 +461,7 @@ export function SaleClientList() {
           'Cliente não encontrado na rota otimizada, usando cliente original',
         );
         const dataTravel = await handleSaleRoute();
-        await handleCheckIn(clientSelectedForSale, dataTravel);
+        await handleCheckIn(clientItem, dataTravel);
         navigation.navigate('SaleCheckIn');
         return;
       }
@@ -485,15 +478,6 @@ export function SaleClientList() {
     }
   };
 
-  const handleFilterRouteToday = () => {
-    if (!routeToday) {
-      handleGetClientRoutToDay();
-    } else {
-      loadClientsByRoute();
-    }
-    setRouteToday(!routeToday);
-  };
-
   const clientSelecteds = useMemo(() => {
     return clientRouteList.filter((client: ClientModel) => client.isSelected);
   }, [clientRouteList]);
@@ -501,47 +485,17 @@ export function SaleClientList() {
   return (
     <>
       <Working visible={working} />
-      <VStack flex={1}>
+      <VStack className="flex-1">
         <HomeHeader />
-        <VStack flex={1} px="$2" py="$2">
-          <HStack
-            w="$full"
-            justifyContent="flex-start"
-            alignItems="center"
-            mt="$2"
-            mb="$4"
-            gap="$2"
-          >
-            <Switch
-              size="md"
-              isDisabled={false}
-              onValueChange={handleFilterRouteToday}
-              value={routeToday}
-              bgColor="$trueGray600"
-            />
-            <Text color="$white">Buscar rota do dia</Text>
-          </HStack>
-          <HStack
-            mb="$2"
-            justifyContent="space-between"
-            alignItems="center"
-            flexDirection="row"
-          >
-            <Heading size="sm" color="$trueGray100">
+        <VStack className="flex-1 px-2 py-2">
+          <HStack className="mb-2 justify-between items-center flex-row">
+            <Heading size="sm" className="text-trueGray-100">
               {`Selecionados (${clientSelecteds.length})`}
             </Heading>
-            <Text color="$trueGray400">{`${clientRouteList.length} clientes`}</Text>
+            <Text className="text-trueGray-400">{`${clientRouteList.length} clientes`}</Text>
           </HStack>
 
-          <HStack
-            // mx="$1"
-            mb="$2"
-            w="$full"
-            backgroundColor="$trueGray600"
-            p="$2"
-            rounded="$md"
-            gap="$2"
-          >
+          <HStack className="mb-2 w-full bg-trueGray-600 p-2 rounded-md gap-2">
             <Input
               placeholder="Pesquise pelo cliente..."
               keyboardType="default"
@@ -552,14 +506,10 @@ export function SaleClientList() {
             />
             <Button
               size="lg"
-              rounded="$md"
-              w="$12"
-              h="$12"
               onPress={() => {
                 setTextTyped('');
               }}
-              gap="$1"
-            >
+              className="rounded-md w-12 h-12 gap-1">
               <ButtonIcon as={X} size="xl" />
             </Button>
           </HStack>
@@ -578,6 +528,9 @@ export function SaleClientList() {
                   handleSelectCustomer={() => {
                     handleSelectCustomer(item);
                   }}
+                  handleAddNewSale={async () => {
+                    await handleAddNewSale(item);
+                  }}
                 />
               )}
               showsVerticalScrollIndicator={false}
@@ -585,64 +538,26 @@ export function SaleClientList() {
           )}
         </VStack>
         <HStack
-          justifyContent="space-between"
-          position="absolute"
-          bottom="$0"
-          left="$0"
-          backgroundColor="$trueGray900"
-          width="100%"
-          height="$24"
-          padding="$2"
-        >
+          className="justify-between absolute bottom-0 left-0 bg-trueGray-900 w-[100%] h-24 p-2">
           <Button
             size="lg"
-            rounded="$md"
-            w="$24"
-            h="$12"
-            backgroundColor="$blue500"
-            $active-bg="$blue700"
             onPress={() => {
               navigation.goBack();
             }}
-            gap="$1"
-          >
+            className="rounded-md w-24 h-12 bg-blue-500  active:bg-blue-700 gap-1">
             <ButtonIcon as={ChevronLeft} size="xl" />
-            <Text color="$trueGray100" size="xs">
+            <Text size="xs" className="text-trueGray-100">
               Voltar
             </Text>
           </Button>
 
           <Button
             size="lg"
-            rounded="$md"
-            w="$24"
-            h="$12"
-            backgroundColor="$green700"
-            $active-bg="$green500"
-            gap="$1"
             onPress={handleAddToRoute}
-          >
+            className="rounded-md w-24 h-12 bg-green-700  active:bg-green-500 gap-1">
             <ButtonIcon as={Plus} size="lg" />
-            <Text color="$trueGray100" size="xs">
+            <Text size="xs" className="text-trueGray-100">
               Rota
-            </Text>
-          </Button>
-          <Button
-            size="lg"
-            rounded="$md"
-            w="$24"
-            h="$12"
-            backgroundColor="$green700"
-            $active-bg="$green500"
-            gap="$1"
-            onPress={() => {
-              handleAddNewSale();
-            }}
-            // disabled={!canAddNewSale}
-          >
-            <ButtonIcon as={Plus} size="lg" />
-            <Text color="$trueGray100" size="xs">
-              Pedido
             </Text>
           </Button>
         </HStack>

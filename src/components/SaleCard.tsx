@@ -1,18 +1,18 @@
 import {
-  Heading,
-  HStack,
-  VStack,
-  Text,
-  Icon,
-  Button,
   AlertDialog,
   AlertDialogBackdrop,
   AlertDialogContent,
   AlertDialogHeader,
   AlertDialogBody,
   AlertDialogFooter,
-  ButtonText,
-} from '@gluestack-ui/themed';
+} from '@ui/alert-dialog';
+
+import { Button, ButtonText } from '@ui/button';
+import { Icon } from '@ui/icon';
+import { Text } from '@ui/text';
+import { VStack } from '@ui/vstack';
+import { HStack } from '@ui/hstack';
+import { Heading } from '@ui/heading';
 import { type TouchableOpacityProps } from 'react-native';
 import { Repeat } from 'lucide-react-native';
 import { useState } from 'react';
@@ -28,26 +28,20 @@ export function SaleCard({ data, handleSaleRepeat, ...rest }: Props) {
   const [saleIdForRepeat, setSaleIdForRepeat] = useState<string | null>(null);
 
   const handleSaleRepeatClick = () => {
+    if (!data.id) {
+      return;
+    }
     setSaleIdForRepeat(data.id);
     setShowRepeatConfirmDialog(true);
   };
 
   return (
-    <HStack
-      bg="$trueGray700"
-      alignItems="center"
-      p="$2"
-      pr="$4"
-      rounded="$md"
-      mb="$3"
-      w="$full"
-      justifyContent="space-between"
-    >
-      <VStack flex={1}>
-        <Heading size="xs" color="$trueGray100">
+    <HStack className="bg-trueGray-700 items-center p-2 pr-4 rounded-md mb-3 w-full justify-between">
+      <VStack className="flex-1">
+        <Heading size="xs" className="text-trueGray-100">
           {`Nro. pedido: ${data.id} - Data: ${data.orderDate.toLocaleDateString('pt-BR')}`}
         </Heading>
-        <Text color="$trueGray400">
+        <Text className="text-trueGray-400">
           {data.total.toLocaleString('pt-BR', {
             style: 'currency',
             currency: 'BRL',
@@ -55,7 +49,7 @@ export function SaleCard({ data, handleSaleRepeat, ...rest }: Props) {
         </Text>
         {data.TravelClientOrdersPaymentForm &&
           data.TravelClientOrdersPaymentForm.map(payment => (
-            <Text key={payment.id} color="$trueGray400">
+            <Text key={payment.id} className="text-trueGray-400">
               {`Forma de pagamento: ${payment.description} - Valor: ${payment.amount.toLocaleString(
                 'pt-BR',
                 {
@@ -67,15 +61,12 @@ export function SaleCard({ data, handleSaleRepeat, ...rest }: Props) {
           ))}
       </VStack>
       <Button
-        height="$12"
         variant="solid"
         size="sm"
-        rounded="$md"
-        p="$2"
-        bg="$trueGray800"
         onPress={handleSaleRepeatClick}
+        className="h-12 rounded-md p-2 bg-trueGray-800"
       >
-        <Icon as={Repeat} color="$blue500" />
+        <Icon as={Repeat} className="text-blue-500" />
       </Button>
       <DialogConfirmRepeatSale
         isOpen={showRepeatConfirmDialog}
@@ -117,7 +108,7 @@ function DialogConfirmRepeatSale({
             continuar.
           </Text>
         </AlertDialogBody>
-        <AlertDialogFooter justifyContent="space-between">
+        <AlertDialogFooter className="justify-between">
           <Button
             variant="outline"
             action="secondary"

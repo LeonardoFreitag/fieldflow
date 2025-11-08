@@ -1,13 +1,10 @@
+import { VStack } from "@/components/ui/vstack";
+import { Text } from "@/components/ui/text";
+import { HStack } from "@/components/ui/hstack";
+import { Heading } from "@/components/ui/heading";
+import { Button, ButtonIcon } from "@/components/ui/button";
 import { ClientCard } from '@components/ClientCard';
 import { HomeHeader } from '@components/HomeHeader';
-import {
-  Button,
-  ButtonIcon,
-  Heading,
-  HStack,
-  Text,
-  VStack,
-} from '@gluestack-ui/themed';
 import { useNavigation } from '@react-navigation/native';
 import { FlatList } from 'react-native';
 import { useDispatch } from 'react-redux';
@@ -106,32 +103,23 @@ export function SaleRoute() {
   }, [clientList, dispatch, existsTravelEdit.exists, navigation]);
 
   return (
-    <VStack flex={1}>
+    <VStack className="flex-1">
       <HomeHeader />
-      <VStack flex={1} px="$4" py="$4">
-        <HStack
-          gap="$4"
-          justifyContent="space-between"
-          mb="$4"
-          alignItems="center"
-          flexWrap="wrap"
-        >
+      <VStack className="flex-1 px-4 py-4">
+        <HStack className="gap-4 justify-between mb-4 items-center flex-wrap">
           {canChangeRouteEdit.canChangeRoute && (
             <Button
               onPress={handleGetClientRoutToDay}
-              w="$full"
-              gap="$4"
-              $active-bg="$trueGray200"
-            >
+              className="w-full gap-4  active:bg-trueGray-200">
               <ButtonIcon as={MapPinArea} size="xl" />
-              <Text color="$trueGray100">Buscar rota do dia</Text>
+              <Text className="text-trueGray-100">Buscar rota do dia</Text>
             </Button>
           )}
 
-          <Heading size="sm" color="$trueGray100">
+          <Heading size="sm" className="text-trueGray-100">
             {`Selecionados (${clientSelecteds.length})`}
           </Heading>
-          <Text color="$trueGray400">{`${clientList.length} clientes`}</Text>
+          <Text className="text-trueGray-400">{`${clientList.length} clientes`}</Text>
         </HStack>
         {clientList.length > 0 && (
           <FlatList
@@ -148,54 +136,28 @@ export function SaleRoute() {
         )}
       </VStack>
       <VStack
-        w="$full"
-        p="$4"
-        mb="$4"
-        display="flex"
-        flexDirection="row"
-        gap="$2"
-        paddingHorizontal="$8"
-        justifyContent="space-between"
-        alignItems="flex-start"
-      >
+        className="w-full p-4 mb-4 flex flex-row gap-2 px-8 justify-between items-start">
         <Button
           size="lg"
-          rounded="$md"
-          h="$12"
-          w="$1/3"
-          backgroundColor="$blue500"
-          $active-bg="$blue700"
-          display="flex"
           onPress={() => {
-            navigation.navigate('SaleClientList');
+            navigation.navigate('SaleMain');
           }}
-        >
+          className="rounded-md h-12 w-1/3 bg-blue-500  active:bg-blue-700 flex">
           <ButtonIcon as={UserPlus} size="xl" />
         </Button>
         {canChangeRouteEdit.canChangeRoute && (
           <Button
             size="lg"
-            rounded="$md"
-            h="$12"
-            w="$1/3"
-            backgroundColor="$red500"
-            display="flex"
             onPress={handleClearSelection}
-          >
+            className="rounded-md h-12 w-1/3 bg-red-500 flex">
             <ButtonIcon as={Broom} size="xl" />
           </Button>
         )}
         <Button
           size="lg"
-          rounded="$md"
-          h="$12"
-          w="$1/3"
-          backgroundColor={continueIsDisable ? '$blueGray400' : '$green700'}
-          $active-bg="$green500"
-          display="flex"
           disabled={continueIsDisable}
           onPress={handleStartSaleRouteDrive}
-        >
+          className={` ${continueIsDisable ? "bg-blueGray-400" : "bg-green-700"} rounded-md h-12 w-1/3  active:bg-green-500 flex `}>
           <ButtonIcon as={MapPinArea} size="xl" />
         </Button>
       </VStack>

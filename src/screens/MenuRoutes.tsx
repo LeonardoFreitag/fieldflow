@@ -1,12 +1,8 @@
-import {
-  Button,
-  ButtonIcon,
-  Heading,
-  SafeAreaView,
-  VStack,
-} from '@gluestack-ui/themed';
+import { VStack } from "@/components/ui/vstack";
+import { SafeAreaView } from "@/components/ui/safe-area-view";
+import { Heading } from "@/components/ui/heading";
+import { Button, ButtonIcon } from "@/components/ui/button";
 import { useAuth } from '@hooks/useAuth';
-import { useHandleSaleRoute } from '@hooks/useHandleSaleRoute';
 import { type DeliveryRouteModel } from '@models/DeliveryRouteModel';
 import { type RouteCollectionModel } from '@models/RouteCollectionModel';
 import { type UserRuleModel } from '@models/UserAuthModel';
@@ -26,8 +22,6 @@ export function MenuRoutes() {
 
   const { user } = useAuth();
 
-  const { handleSaleRoute } = useHandleSaleRoute();
-
   const stringRules = useMemo(() => {
     if (!user?.user.UserRules) {
       return '';
@@ -40,8 +34,7 @@ export function MenuRoutes() {
   }, [user?.user.UserRules]);
 
   const handleCallSaleRoute = async () => {
-    await handleSaleRoute();
-    navigation.navigate('SaleRoute');
+    navigation.navigate('SaleMain');
   };
 
   const handleCallDeliveryRoute = useCallback(async () => {
@@ -128,46 +121,34 @@ export function MenuRoutes() {
 
   return (
     <SafeAreaView>
-      <VStack px="$4" py="$4" gap="$12" height="$full" justifyContent="center">
+      <VStack className="px-4 py-4 gap-12 h-full justify-center">
         <Button
           variant="outline"
-          borderColor="$trueGray300"
-          $active-bg="$trueGray500"
-          gap="$8"
-          height="$20"
           onPress={handleCallSaleRoute}
           disabled={!stringRules.includes('sale')}
-        >
-          <ButtonIcon as={ShoppingCart} size="xl" color="$trueGray300" />
-          <Heading size="md" color="$trueGray300">
+          className="border-trueGray-300  active:bg-trueGray-500 gap-8 h-20">
+          <ButtonIcon as={ShoppingCart} size="xl" className="text-trueGray-300" />
+          <Heading size="md" className="text-trueGray-300">
             Vendas
           </Heading>
         </Button>
         <Button
           variant="outline"
-          borderColor="$trueGray300"
-          $active-bg="$trueGray500"
-          gap="$8"
-          height="$20"
           onPress={handleCallDeliveryRoute}
           disabled={!stringRules.includes('production')}
-        >
-          <ButtonIcon as={Truck} size="xl" color="$trueGray300" />
-          <Heading size="md" color="$trueGray300">
+          className="border-trueGray-300  active:bg-trueGray-500 gap-8 h-20">
+          <ButtonIcon as={Truck} size="xl" className="text-trueGray-300" />
+          <Heading size="md" className="text-trueGray-300">
             Entrega
           </Heading>
         </Button>
         <Button
           variant="outline"
-          borderColor="$trueGray300"
-          gap="$8"
-          height="$20"
-          $active-bg="$trueGray500"
           onPress={handleCallRouteCollection}
           disabled={!stringRules.includes('expedition')}
-        >
-          <ButtonIcon as={HandCoins} size="xl" color="$trueGray300" />
-          <Heading size="md" color="$trueGray300">
+          className="border-trueGray-300 gap-8 h-20  active:bg-trueGray-500">
+          <ButtonIcon as={HandCoins} size="xl" className="text-trueGray-300" />
+          <Heading size="md" className="text-trueGray-300">
             Cobrança
           </Heading>
         </Button>

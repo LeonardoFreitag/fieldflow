@@ -1,13 +1,8 @@
-import {
-  HStack,
-  VStack,
-  Text,
-  Badge,
-  BadgeText,
-  BadgeIcon,
-  ButtonIcon,
-  Button,
-} from '@gluestack-ui/themed';
+import { ButtonIcon, Button } from '@ui/button';
+import { Badge, BadgeText, BadgeIcon } from '@ui/badge';
+import { Text } from '@ui/text';
+import { VStack } from '@ui/vstack';
+import { HStack } from '@ui/hstack';
 import { CircleDollarSign, HandCoins } from 'lucide-react-native';
 import { CurrencyDollar, HandTap } from 'phosphor-react-native';
 import { type ReceberModel } from '@models/ReceberModel';
@@ -44,90 +39,63 @@ export function ReceberCard({ data, handleSelectReceber }: ReceberCardProps) {
 
   return (
     <>
-      <VStack
-        mb="$2"
-        mt="$4"
-        alignItems="flex-end"
-        position="absolute"
-        right="$1"
-        top="-$3"
-        zIndex={1}
-        backgroundColor="$trueGray800"
-        p="$1"
-        rounded="$md"
-        w="$1/3"
-        justifyContent="space-between"
-      >
-        <Text size="xs" color={colorForStatus(data.status)} fontWeight="bold">
+      <VStack className="mb-2 mt-4 items-end absolute right-1 -top-3 z-1 bg-trueGray-800 p-1 rounded-md w-1/3 justify-between">
+        <Text
+          size="xs"
+          className={` color-${colorForStatus(data.status)} font-bold `}
+        >
           {Number(data.valorDuplicata).toLocaleString('pt-BR', {
             style: 'currency',
             currency: 'BRL',
           })}
         </Text>
-        <Text size="xs" color="$green300" fontWeight="bold">
+        <Text size="xs" className="text-green-300 font-bold">
           {Number(receivedValue).toLocaleString('pt-BR', {
             style: 'currency',
             currency: 'BRL',
           })}
         </Text>
-        <Text size="xs" color="$orange300" fontWeight="bold">
+        <Text size="xs" className="text-orange-300 font-bold">
           {Number(balance).toLocaleString('pt-BR', {
             style: 'currency',
             currency: 'BRL',
           })}
         </Text>
       </VStack>
-      <HStack
-        bg="$trueGray700"
-        alignItems="center"
-        p="$2"
-        pr="$4"
-        rounded="$md"
-        mb="$3"
-        w="$full"
-        justifyContent="space-between"
-        position="relative"
-      >
-        <VStack flex={1}>
-          <HStack width="$full" justifyContent="space-between" mb="$1">
+      <HStack className="bg-trueGray-700 items-center p-2 pr-4 rounded-md mb-3 w-full justify-between relative">
+        <VStack className="flex-1">
+          <HStack className="w-full justify-between mb-1">
             <BadgeStatus status={data.status} />
           </HStack>
           {/* <HStack width="$full" justifyContent="space-between" mb="$1"> */}
-          <Text color="$trueGray100">{`Pedido: ${data.travelClientOrdersNumber.padStart(
+          <Text className="text-trueGray-100">{`Pedido: ${data.travelClientOrdersNumber.padStart(
             6,
             '0',
           )}`}</Text>
-          <Text color="$trueGray100">
+          <Text className="text-trueGray-100">
             {`Nota fiscal: ${data.notaFiscal?.padStart(6, '0')}`}
           </Text>
           {/* </HStack> */}
-          <VStack width="$full" justifyContent="space-between">
-            <Text size="sm" color="$trueGray100">
+          <VStack className="w-full justify-between">
+            <Text size="sm" className="text-trueGray-100">
               {data.Client?.companyName}
             </Text>
-            <Text size="sm" color="$trueGray400">
+            <Text size="sm" className="text-trueGray-400">
               {`${data.Client?.streetName}, ${data.Client?.streetNumber}`}
             </Text>
-            <Text size="sm" color="$trueGray400">
+            <Text size="sm" className="text-trueGray-400">
               {`${data.Client?.neighborhood}`}
             </Text>
-            <Text size="sm" color="$trueGray400">
+            <Text size="sm" className="text-trueGray-400">
               {`${data.Client?.city} - ${data.Client?.state}, ${data.Client?.zipCode}`}
             </Text>
           </VStack>
         </VStack>
         <Button
-          width="$12"
-          height="$12"
-          rounded="$md"
-          backgroundColor={data.selected ? '$green700' : '$blueGray600'}
-          $active-bg="$green500"
           onPress={() => {
             handleSelectReceber(data);
           }}
-          position="absolute"
-          bottom="$1"
-          right="$1"
+          className={` ${data.selected ? 'bg-green-700' : 'bg-blueGray-600'} w-12 h-12 rounded-md  active:bg-green-500 absolute bottom-1 right-1 `}
         >
           <ButtonIcon as={HandTap} size="xl" />
         </Button>
@@ -145,9 +113,7 @@ function BadgeStatus({ status }: { status: string }) {
       size="md"
       variant="solid"
       action="muted"
-      width="$32"
-      bgColor={color}
-      justifyContent="space-between"
+      className={` bgColor-${color} w-32 justify-between `}
     >
       <BadgeText>
         {status === 'A' ? 'Atrasado' : status === 'P' ? 'Parcial' : 'Recebido'}

@@ -1,12 +1,9 @@
-import {
-  Button,
-  ButtonIcon,
-  Center,
-  Heading,
-  HStack,
-  VStack,
-  Text,
-} from '@gluestack-ui/themed';
+import { Text } from "@/components/ui/text";
+import { VStack } from "@/components/ui/vstack";
+import { HStack } from "@/components/ui/hstack";
+import { Heading } from "@/components/ui/heading";
+import { Center } from "@/components/ui/center";
+import { Button, ButtonIcon } from "@/components/ui/button";
 import { useNavigation } from '@react-navigation/native';
 import { CustomerHeader } from '@components/CustomerHeader';
 import { CheckCheck, ChevronLeft, X } from 'lucide-react-native';
@@ -175,32 +172,23 @@ export function SaleAddNewItem() {
   ]);
 
   return (
-    <VStack flex={1}>
+    <VStack className="flex-1">
       <CustomerHeader data={clientEdit} showBackButton={false} />
-      <Heading size="sm" mx="$1" mt="$1" color="$trueGray100">
+      <Heading size="sm" className="mx-1 mt-1 text-trueGray-100">
         Adicionar produto
       </Heading>
-      <HStack justifyContent="space-between">
-        <Heading size="xs" mx="$1" mt="$1" color="$trueGray100">
+      <HStack className="justify-between">
+        <Heading size="xs" className="mx-1 mt-1 text-trueGray-100">
           {`Selecionados: ${productsSelected.length}`}
         </Heading>
-        <Heading size="xs" mx="$1" mt="$1" color="$green500">
+        <Heading size="xs" className="mx-1 mt-1 text-green-500">
           {`Total: ${totalProductsSelected.toLocaleString('pt-BR', {
             style: 'currency',
             currency: 'BRL',
           })}`}
         </Heading>
       </HStack>
-      <HStack
-        mx="$1"
-        mt="$1"
-        mb="$1"
-        w="$full"
-        backgroundColor="$trueGray600"
-        p="$2"
-        rounded="$md"
-        gap="$2"
-      >
+      <HStack className="mx-1 mt-1 mb-1 w-full bg-trueGray-600 p-2 rounded-md gap-2">
         <Input
           placeholder="Pesquise por produto..."
           keyboardType="default"
@@ -211,19 +199,14 @@ export function SaleAddNewItem() {
         />
         <Button
           size="lg"
-          rounded="$md"
-          w="$12"
-          h="$12"
           onPress={() => {
             setTextTyped('');
           }}
-          gap="$1"
-        >
+          className="rounded-md w-12 h-12 gap-1">
           <ButtonIcon as={X} size="xl" />
         </Button>
       </HStack>
-
-      <Center mt="$2" mx="$2">
+      <Center className="mt-2 mx-2">
         <FlatList
           data={filteredProducts}
           keyExtractor={prod => prod.id.toString()}
@@ -244,44 +227,24 @@ export function SaleAddNewItem() {
         />
       </Center>
       <HStack
-        justifyContent="space-between"
-        position="absolute"
-        bottom="$0"
-        left="$0"
-        backgroundColor="$trueGray900"
-        width="100%"
-        height="$24"
-        padding="$2"
-      >
+        className="justify-between absolute bottom-0 left-0 bg-trueGray-900 w-[100%] h-24 p-2">
         <Button
           size="lg"
-          rounded="$md"
-          w="$24"
-          h="$12"
-          backgroundColor="$blue500"
-          $active-bg="$blue700"
           onPress={() => {
             navigation.goBack();
           }}
-          gap="$1"
-        >
+          className="rounded-md w-24 h-12 bg-blue-500  active:bg-blue-700 gap-1">
           <ButtonIcon as={ChevronLeft} size="xl" />
-          <Text color="$trueGray100" size="xs">
+          <Text size="xs" className="text-trueGray-100">
             Voltar
           </Text>
         </Button>
         <Button
           size="lg"
-          rounded="$md"
-          w="$24"
-          h="$12"
-          backgroundColor="$green700"
-          $active-bg="$green500"
           onPress={handleInsertProducts}
-          gap="$1"
-        >
+          className="rounded-md w-24 h-12 bg-green-700  active:bg-green-500 gap-1">
           <ButtonIcon as={CheckCheck} size="xl" />
-          <Text color="$trueGray100" size="xs">
+          <Text size="xs" className="text-trueGray-100">
             Inserir
           </Text>
         </Button>

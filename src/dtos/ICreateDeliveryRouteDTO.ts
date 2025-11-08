@@ -10,7 +10,7 @@ export interface ICreateDeliveryRouteDTO {
   endDate?: Date;
   status?: string; // "open", "closed", "canceled"
   completedCharge?: boolean;
-  dateTimeCoompletedCharge?: Date;
+  dateTimeCompletedCharge?: Date;
   DeliveryItems: ICreateDeliveryItemDTO[];
   DeliveryRouteCoords?: DeliveryRouteCoordsModel[];
 }

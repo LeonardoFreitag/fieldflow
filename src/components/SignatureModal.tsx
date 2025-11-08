@@ -1,5 +1,7 @@
+import { Icon, CloseIcon } from '@ui/icon';
+import { VStack } from '@ui/vstack';
+
 import {
-  Heading,
   Modal,
   ModalBackdrop,
   ModalBody,
@@ -7,10 +9,9 @@ import {
   ModalContent,
   ModalFooter,
   ModalHeader,
-  VStack,
-  Icon,
-  CloseIcon,
-} from '@gluestack-ui/themed';
+} from '@ui/modal';
+
+import { Heading } from '@ui/heading';
 import { useRef } from 'react';
 import SignatureScreen, {
   type SignatureViewRef,
@@ -50,20 +51,15 @@ export function SignatureModal({ isOpen, onClose, onOK }: SignatureModalProps) {
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalBackdrop />
-      <ModalContent w="$full">
+      <ModalContent className="w-full">
         <ModalHeader>
           <ModalCloseButton>
             <Icon as={CloseIcon} size="xl" />
           </ModalCloseButton>
         </ModalHeader>
-        <ModalBody scrollEnabled={false} h="$3/6">
-          <VStack
-            p="$1"
-            alignItems="center"
-            justifyContent="center"
-            height={400}
-          >
-            <Heading size="lg" color="$trueGray500">
+        <ModalBody scrollEnabled={false} className="h-3/6">
+          <VStack className="p-1 items-center justify-center h-[400px]">
+            <Heading size="lg" className="text-trueGray-500">
               Assinatura
             </Heading>
 

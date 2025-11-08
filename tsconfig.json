@@ -1,20 +1,57 @@
 {
-  "extends": "expo/tsconfig.base",
   "compilerOptions": {
-    "strict": true,
+    "strictNullChecks": true,
+    "baseUrl": ".",
     "paths": {
-      "@dtos/*": ["./src/dtos/*"],
-      "@assets/*": ["./src/assets/*"],
-      "@components/*": ["./src/components/*"],
-      "@screens/*": ["./src/screens/*"],
-      "@storage/*": ["./src/storage/*"],
-      "@utils/*": ["./src/utils/*"],
-      "@services/*": ["./src/services/*"],
-      "@hooks/*": ["./src/hooks/*"],
-      "@contexts/*": ["./src/contexts/*"],
-      "@routes/*": ["./src/routes/*"],
-      "@models/*": ["./src/models/*"],
-      "@store/*": ["./src/store/*"],
+      "@/components/ui/*": [
+        "components/ui/*"
+      ],
+      "@/*": [
+        "src/*"
+      ],
+      "@components/*": [
+        "src/components/*"
+      ],
+      "@contexts/*": [
+        "src/contexts/*"
+      ],
+      "@models/*": [
+        "src/models/*"
+      ],
+      "@hooks/*": [
+        "src/hooks/*"
+      ],
+      "@store/*": [
+        "src/store/*"
+      ],
+      "@storage/*": [
+        "src/storage/*"
+      ],
+      "@routes/*": [
+        "src/routes/*"
+      ],
+      "@services/*": [
+        "src/services/*"
+      ],
+      "@utils/*": [
+        "src/utils/*"
+      ],
+      "@assets/*": [
+        "src/assets/*"
+      ],
+      "@ui/*": [
+        "components/ui/*"
+      ],
+      "@dtos/*": [
+        "src/dtos/*"
+      ],
+      "tailwind.config": [
+        "./tailwind.config.js"
+      ]
     }
-  }
+  },
+  "exclude": [
+    "node_modules"
+  ],
+  "extends": "expo/tsconfig.base"
 }

@@ -13,7 +13,7 @@ import { SaleCheckIn } from '@screens/SaleCheckIn';
 import { SaleNew } from '@screens/SaleNew';
 import { SaleRoute } from '@screens/SaleRoute';
 import { SaleRouteDrive } from '@screens/SaleRouteDrive';
-import { SaleClientList } from '@screens/SaleClientList';
+import { SaleMain } from '@screens/SaleMain';
 import { ReceberDrive } from '@screens/ReceberDrive';
 
 const { Navigator, Screen } = createNativeStackNavigator();
@@ -26,6 +26,7 @@ export function AppRoutes() {
       }}
     >
       <Screen name="MenuRoutes" component={MenuRoutes} />
+      <Screen name="SaleMain" component={SaleMain} />
       <Screen name="SaleRoute" component={SaleRoute} />
       <Screen name="SaleCheckIn" component={SaleCheckIn} />
       <Screen name="SaleVisitFailure" component={SaleVisitFailure} />
@@ -40,7 +41,6 @@ export function AppRoutes() {
       <Screen name="ReceberDrive" component={ReceberDrive} />
       <Screen name="ReceberFinalize" component={ReceberFinalize} />
       <Screen name="SaleRouteDrive" component={SaleRouteDrive} />
-      <Screen name="SaleClientList" component={SaleClientList} />
     </Navigator>
   );
 }

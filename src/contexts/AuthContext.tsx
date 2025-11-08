@@ -45,8 +45,6 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
         password,
       });
 
-      console.log('signIn response:', response.data);
-
       api.defaults.headers.common.Authorization = `Bearer ${response.data.token}`;
       const { token, refreshToken } = response.data;
 
@@ -62,9 +60,7 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
       if (isApperror) {
         Alert.alert('Erro', error.message);
       } else {
-        const status = (error as any).response
-          ? (error as any).response.status
-          : null;
+        const status = error.response ? error.response.status : null;
         if (status === 401) {
           Alert.alert('Erro', 'Email ou senha inválidos');
         }

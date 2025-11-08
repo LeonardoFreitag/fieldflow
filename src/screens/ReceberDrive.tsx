@@ -1,3 +1,18 @@
+import { HStack } from "@/components/ui/hstack";
+import { Text } from "@/components/ui/text";
+import { VStack } from "@/components/ui/vstack";
+import { Heading } from "@/components/ui/heading";
+import { Button, ButtonIcon } from "@/components/ui/button";
+
+import {
+  AlertDialog,
+  AlertDialogBackdrop,
+  AlertDialogBody,
+  AlertDialogContent,
+  AlertDialogFooter,
+  AlertDialogHeader,
+} from "@/components/ui/alert-dialog";
+
 import React, {
   useCallback,
   useEffect,
@@ -16,20 +31,6 @@ import {
 import { useDispatch } from 'react-redux';
 import { useAppSelector } from '@store/store';
 import { addCoordsEdit } from '@store/slice/coords/coordsEditSlice';
-import {
-  AlertDialog,
-  AlertDialogBackdrop,
-  AlertDialogBody,
-  AlertDialogContent,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  Button,
-  ButtonIcon,
-  Heading,
-  VStack,
-  Text,
-  HStack,
-} from '@gluestack-ui/themed';
 import { CaretLeft, RoadHorizon, UserList } from 'phosphor-react-native';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { DoorClosed, ListCheck, Car, SaveAll } from 'lucide-react-native';
@@ -339,8 +340,7 @@ export const ReceberDrive: React.FC = () => {
   return (
     <>
       {working && <Working visible={working} />}
-
-      <VStack display="flex" position="relative" flex={1}>
+      <VStack className="flex relative flex-1">
         {coordsEdit && (
           <MapView
             ref={mapRef}
@@ -386,24 +386,12 @@ export const ReceberDrive: React.FC = () => {
           </MapView>
         )}
         <Button
-          position="absolute"
-          top="$12"
-          left="$4"
-          rounded="$md"
-          opacity={0.4}
           onPress={handleBackToDeliveryRoute}
-        >
+          className="absolute top-12 left-4 rounded-md opacity-40">
           <ButtonIcon as={CaretLeft} size="xl" />
         </Button>
         <Button
-          bg="$green600"
-          $active-bg="$green700"
           variant="solid"
-          position="absolute"
-          top="$12"
-          right="$4"
-          rounded="$md"
-          opacity={0.5}
           onPress={() => {
             // Encontra o próximo cliente com status "pending"
             const nextPendingClient =
@@ -441,22 +429,15 @@ export const ReceberDrive: React.FC = () => {
               );
             }
           }}
-        >
+          className="bg-green-600  active:bg-green-700 absolute top-12 right-4 rounded-md opacity-50">
           <ButtonIcon as={RoadHorizon} size="xl" />
         </Button>
 
         <Button
-          bg="$orange600"
-          $active-bg="$orange800"
-          position="absolute"
-          bottom="$12"
-          right="$4"
-          rounded="$md"
-          opacity={0.4}
           onPress={() => {
             setShowAlertDialog(true);
           }}
-        >
+          className="bg-orange-600  active:bg-orange-800 absolute bottom-12 right-4 rounded-md opacity-40">
           <ButtonIcon as={UserList} size="xl" />
         </Button>
       </VStack>
@@ -464,7 +445,7 @@ export const ReceberDrive: React.FC = () => {
         <AlertDialogBackdrop />
         <AlertDialogContent>
           <AlertDialogHeader>
-            <VStack gap="$2">
+            <VStack className="gap-2">
               <Heading size="md">{`Rota de visita`}</Heading>
               <Text>Selecione para informar a visita</Text>
             </VStack>
@@ -475,13 +456,10 @@ export const ReceberDrive: React.FC = () => {
               routeCollectionEdit.RouteCollectionItems.map((item, index) => (
                 <VStack style={styles.itemContainer} key={item.id}>
                   <Button
-                    width="100%"
-                    bg={getButtonStatusColor(item.status)}
                     onPress={async () => {
                       await handleCallCheckIn(item);
                     }}
-                    position="relative"
-                  >
+                    className={` bg-${getButtonStatusColor(item.status)} w-[100%] relative `}>
                     {item.RouteCollectionNotFoundClient.length > 0 && (
                       <View
                         style={{
@@ -510,11 +488,9 @@ export const ReceberDrive: React.FC = () => {
                     )}
                     <Text
                       numberOfLines={1}
-                      textAlign="center"
-                      color="$white"
                       size="md"
                       style={styles.buttonText}
-                    >
+                      className="text-center text-white">
                       {index + 1}. {item.Client?.companyName}
                     </Text>
                   </Button>
@@ -522,43 +498,26 @@ export const ReceberDrive: React.FC = () => {
               ))}
           </AlertDialogBody>
           <AlertDialogFooter>
-            <HStack
-              gap="$4"
-              justifyContent="space-between"
-              alignItems="center"
-              flexWrap="wrap"
-            >
+            <HStack className="gap-4 justify-between items-center flex-wrap">
               {listIsCompleted && (
                 <Button
-                  bg="$blue600"
-                  $active-bg="$blue800"
-                  rounded="$md"
-                  opacity={0.6}
                   onPress={handleCompleteRouteCollection}
-                >
+                  className="bg-blue-600  active:bg-blue-800 rounded-md opacity-60">
                   <ButtonIcon as={ListCheck} size="xl" />
                 </Button>
               )}
               {routeCollectionEdit.status === 'created' && (
                 <Button
-                  bg="$green600"
-                  $active-bg="$green800"
-                  rounded="$md"
-                  opacity={0.6}
                   onPress={async () => {
                     await handleSaveRouteCollection();
                   }}
-                >
+                  className="bg-green-600  active:bg-green-800 rounded-md opacity-60">
                   <ButtonIcon as={SaveAll} size="xl" />
                 </Button>
               )}
               <Button
-                bg="$red600"
-                $active-bg="$red800"
-                rounded="$md"
-                opacity={0.6}
                 onPress={handleClose}
-              >
+                className="bg-red-600  active:bg-red-800 rounded-md opacity-60">
                 <ButtonIcon as={DoorClosed} size="xl" />
               </Button>
             </HStack>

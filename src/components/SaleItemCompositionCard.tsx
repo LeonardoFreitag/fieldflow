@@ -1,12 +1,9 @@
-import {
-  Heading,
-  HStack,
-  Image,
-  VStack,
-  Text,
-  Button,
-  ButtonIcon,
-} from '@gluestack-ui/themed';
+import { Button, ButtonIcon } from '@ui/button';
+import { Text } from '@ui/text';
+import { VStack } from '@ui/vstack';
+import { Image } from '@ui/image';
+import { HStack } from '@ui/hstack';
+import { Heading } from '@ui/heading';
 import { type TravelClientOrdersItemsCompositionModel } from '@models/TravelClientOrdersitemsCompositionModel';
 import { updateTravelClientOrderEdit } from '@store/slice/travel/travelClientOrderEditSlice';
 import { updateTravelClientOrderItemsEdit } from '@store/slice/travel/travelClientOrderItemEditSlice';
@@ -67,33 +64,18 @@ export function SaleItemCompositionCard({
 
   return (
     <HStack
-      bg={travelClientOrderItemComposition.removed ? '$red500' : '$trueGray700'}
-      alignItems="flex-start"
-      p="$2"
-      pr="$2"
-      rounded="$md"
-      mb="$3"
-      w="$full"
-      justifyContent="space-between"
-      position="relative"
+      className={` ${travelClientOrderItemComposition.removed ? 'bg-red-500' : 'bg-trueGray-700'} items-start p-2 pr-2 rounded-md mb-3 w-full justify-between relative `}
     >
       <Image
         source={getImageSource()}
         alt="Product"
-        w="$20"
-        h="$20"
-        rounded="$md"
+        className="w-20 h-20 rounded-md"
       />
-      <VStack
-        flex={1}
-        padding={8}
-        justifyContent="space-between"
-        alignItems="flex-start"
-      >
-        <Heading size="xs" color="$trueGray100">
+      <VStack className="flex-1 p-[8px] justify-between items-start">
+        <Heading size="xs" className="text-trueGray-100">
           {`${travelClientOrderItemComposition.pCode} - ${travelClientOrderItemComposition.pDescription}`}
         </Heading>
-        <Text color="$trueGray400">
+        <Text className="text-trueGray-400">
           {`${travelClientOrderItemComposition.pQuantity.toLocaleString(
             'pt-BR',
             {
@@ -115,15 +97,8 @@ export function SaleItemCompositionCard({
         </Text>
       </VStack>
       <Button
-        width="$10"
-        height="$10"
-        rounded="$md"
-        backgroundColor="$amber500"
-        $active-bg="$amber600"
         onPress={handleDeleteItemComposition}
-        position="absolute"
-        bottom="$2"
-        right="$2"
+        className="w-10 h-10 rounded-md bg-amber-500  active:bg-amber-600 absolute bottom-2 right-2"
       >
         {!travelClientOrderItemComposition.removed && (
           <ButtonIcon as={Trash} size="xl" />

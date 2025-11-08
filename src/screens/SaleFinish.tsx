@@ -1,11 +1,8 @@
-import {
-  Button,
-  ButtonIcon,
-  Heading,
-  VStack,
-  HStack,
-  Text,
-} from '@gluestack-ui/themed';
+import { Text } from "@/components/ui/text";
+import { HStack } from "@/components/ui/hstack";
+import { VStack } from "@/components/ui/vstack";
+import { Heading } from "@/components/ui/heading";
+import { Button, ButtonIcon } from "@/components/ui/button";
 import { useNavigation } from '@react-navigation/native';
 import { CustomerHeader } from '@components/CustomerHeader';
 import {
@@ -308,21 +305,15 @@ export function SaleFinish() {
   };
 
   return (
-    <VStack flex={1}>
+    <VStack className="flex-1">
       <CustomerHeader data={clientEdit} showBackButton={false} />
-      <VStack p="$2" flex={1} height="100%">
-        <Heading size="sm" mx="$1" mt="$1" color="$trueGray100">
+      <VStack className="p-2 flex-1 h-[100%]">
+        <Heading size="sm" className="mx-1 mt-1 text-trueGray-100">
           {`Fechamento pedido - Itens: ${travelClientOrderEdit.TravelClientOrdersItems?.length}`}
         </Heading>
         <VStack
-          justifyContent="space-between"
-          alignItems="center"
-          padding="$2"
-          rounded="$md"
-          backgroundColor="$trueGray800"
-          flex={1}
-        >
-          <Text color="$trueGray100" size="sm" w="$full" mb="$2">
+          className="justify-between items-center p-2 rounded-md bg-trueGray-800 flex-1">
+          <Text size="sm" className="text-trueGray-100 w-full mb-2">
             Observações:
           </Text>
           <Input
@@ -344,41 +335,29 @@ export function SaleFinish() {
           />
         </VStack>
 
-        <HStack
-          justifyContent="space-between"
-          w="$full"
-          mt="$2"
-          alignItems="flex-end"
-        >
-          <Text size="xs" mx="$1" mt="$1" color="$red500">
+        <HStack className="justify-between w-full mt-2 items-end">
+          <Text size="xs" className="mx-1 mt-1 text-red-500">
             {`Total: ${travelOrderTotal?.toLocaleString('pt-BR', {
               style: 'currency',
               currency: 'BRL',
             })}`}
           </Text>
-          <Text size="xs" mx="$1" mt="$1" color="$green500">
+          <Text size="xs" className="mx-1 mt-1 text-green-500">
             {`Total pago: ${totalPago?.toLocaleString('pt-BR', {
               style: 'currency',
               currency: 'BRL',
             })}`}
           </Text>
-          <Text size="xs" mx="$1" mt="$1" color="$blue500">
+          <Text size="xs" className="mx-1 mt-1 text-blue-500">
             {`Saldo: ${totalRestante?.toLocaleString('pt-BR', {
               style: 'currency',
               currency: 'BRL',
             })}`}
           </Text>
         </HStack>
-        <VStack
-          space="md"
-          mt="$4"
-          p="$2"
-          rounded="$md"
-          height="70%"
-          justifyContent="flex-start"
-        >
-          <VStack mb="$2">
-            <Heading size="sm" color="$trueGray100" mb="$2">
+        <VStack space="md" className="mt-4 p-2 rounded-md h-[70%] justify-start">
+          <VStack className="mb-2">
+            <Heading size="sm" className="text-trueGray-100 mb-2">
               Forma de pagamento
             </Heading>
             <Controller
@@ -393,14 +372,9 @@ export function SaleFinish() {
               )}
             />
           </VStack>
-          <HStack
-            w="$full"
-            justifyContent="space-between"
-            gap="$2"
-            alignItems="flex-end"
-          >
-            <VStack w="$full" flex={1}>
-              <Heading size="sm" color="$trueGray100" mb="$2">
+          <HStack className="w-full justify-between gap-2 items-end">
+            <VStack className="w-full flex-1">
+              <Heading size="sm" className="text-trueGray-100 mb-2">
                 Valor
               </Heading>
               <Controller
@@ -414,29 +388,19 @@ export function SaleFinish() {
                 )}
               />
               {errors.amount && (
-                <Text color="$red500" size="xs" mt="$1">
+                <Text size="xs" className="text-red-500 mt-1">
                   {errors.amount.message}
                 </Text>
               )}
             </VStack>
             <Button
-              width="$12"
-              height="$12"
-              rounded="$md"
-              backgroundColor="$blue500"
-              $active-bg="$blue700"
               onPress={handleImportValueFromOrder}
-            >
+              className="w-12 h-12 rounded-md bg-blue-500  active:bg-blue-700">
               <ButtonIcon as={CornerDownLeft} size="xl" />
             </Button>
             <Button
-              width="$12"
-              height="$12"
-              rounded="$md"
-              backgroundColor="$green700"
-              $active-bg="$green500"
               onPress={handleIncludePaymentForm}
-            >
+              className="w-12 h-12 rounded-md bg-green-700  active:bg-green-500">
               <ButtonIcon as={Check} size="xl" />
             </Button>
           </HStack>
@@ -447,18 +411,12 @@ export function SaleFinish() {
             }
             renderItem={({ item }) => (
               <HStack
-                justifyContent="space-between"
-                alignItems="center"
-                padding="$2"
-                rounded="$md"
-                backgroundColor="$trueGray600"
-                mb="$1"
-              >
-                <HStack flex={1} gap="$10">
-                  <Text color="$trueGray100" size="sm" w="$3/5">
+                className="justify-between items-center p-2 rounded-md bg-trueGray-600 mb-1">
+                <HStack className="flex-1 gap-10">
+                  <Text size="sm" className="text-trueGray-100 w-3/5">
                     {item.description}
                   </Text>
-                  <Text color="$trueGray400" size="xs">
+                  <Text size="xs" className="text-trueGray-400">
                     {item.amount.toLocaleString('pt-BR', {
                       style: 'currency',
                       currency: 'BRL',
@@ -466,21 +424,16 @@ export function SaleFinish() {
                   </Text>
                 </HStack>
                 <Button
-                  width="$12"
-                  height="$12"
-                  rounded="$md"
-                  backgroundColor="$red700"
-                  $active-bg="$red500"
                   onPress={() => {
                     handleRemovePaymentForm(item);
                   }}
-                >
+                  className="w-12 h-12 rounded-md bg-red-700  active:bg-red-500">
                   <ButtonIcon as={Trash} size="lg" />
                 </Button>
               </HStack>
             )}
             ListEmptyComponent={
-              <Text color="$trueGray400" size="sm" textAlign="center">
+              <Text size="sm" className="text-trueGray-400 text-center">
                 Nenhuma forma de pagamento adicionada.
               </Text>
             }
@@ -488,44 +441,24 @@ export function SaleFinish() {
         </VStack>
       </VStack>
       <HStack
-        justifyContent="space-between"
-        position="absolute"
-        bottom="$0"
-        left="$0"
-        backgroundColor="$trueGray900"
-        width="100%"
-        height="$24"
-        padding="$2"
-      >
+        className="justify-between absolute bottom-0 left-0 bg-trueGray-900 w-[100%] h-24 p-2">
         <Button
           size="lg"
-          rounded="$md"
-          w="$24"
-          h="$12"
-          backgroundColor="$blue500"
-          $active-bg="$blue700"
           onPress={() => {
             navigation.goBack();
           }}
-          gap="$1"
-        >
+          className="rounded-md w-24 h-12 bg-blue-500  active:bg-blue-700 gap-1">
           <ButtonIcon as={ChevronLeft} size="xl" />
-          <Text color="$trueGray100" size="xs">
+          <Text size="xs" className="text-trueGray-100">
             Voltar
           </Text>
         </Button>
         <Button
           size="lg"
-          rounded="$md"
-          w="$24"
-          h="$12"
-          backgroundColor="$green700"
-          $active-bg="$green500"
           onPress={handleFinishOrder}
-          gap="$1"
-        >
+          className="rounded-md w-24 h-12 bg-green-700  active:bg-green-500 gap-1">
           <ButtonIcon as={Send} size="lg" />
-          <Text color="$trueGray100" size="xs">
+          <Text size="xs" className="text-trueGray-100">
             Enviar
           </Text>
         </Button>

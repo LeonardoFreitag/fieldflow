@@ -1,5 +1,5 @@
+import { Input as GlueStackInput, InputField } from '@ui/input';
 import React, { useCallback, useEffect, useState } from 'react';
-import { Input as GluestackInput, InputField } from '@gluestack-ui/themed';
 import { type ComponentProps } from 'react';
 import { maskCurrency } from '@utils/masks';
 
@@ -44,24 +44,10 @@ export function InputNumber({ value, onChangeText, ...rest }: Props) {
   }, [formatValue, value]);
 
   return (
-    <GluestackInput
-      bg="$trueGray900"
-      h="$12"
-      px="$1"
-      borderWidth="$1"
-      borderRadius="$md"
-      $focus={{
-        borderWidth: 1,
-        borderColor: '$green500',
-      }}
-    >
+    <GlueStackInput className="bg-trueGray-700 h-12 px-1 borderWidth-1 borderRadius-md @focus:border-green-500 @focus:border-1 flex-1">
       <InputField
         {...rest}
-        color="$trueGray100"
-        fontSize="$sm"
-        fontFamily="$body"
-        placeholderTextColor="$trueGray400"
-        textAlign="right"
+        className="text-trueGray-100 text-sm font-body text-right placeholder:text-trueGray-400"
         keyboardType="number-pad"
         value={formatedValue}
         onChangeText={formatValue}
@@ -70,6 +56,6 @@ export function InputNumber({ value, onChangeText, ...rest }: Props) {
         selection={focused ? selection : undefined}
         returnKeyType="done"
       />
-    </GluestackInput>
+    </GlueStackInput>
   );
 }

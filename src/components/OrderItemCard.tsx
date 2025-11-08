@@ -1,13 +1,10 @@
-import {
-  Heading,
-  HStack,
-  VStack,
-  Text,
-  Button,
-  ButtonIcon,
-  Divider,
-  Image,
-} from '@gluestack-ui/themed';
+import { Image } from '@ui/image';
+import { Divider } from '@ui/divider';
+import { Button, ButtonIcon } from '@ui/button';
+import { Text } from '@ui/text';
+import { VStack } from '@ui/vstack';
+import { HStack } from '@ui/hstack';
+import { Heading } from '@ui/heading';
 import { useNavigation } from '@react-navigation/native';
 import { useAppSelector } from '@store/store';
 import {
@@ -185,32 +182,18 @@ export function OrderItemCard({ productItem }: OrderItemCardProps) {
 
   return (
     <HStack
-      bg={productItem.isDeleted ? '$red400' : '$trueGray700'}
-      alignItems="center"
-      p="$2"
-      pr="$2"
-      rounded="$md"
-      mb="$3"
-      w="$full"
-      justifyContent="space-between"
+      className={` ${productItem.isDeleted ? 'bg-red-400' : 'bg-trueGray-700'} items-center p-2 pr-2 rounded-md mb-3 w-full justify-between `}
     >
       <Image
         source={getImageSource()}
         alt="Product"
-        w="$20"
-        h="$20"
-        rounded="$md"
+        className="w-20 h-20 rounded-md"
       />
-      <VStack
-        flex={1}
-        padding={8}
-        justifyContent="space-between"
-        alignItems="flex-start"
-      >
-        <Heading size="xs" color="$trueGray100">
+      <VStack className="flex-1 p-[8px] justify-between items-start">
+        <Heading size="xs" className="text-trueGray-100">
           {`Produto: ${productItem.code} - ${productItem.description}`}
         </Heading>
-        <Text color="$trueGray400">
+        <Text className="text-trueGray-400">
           {`${Number(productItem.quantity).toLocaleString('pt-BR', {
             maximumFractionDigits: 2,
           })} ${productItem.unity} x ${Number(
@@ -225,23 +208,13 @@ export function OrderItemCard({ productItem }: OrderItemCardProps) {
             currency: 'BRL',
           })}`}
         </Text>
-        <Divider my="$0.5" bgColor="$trueGray500" mb="$0.5" />
+        <Divider className="my-0.5 bg-trueGray-500 mb-0.5" />
 
-        <HStack
-          marginTop="$1"
-          justifyContent="space-between"
-          alignItems="center"
-          w="$full"
-          gap={8}
-        >
-          <HStack gap={8}>
+        <HStack className="mt-1 justify-between items-center w-full gap-[8px]">
+          <HStack className="gap-[8px]">
             <Button
-              width="$10"
-              height="$10"
-              rounded="$md"
-              backgroundColor="$amber500"
-              $active-bg="$amber600"
               onPress={handleAskConfirmDelete}
+              className="w-10 h-10 rounded-md bg-amber-500  active:bg-amber-600"
             >
               {!productItem.isDeleted && <ButtonIcon as={Trash} size="xl" />}
               {productItem.isDeleted && (
@@ -250,49 +223,33 @@ export function OrderItemCard({ productItem }: OrderItemCardProps) {
             </Button>
             {productItem.isComposed && (
               <Button
-                width="$10"
-                height="$10"
-                rounded="$md"
-                backgroundColor="$darkBlue400"
-                $active-bg="$darkBlue500"
                 onPress={handleListItemComposition}
+                className="w-10 h-10 rounded-md bg-darkBlue-400  active:bg-darkBlue-500"
               >
                 <ButtonIcon as={ClipboardList} size="xl" />
               </Button>
             )}
           </HStack>
-          <HStack gap={8}>
+          <HStack className="gap-[8px]">
             {!productItem.isDeleted && (
               <>
                 <Button
-                  width="$10"
-                  height="$10"
-                  rounded="$md"
-                  backgroundColor="$blueGray500"
-                  $active-bg="$blueGray400"
                   onPress={() => {
                     handleShowModalQuantity(productItem.quantity);
                   }}
+                  className="w-10 h-10 rounded-md bg-blueGray-500  active:bg-blueGray-400"
                 >
                   <ButtonIcon as={Sigma} size="xl" />
                 </Button>
                 <Button
-                  width="$10"
-                  height="$10"
-                  rounded="$md"
-                  backgroundColor="$green700"
-                  $active-bg="$green500"
                   onPress={handleUpQty}
+                  className="w-10 h-10 rounded-md bg-green-700  active:bg-green-500"
                 >
                   <ButtonIcon as={Plus} size="xl" />
                 </Button>
                 <Button
-                  width="$10"
-                  height="$10"
-                  rounded="$md"
-                  backgroundColor="$red700"
-                  $active-bg="$red500"
                   onPress={handleDownQty}
+                  className="w-10 h-10 rounded-md bg-red-700  active:bg-red-500"
                 >
                   <ButtonIcon as={Minus} size="xl" />
                 </Button>

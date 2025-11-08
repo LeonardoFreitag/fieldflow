@@ -1,10 +1,6 @@
-import {
-  Button,
-  ButtonIcon,
-  Input as GluestackInput,
-  HStack,
-  InputField,
-} from '@gluestack-ui/themed';
+import { HStack } from '@ui/hstack';
+import { Input as GlueStackInput, InputField } from '@ui/input';
+import { Button, ButtonIcon } from '@ui/button';
 import { Calendar1 } from 'lucide-react-native';
 import { type ComponentProps } from 'react';
 
@@ -14,37 +10,20 @@ type Props = ComponentProps<typeof InputField> & {
 
 export function DateInput({ buttonPress, ...rest }: Props) {
   return (
-    <HStack alignItems="center" width="$full">
-      <GluestackInput
-        bg="$trueGray900"
-        h="$12"
-        // px="$1"
-        borderWidth="$1"
-        borderRadius="$md"
-        $focus={{
-          borderWidth: 1,
-          borderColor: '$green500',
-        }}
-        flex={1}
-      >
+    <HStack className="items-center w-full">
+      <GlueStackInput className="bg-trueGray-700 h-12 bw-1 br-md flex-1 @focus:border-green-500 @focus:border-1">
         <InputField
-          color="$trueGray100"
-          fontSize="$sm"
-          fontFamily="$body"
           placeholderTextColor="$trueGray400"
           {...rest}
+          className="text-trueGray-100 text-sm font-body"
         />
         <Button
-          h="$12"
-          w="$12"
-          rounded="$md"
-          backgroundColor="$trueGray900"
-          $active-bg="$trueGray500"
           onPress={buttonPress}
+          className="h-12 w-12 rounded-md bg-trueGray-900  active:bg-trueGray-500"
         >
-          <ButtonIcon as={Calendar1} size="xl" height="$12" />
+          <ButtonIcon as={Calendar1} size="xl" className="h-12" />
         </Button>
-      </GluestackInput>
+      </GlueStackInput>
     </HStack>
   );
 }

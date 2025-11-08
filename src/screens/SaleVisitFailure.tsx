@@ -1,12 +1,9 @@
-import {
-  Button,
-  ButtonIcon,
-  Center,
-  Heading,
-  HStack,
-  VStack,
-  Box,
-} from '@gluestack-ui/themed';
+import { Box } from "@/components/ui/box";
+import { VStack } from "@/components/ui/vstack";
+import { HStack } from "@/components/ui/hstack";
+import { Heading } from "@/components/ui/heading";
+import { Center } from "@/components/ui/center";
+import { Button, ButtonIcon } from "@/components/ui/button";
 import { useNavigation } from '@react-navigation/native';
 import { CustomerHeader } from '@components/CustomerHeader';
 import { Save, X } from 'lucide-react-native';
@@ -214,10 +211,10 @@ export function SaleVisitFailure() {
   };
 
   return (
-    <VStack flex={1}>
+    <VStack className="flex-1">
       <CustomerHeader data={clientEdit} showBackButton={false} />
-      <Center mt="$4" mx="$2" minHeight="$1/3" px="$4">
-        <Heading size="sm" color="$trueGray100" w="$full">
+      <Center className="mt-4 mx-2 min-h-1/3 px-4">
+        <Heading size="sm" className="text-trueGray-100 w-full">
           Motivo da não realização da visita
         </Heading>
         <Controller
@@ -241,7 +238,7 @@ export function SaleVisitFailure() {
             />
           )}
         />
-        <Heading size="sm" color="$trueGray100" w="$full" mt="$2">
+        <Heading size="sm" className="text-trueGray-100 w-full mt-2">
           Agendamento
         </Heading>
         <Controller
@@ -267,22 +264,9 @@ export function SaleVisitFailure() {
           }}
         >
           <Box
-            position="absolute"
-            left={0}
-            right={0}
-            top={0}
-            bottom={0}
-            bg="rgba(0,0,0,0.5)"
-            justifyContent="center"
-            alignItems="center"
-          >
+            className="absolute left-0 right-0 top-0 bottom-0 bg-rgba(0,0,0,0.5) justify-center items-center">
             <Box
-              w="90%"
-              maxWidth={420}
-              bg={colorScheme === 'dark' ? '$trueGray900' : '$white'}
-              rounded="$lg"
-              p="$4"
-            >
+              className={` ${colorScheme === 'dark' ? "bg-trueGray-900" : "bg-white"} w-[90%] max-w-[420px] rounded-lg p-4 `}>
               <DateTimePicker
                 {...iosThemeProps}
                 value={pickerDate}
@@ -297,7 +281,7 @@ export function SaleVisitFailure() {
                   setPickerDate(selectedDate);
                 }}
               />
-              <HStack w="$full" justifyContent="flex-end" mt="$3" gap={8}>
+              <HStack className="w-full justify-end mt-3 gap-[8px]">
                 <Button
                   variant="outline"
                   onPress={() => {
@@ -319,30 +303,19 @@ export function SaleVisitFailure() {
           </Box>
         </Modal>
       </Center>
-
-      <HStack w="$full" justifyContent="space-between" px="$4" py="$2">
+      <HStack className="w-full justify-between px-4 py-2">
         <Button
           size="lg"
-          rounded="$lg"
-          w="$16"
-          h="$16"
-          backgroundColor="$red700"
-          $active-bg="$red500"
           onPress={() => {
             navigation.goBack();
           }}
-        >
+          className="rounded-lg w-16 h-16 bg-red-700  active:bg-red-500">
           <ButtonIcon as={X} size="xl" />
         </Button>
         <Button
           size="lg"
-          rounded="$lg"
-          w="$16"
-          h="$16"
-          backgroundColor="$green700"
-          $active-bg="$green500"
           onPress={handleSubmit(handleSubmitVisitFailure)}
-        >
+          className="rounded-lg w-16 h-16 bg-green-700  active:bg-green-500">
           <ButtonIcon as={Save} size="xl" />
         </Button>
       </HStack>

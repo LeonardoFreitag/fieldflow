@@ -69,6 +69,9 @@ export const ReceberDrive: React.FC = () => {
   const routeCollectionEdit = useAppSelector(
     state => state.routeCollectionEdit,
   );
+  const existsRouteCollectionEdit = useAppSelector(
+    state => state.existsRouteCollectionEdit,
+  );
   const [showAlertDialog, setShowAlertDialog] = useState(false);
 
   const { rota, fetchRota, routeInitialized, setRouteInitialized } =
@@ -164,6 +167,14 @@ export const ReceberDrive: React.FC = () => {
   }, []);
 
   const handleBackToDeliveryRoute = async () => {
+    if (existsRouteCollectionEdit.exists) {
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'MenuRoutes' }],
+      });
+      return;
+    }
+
     navigation.reset({
       index: 0,
       routes: [{ name: 'ReceberRoute' }],

@@ -16,7 +16,6 @@ import { HandCoins, ShoppingCart, Truck } from 'lucide-react-native';
 import { useCallback, useMemo } from 'react';
 import { useDispatch } from 'react-redux';
 import { useHandleSaleRoute } from '@hooks/useHandleSaleRoute';
-import { Text } from '@ui/text';
 
 export function MenuRoutes() {
   const navigation = useNavigation();

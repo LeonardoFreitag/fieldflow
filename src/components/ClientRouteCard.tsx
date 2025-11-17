@@ -4,8 +4,8 @@ import { VStack } from '@ui/vstack';
 import { HStack } from '@ui/hstack';
 import { type TouchableOpacityProps } from 'react-native';
 import { type ClientModel } from '@models/ClientModel';
-import { HandTap, ShoppingCart } from 'phosphor-react-native';
 import { useAppSelector } from '@store/store';
+import { HandIcon, ShoppingCart } from 'lucide-react-native';
 
 type Props = TouchableOpacityProps & {
   data: ClientModel;
@@ -23,31 +23,31 @@ export function ClientRouteCard({
 
   return (
     <VStack {...rest}>
-      <HStack className="bg-trueGray-700 items-center p-4 pr-4 rounded-md mb-3 w-full justify-between relative">
+      <HStack className="bg-background-200 items-center p-4 pr-4 rounded-md mb-3 w-full justify-between relative">
         <VStack className="flex-1">
-          <Text size="sm" className="text-trueGray-100">
+          <Text className="text-typography-700 font-bold" size="md">
             {data.companyName}
           </Text>
-          <Text size="xs" className="text-trueGray-400">
+          <Text className="text-typography-700" size="sm">
             {`${data.streetName}, ${data.streetNumber}`}
           </Text>
           <Text
-            size="xs"
-            className="text-trueGray-400"
+            className="text-typography-700"
+            size="sm"
           >{`Bairro: ${data.neighborhood}`}</Text>
           <Text
-            size="xs"
-            className="text-trueGray-400"
+            size="sm"
+            className="text-typography-700"
           >{`${data.city} - ${data.state}`}</Text>
         </VStack>
         <VStack className="items-center justify-center w-[40px] h-[40px] rounded-md absolute top-1 right-1">
           <Button
+            className="rounded-md w-11 h-11 bg-secondary-50  active:bg-success-700"
             onPress={() => {
               handleAddNewSale(data);
             }}
-            className="w-10 h-10 rounded-md bg-blue-500  active:bg-blue-500"
           >
-            <ButtonIcon as={ShoppingCart} size="xl" />
+            <ButtonIcon as={ShoppingCart} className="text-typography-700" />
           </Button>
         </VStack>
         {canChangeRouteEdit && (
@@ -55,9 +55,9 @@ export function ClientRouteCard({
             onPress={() => {
               handleSelectCustomer(data);
             }}
-            className={` ${data.isSelected ? 'bg-green-700' : 'bg-blueGray-600'} w-10 h-10 rounded-md  active:bg-green-500 absolute bottom-1 right-1 `}
+            className={` ${data.isSelected ? 'bg-success-400' : 'bg-secondary-50'} w-11 h-11 rounded-md  active:bg-success-500 absolute bottom-1 right-1`}
           >
-            <ButtonIcon as={HandTap} size="xl" />
+            <ButtonIcon as={HandIcon} className="text-typography-700" />
           </Button>
         )}
       </HStack>

@@ -14,16 +14,18 @@ import { CombinedAuthProvider } from '@contexts/index';
 
 // Removed duplicate provider import from components/ui. Use only one provider source.
 import { GluestackUIProvider } from '@ui/gluestack-ui-provider';
-import '@/global.css';
+import './global.css';
+import { useState } from 'react';
 
 export default function App() {
   const [fontsLoaded] = useFonts({
     Roboto_700Bold,
     Roboto_400Regular,
   });
+  const [colorMode, setColorMode] = useState<'light' | 'dark'>('dark');
 
   return (
-    <GluestackUIProvider>
+    <GluestackUIProvider mode={colorMode}>
       <StatusBar
         barStyle="light-content"
         backgroundColor="transparent"

@@ -6,5 +6,5 @@ interface IProps {
 }
 
 export function Providers({ children }: IProps) {
-  return <ProviderRedux store={store}>{children}</ProviderRedux>;
+  return <ProviderRedux store={store}>{children as any}</ProviderRedux>;
 }

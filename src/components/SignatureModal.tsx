@@ -51,15 +51,15 @@ export function SignatureModal({ isOpen, onClose, onOK }: SignatureModalProps) {
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalBackdrop />
-      <ModalContent className="w-full">
+      <ModalContent className="w-full bg-background-200 max-w-2xl">
         <ModalHeader>
           <ModalCloseButton>
             <Icon as={CloseIcon} size="xl" />
           </ModalCloseButton>
         </ModalHeader>
         <ModalBody scrollEnabled={false} className="h-3/6">
-          <VStack className="p-1 items-center justify-center h-[400px]">
-            <Heading size="lg" className="text-trueGray-500">
+          <VStack className="p-1 items-center justify-center h-[400px] bg-background-200">
+            <Heading size="lg" className="text-typography-700">
               Assinatura
             </Heading>
 

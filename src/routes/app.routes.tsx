@@ -11,7 +11,6 @@ import { SaleFinish } from '@screens/SaleFinish';
 import { SaleItemComposition } from '@screens/SaleItemComposition';
 import { SaleCheckIn } from '@screens/SaleCheckIn';
 import { SaleNew } from '@screens/SaleNew';
-import { SaleRoute } from '@screens/SaleRoute';
 import { SaleRouteDrive } from '@screens/SaleRouteDrive';
 import { SaleMain } from '@screens/SaleMain';
 import { ReceberDrive } from '@screens/ReceberDrive';
@@ -27,7 +26,6 @@ export function AppRoutes() {
     >
       <Screen name="MenuRoutes" component={MenuRoutes} />
       <Screen name="SaleMain" component={SaleMain} />
-      <Screen name="SaleRoute" component={SaleRoute} />
       <Screen name="SaleCheckIn" component={SaleCheckIn} />
       <Screen name="SaleVisitFailure" component={SaleVisitFailure} />
       <Screen name="SaleNew" component={SaleNew} />

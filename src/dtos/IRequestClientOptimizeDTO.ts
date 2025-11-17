@@ -6,6 +6,7 @@ export interface IRequestClientOptimizeDTO {
   destination: {
     latitude: number;
     longitude: number;
+    address: string;
   };
   waypoints: Array<{
     address: string;

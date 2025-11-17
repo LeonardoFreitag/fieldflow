@@ -1,26 +1,26 @@
-import { Image } from "@/components/ui/image";
-import { Center } from "@/components/ui/center";
-import { Link, LinkText } from "@/components/ui/link";
-import { Text } from "@/components/ui/text";
-import { HStack } from "@/components/ui/hstack";
-import { VStack } from "@/components/ui/vstack";
-import { Heading } from "@/components/ui/heading";
-import { Button, ButtonIcon } from "@/components/ui/button";
+import { Image } from '@ui/image';
+import { Center } from '@ui/center';
+import { Link, LinkText } from '@ui/link';
+import { Text } from '@ui/text';
+import { HStack } from '@ui/hstack';
+import { VStack } from '@ui/vstack';
+import { Heading } from '@ui/heading';
+import { Button, ButtonIcon } from '@ui/button';
 import { useNavigation } from '@react-navigation/native';
 import {
   CalendarClock,
+  Camera,
   CheckCheck,
   ChevronLeft,
   CornerDownLeft,
   Plus,
+  Trash,
 } from 'lucide-react-native';
 import { useAppSelector } from '../store/store';
 import React, { useEffect, useMemo, useState } from 'react';
-import { Camera, Trash } from 'phosphor-react-native';
 import { Platform, ScrollView, TouchableOpacity } from 'react-native';
 import { ModalCamera } from '@components/ModalCamera';
 import { InputNumber } from '@components/InputNumber';
-import { ModalSchendule } from '@components/ModalSchendule';
 import { useDispatch } from 'react-redux';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
@@ -41,8 +41,8 @@ import { returnNumber } from '@utils/returnNumber';
 import { type ReceberModel } from '@models/ReceberModel';
 import { type IUpdateRouteCollectionItems } from '@dtos/IUpdateRouteItemsCollectionDTO';
 import { Input } from '@components/Input';
-import { TextArea } from '@components/TextArea';
 import { ModalCollection } from '@components/ModalCollection';
+import { loadReasonList } from '@/store/slice/reason/reasonListSlice';
 
 const PaymentSchema = yup.object().shape({
   paymentFormId: yup.string().required('Campo obrigatório'),
@@ -332,6 +332,26 @@ export function ReceberFinalize() {
     fetchPaumentForms();
   }, [clientEdit.id, routeCollectionItemsEdit, user?.user.customerId]);
 
+  useEffect(() => {
+    const fetchReasonList = async () => {
+      try {
+        setWorking(true);
+        const response = await api.get('/reason/list-by-customerId', {
+          params: {
+            customerId: user?.user.customerId,
+          },
+        });
+        const reasons = response.data;
+        dispatch(loadReasonList(reasons));
+      } catch (error) {
+        console.error('Error fetching reasons:', error);
+      } finally {
+        setWorking(false);
+      }
+    };
+    fetchReasonList();
+  }, [dispatch, user?.user.customerId]);
+
   const getStatus = () => {
     // verificar se houve alguma pagamento na visita hoje
     const today = new Date();
@@ -443,87 +463,100 @@ export function ReceberFinalize() {
 
   return (
     <>
-      <VStack
-        className="w-32 justify-end items-end mt-2 absolute right-2 top-32 z-9999 bg-trueGray-600 opacity-80 rounded-md p-2">
-        <Text size="sm" className="text-red-300 font-bold">
-          {Number(
-            routeCollectionItemsEdit.Receber.valorDuplicata,
-          ).toLocaleString('pt-BR', {
-            style: 'currency',
-            currency: 'BRL',
-          })}
-        </Text>
-        <Text size="sm" className="text-green-300 font-bold">
-          {Number(totalPayments).toLocaleString('pt-BR', {
-            style: 'currency',
-            currency: 'BRL',
-          })}
-        </Text>
-        <Text size="sm" className="text-orange-300 font-bold">
-          {Number(saldo).toLocaleString('pt-BR', {
-            style: 'currency',
-            currency: 'BRL',
-          })}
-        </Text>
-      </VStack>
       {working && <Working visible={working} />}
-      <VStack className="flex-1">
-        <ModalCamera // captura foto da casa
-          isVisible={isTakingPhoto}
-          closeModal={handleCloseModal}
-          updateUrlImage={handleSendTakedPhotoHouse}
-        />
-        <ModalCollection
-          visible={isModalScheduleOpen}
-          handleCloseModal={() => {
-            setIsModalScheduleOpen(false);
-          }}
-        />
+      <VStack className="flex-1 relative">
+        {isTakingPhoto && (
+          <ModalCamera // captura foto da casa
+            isVisible={isTakingPhoto}
+            closeModal={handleCloseModal}
+            updateUrlImage={handleSendTakedPhotoHouse}
+          />
+        )}
+        {isModalScheduleOpen && (
+          <ModalCollection
+            visible={isModalScheduleOpen}
+            handleCloseModal={() => {
+              setIsModalScheduleOpen(false);
+            }}
+          />
+        )}
         <CustomerHeaderDelivery data={clientEdit} showBackButton={false} />
         <ScrollView style={{ flex: 1, width: '100%' }}>
           <VStack className="p-2 mb-48">
-            <Heading size="sm" className="text-trueGray-100">
+            <Heading
+              size="sm"
+              className="text-typography-700 w-full text-center"
+            >
               Cobrança
             </Heading>
-
-            <HStack className="w-full justify-between">
-              <Link
-                href={routeCollectionItemsEdit.Receber.notaFiscalFileUrl ?? ''}
-              >
-                <LinkText size="lg">{`Nota fiscal: ${routeCollectionItemsEdit.Receber.notaFiscal?.padStart(
-                  6,
-                  '0',
-                )}`}</LinkText>
-              </Link>
-              <Link href={routeCollectionItemsEdit.Receber.boletoFileUrl ?? ''}>
-                <LinkText size="lg">{`Boleto: ${routeCollectionItemsEdit.Receber.nossoNumero}`}</LinkText>
-              </Link>
+            <HStack className="w-full justify-between items-start mt-4">
+              <VStack className="flex justify-center gap-2 mt-2">
+                <Link
+                  href={
+                    routeCollectionItemsEdit.Receber.notaFiscalFileUrl ?? ''
+                  }
+                >
+                  <LinkText size="lg">{`Nota fiscal: ${routeCollectionItemsEdit.Receber.notaFiscal?.padStart(
+                    6,
+                    '0',
+                  )}`}</LinkText>
+                </Link>
+                <Link
+                  href={routeCollectionItemsEdit.Receber.boletoFileUrl ?? ''}
+                >
+                  <LinkText size="lg">{`Boleto: ${routeCollectionItemsEdit.Receber.nossoNumero}`}</LinkText>
+                </Link>
+              </VStack>
+              <VStack className="w-32 justify-end items-end mt-2  bg-background-200 opacity-90 rounded-md p-2">
+                <Text size="sm" className="text-error-400 font-bold">
+                  {Number(
+                    routeCollectionItemsEdit.Receber.valorDuplicata,
+                  ).toLocaleString('pt-BR', {
+                    style: 'currency',
+                    currency: 'BRL',
+                  })}
+                </Text>
+                <Text size="sm" className="text-success-400 font-bold">
+                  {Number(totalPayments).toLocaleString('pt-BR', {
+                    style: 'currency',
+                    currency: 'BRL',
+                  })}
+                </Text>
+                <Text size="sm" className="text-tertiary-400 font-bold">
+                  {Number(saldo).toLocaleString('pt-BR', {
+                    style: 'currency',
+                    currency: 'BRL',
+                  })}
+                </Text>
+              </VStack>
             </HStack>
 
-            <Center className="w-full h-24 bg-trueGray-700 rounded-md mb-2 p-2 mt-2">
-              <Center
-                className="w-full h-full border-dashed border-trueGray-400 border-1 rounded-md">
-                <TouchableOpacity
-                  style={{
-                    flex: 1,
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}
-                  onPress={() => {
-                    setIsTakingPhoto(true);
-                  }}
-                >
-                  <ButtonIcon as={Camera} size="xl" className="text-amber-400" />
+            <Center className="w-full h-24 bg-background-200 rounded-md mb-2 p-2 mt-2">
+              <Button
+                variant="outline"
+                className="flex-1 items-center justify-center w-full h-full border-dashed border-2 border-tertiary-400 rounded-md"
+                onPress={() => {
+                  setIsTakingPhoto(true);
+                }}
+              >
+                <VStack className="justify-center items-center">
+                  <HStack className="justify-center items-center gap-2">
+                    <ButtonIcon
+                      as={Camera}
+                      size="xl"
+                      className="text-tertiary-400"
+                    />
 
-                  <Text className="text-amber-400">Adicionar foto</Text>
-                  <Text size="xs" className="text-amber-400">
+                    <Text className="text-tertiary-400">Adicionar foto</Text>
+                  </HStack>
+                  <Text size="xs" className="text-tertiary-400">
                     Preferencialmente horizontal
                   </Text>
-                </TouchableOpacity>
-              </Center>
+                </VStack>
+              </Button>
             </Center>
             <VStack className="mb-2">
-              <Heading size="sm" className="text-trueGray-100 mb-2">
+              <Heading size="sm" className="text-typography-700 mb-2">
                 Observações
               </Heading>
               <Controller
@@ -541,7 +574,7 @@ export function ReceberFinalize() {
               />
             </VStack>
             <VStack className="mb-2">
-              <Heading size="sm" className="text-trueGray-100 mb-2">
+              <Heading size="sm" className="text-typography-700 mb-2">
                 Forma de pagamento
               </Heading>
               <Controller
@@ -566,7 +599,7 @@ export function ReceberFinalize() {
 
             <HStack className="w-full justify-between items-end gap-2">
               <VStack className="w-full flex-1">
-                <Heading size="md" className="text-trueGray-100">
+                <Heading size="md" className="text-typography-700">
                   Valor do pagamento
                 </Heading>
                 <Controller
@@ -584,34 +617,44 @@ export function ReceberFinalize() {
               </VStack>
               <Button
                 onPress={handleImportValueFromOrder}
-                className="w-12 h-12 rounded-md bg-blue-500  active:bg-blue-700">
-                <ButtonIcon as={CornerDownLeft} size="xl" />
+                className="w-12 h-12 rounded-md bg-info-400  active:bg-info-500"
+              >
+                <ButtonIcon
+                  as={CornerDownLeft}
+                  size="xl"
+                  className="text-typography-700"
+                />
               </Button>
               <Button
                 size="lg"
                 onPress={handleSubmit(handleAddPayment)}
-                className="rounded-md w-12 h-12 bg-green-700  active:bg-green-500 gap-1">
-                <ButtonIcon as={Plus} size="xl" />
+                className="rounded-md w-12 h-12 bg-success-400  active:bg-success-500 gap-1"
+              >
+                <ButtonIcon
+                  as={Plus}
+                  size="xl"
+                  className="text-typography-700"
+                />
               </Button>
             </HStack>
-            <Heading size="md" className="text-trueGray-100 mt-2">
+            <Heading size="md" className="text-typography-700 mt-2">
               Pagamentos
             </Heading>
             {routeCollectionItemsEdit.Receber.ReceberParcial &&
               routeCollectionItemsEdit.Receber.ReceberParcial.length > 0 && (
-                <VStack
-                  className="w-[100%] bg-green-700 p-2 rounded-md justify-center items-center mb-2">
+                <VStack className="w-[100%] bg-green-700 p-2 rounded-md justify-center items-center mb-2">
                   {routeCollectionItemsEdit.Receber.ReceberParcial.map(
                     payment => (
                       <HStack
                         key={payment.id}
-                        className="justify-between w-[100%] p-2 items-center gap-2">
-                        <Text className="text-trueGray-100 w-[50%]">
+                        className="justify-between w-[100%] p-2 items-center gap-2"
+                      >
+                        <Text className="text-typography-700 w-[50%]">
                           {new Date(payment.dataRecebimento).toLocaleDateString(
                             'pt-BR',
                           )}
                         </Text>
-                        <Text className="text-trueGray-100 w-[50%] text-right">
+                        <Text className="text-typography-700 w-[50%] text-right">
                           {Number(payment.valorRecebido).toLocaleString(
                             'pt-BR',
                             {
@@ -628,11 +671,13 @@ export function ReceberFinalize() {
             {routeCollectionItemsEdit.Receber.ReceberParcial &&
               routeCollectionItemsEdit.Receber.ReceberParcial.length === 0 && (
                 <Center className="w-full h-24 bg-trueGray-700 rounded-md">
-                  <Text className="text-trueGray-100">Nenhum pagamento realizado</Text>
+                  <Text className="text-typography-700">
+                    Nenhum pagamento realizado
+                  </Text>
                 </Center>
               )}
             <Center>
-              <Heading size="md" className="text-trueGray-100">
+              <Heading size="md" className="text-typography-700">
                 Lista de fotos
               </Heading>
               {routeCollectionItemsEdit.RouteCollectionItemsPhotos &&
@@ -643,7 +688,8 @@ export function ReceberFinalize() {
                     <HStack
                       // height="$48"
                       key={photo.id}
-                      className="w-full bg-trueGray-700 p-2 rounded-md mb-2 justify-between relative">
+                      className="w-full bg-background-200 p-2 rounded-md mb-2 justify-between relative"
+                    >
                       <Image
                         size="full"
                         resizeMode="contain"
@@ -651,56 +697,76 @@ export function ReceberFinalize() {
                           uri: photo.fileUrl,
                         }}
                         alt="image"
-                        className="w-full h-[200px]" />
+                        className="w-full h-[200px]"
+                      />
                       <Button
                         onPress={() => {
                           // Handle delete photo logic here
                           handleDeletePhoto(photo.id);
                         }}
                         aria-label="Delete photo"
-                        className="absolute top-2 right-2 opacity-40 bg-red-800  active:bg-red-600">
-                        <ButtonIcon as={Trash} size="xl" className="text-trueGray-300" />
+                        className="absolute top-2 right-2 opacity-80 bg-error-400  active:bg-error-500"
+                      >
+                        <ButtonIcon
+                          as={Trash}
+                          size="xl"
+                          className="text-typography-700"
+                        />
                       </Button>
                     </HStack>
                   ),
                 )
               ) : (
-                <Text size="xs" className="text-trueGray-400">
+                <Text size="xs" className="text-typography-700">
                   Nenhuma foto adicionada.
                 </Text>
               )}
             </Center>
           </VStack>
         </ScrollView>
-        <HStack
-          className="justify-between absolute bottom-0 left-0 bg-trueGray-900 w-[100%] h-24 p-2">
+        <HStack className="justify-between bottom-0 left-0 bg-background-200 w-[100%] h-24 p-2">
           <Button
             size="lg"
             onPress={() => {
               navigation.goBack();
             }}
-            className="rounded-md w-24 h-12 bg-blue-500  active:bg-blue-700 gap-1">
-            <ButtonIcon as={ChevronLeft} size="xl" />
-            <Text size="xs" className="text-trueGray-100">
+            className="rounded-md w-32 h-12 bg-info-400  active:bg-info-500 gap-1"
+          >
+            <ButtonIcon
+              as={ChevronLeft}
+              size="xl"
+              className="text-typography-700"
+            />
+            <Text size="xs" className="text-typography-700">
               Voltar
             </Text>
           </Button>
           <Button
             size="lg"
             onPress={handleShowModalSchedule}
-            className="rounded-md w-32 h-12 bg-red-500  active:bg-red-700 gap-1">
-            <ButtonIcon as={CalendarClock} size="xl" />
+            className="rounded-md w-32 h-12 bg-error-400  active:bg-error-500 gap-1"
+          >
+            <ButtonIcon
+              as={CalendarClock}
+              size="xl"
+              className="text-typography-700"
+            />
 
-            <Text size="xs" className="text-trueGray-100">
+            <Text size="xs" className="text-typography-700">
               Reagendar
             </Text>
           </Button>
           <Button
             size="lg"
             onPress={handleRouteCollectionItemsFinish}
-            className="rounded-md w-24 h-12 bg-green-700  active:bg-green-500 gap-1">
-            <ButtonIcon as={CheckCheck} size="lg" />
-            <Text size="xs" className="text-trueGray-100">
+            className="rounded-md w-32 h-12 bg-success-400  active:bg-success-500 gap-1"
+          >
+            <ButtonIcon
+              as={CheckCheck}
+              size="xl"
+              className="text-typography-700"
+            />
+            <Text size="xs" className="text-typography-700">
               Finalizar
             </Text>
           </Button>

@@ -1,8 +1,8 @@
-import { VStack } from "@/components/ui/vstack";
-import { Text } from "@/components/ui/text";
-import { HStack } from "@/components/ui/hstack";
-import { Heading } from "@/components/ui/heading";
-import { Button, ButtonIcon } from "@/components/ui/button";
+import { VStack } from '@ui/vstack';
+import { Text } from '@ui/text';
+import { HStack } from '@ui/hstack';
+import { Heading } from '@ui/heading';
+import { Button, ButtonIcon } from '@ui/button';
 import { HomeHeader } from '@components/HomeHeader';
 import { useNavigation } from '@react-navigation/native';
 import { Alert, FlatList } from 'react-native';
@@ -25,6 +25,7 @@ import { type RouteCollectionCoordsModel } from '@models/RouteCollectionCoordsMo
 import { addExistsRouteCollectionEdit } from '@store/slice/routeCollection/existsRouteCollectionEditSlice';
 import { addRouteCollectionEdit } from '@store/slice/routeCollection/routeCollectionEditSlice';
 import { type RouteCollectionItemsPhotosModel } from '@models/RouteCollectionItemsPhotosModel';
+import { Hand, HandCoinsIcon } from 'lucide-react-native';
 
 export function ReceberRoute() {
   const navigation = useNavigation();
@@ -34,7 +35,6 @@ export function ReceberRoute() {
 
   const handleSelectReceber = useCallback(
     (dataReceber: ReceberModel) => {
-      console.log('Selected Receber');
       const selected = dataReceber.selected ? dataReceber.selected : false;
 
       dispatch(
@@ -145,12 +145,12 @@ export function ReceberRoute() {
       <HomeHeader />
       <VStack className="flex-1 px-4 py-4">
         <HStack className="gap-4 justify-between mb-4">
-          <Heading size="sm" className="text-trueGray-100">
+          <Heading size="sm" className="text-typography-700 w-full text-center">
             Rota de cobrança
           </Heading>
         </HStack>
         <HStack className="mb-2 justify-between">
-          <Text className="text-trueGray-400">{`Selecinados: ${receberSelectedCount} de ${receberList.length} títulos`}</Text>
+          <Text className="text-typography-600">{`Selecinados: ${receberSelectedCount} de ${receberList.length} títulos`}</Text>
         </HStack>
         <FlatList
           data={receberList}
@@ -163,25 +163,30 @@ export function ReceberRoute() {
             />
           )}
           ListEmptyComponent={() => (
-            <Text className="text-trueGray-400 text-center">
+            <Text className="text-typography-600 text-center">
               Nenhum título pendente para esta rota.
             </Text>
           )}
         />
       </VStack>
-      <HStack
-        className="bg-trueGray-800 p-4 justify-around items-center border border-trueGray-700">
+      <HStack className="bg-background-200 p-6 justify-around items-center">
         <Button
           size="lg"
           onPress={handleSelectAllReceberList}
-          className="rounded-md h-12 w-1/3 bg-green-500  active:bg-green-700 flex">
-          <ButtonIcon as={HandTap} size="xl" />
+          className="rounded-md h-12 w-1/3 bg-success-400  active:bg-success-500 flex"
+        >
+          <ButtonIcon as={Hand} size="xl" className="text-typography-700" />
         </Button>
         <Button
           size="lg"
           onPress={handleCreateReceberDrive}
-          className="rounded-md h-12 w-1/3 bg-blue-500  active:bg-blue-700 flex">
-          <ButtonIcon as={HandCoins} size="xl" />
+          className="rounded-md h-12 w-1/3 bg-info-400  active:bg-info-500 flex"
+        >
+          <ButtonIcon
+            as={HandCoinsIcon}
+            size="xl"
+            className="text-typography-700"
+          />
         </Button>
       </HStack>
     </VStack>

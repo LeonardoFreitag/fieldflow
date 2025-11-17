@@ -42,6 +42,7 @@ import routeCollectionItemsPhotosListSlice from './slice/routeCollection/routeCo
 import routeCollectionNotFoundClientEditSlice from './slice/routeCollection/routeCollectionNotFoundClientEditSlice';
 import routeCollectionNotFoundClientListSlice from './slice/routeCollection/routeCollectionNotFoundClientListSlice';
 import existsRouteCollectionEditSlice from './slice/routeCollection/existsRouteCollectionEditSlice';
+import reasonListSlice from './slice/reason/reasonListSlice';
 
 const rootReducer = combineReducers({
   customerEdit: customerEditSlice,
@@ -86,6 +87,7 @@ const rootReducer = combineReducers({
   routeCollectionNotFoundClientEdit: routeCollectionNotFoundClientEditSlice,
   routeCollectionNotFoundClientList: routeCollectionNotFoundClientListSlice,
   existsRouteCollectionEdit: existsRouteCollectionEditSlice,
+  reasonList: reasonListSlice,
 });
 
 export const store = configureStore({

@@ -1,21 +1,28 @@
-import { Image } from "@/components/ui/image";
-import { Center } from "@/components/ui/center";
-import { Link, LinkText } from "@/components/ui/link";
-import { Text } from "@/components/ui/text";
-import { HStack } from "@/components/ui/hstack";
-import { VStack } from "@/components/ui/vstack";
-import { Heading } from "@/components/ui/heading";
-import { Button, ButtonIcon } from "@/components/ui/button";
+import { Image } from '@ui/image';
+import { Center } from '@ui/center';
+import { Link, LinkText } from '@ui/link';
+import { Text } from '@ui/text';
+import { HStack } from '@ui/hstack';
+import { VStack } from '@ui/vstack';
+import { Heading } from '@ui/heading';
+import { Button, ButtonIcon, ButtonText } from '@ui/button';
 import { useNavigation } from '@react-navigation/native';
-import { CalendarClock, CheckCheck, ChevronLeft } from 'lucide-react-native';
+import {
+  CalendarClock,
+  Camera,
+  CheckCheck,
+  ChevronLeft,
+  Signature,
+  Trash,
+} from 'lucide-react-native';
 import { useAppSelector } from '../store/store';
 import React, { useState } from 'react';
-import { Camera, Printer, Signature, Trash } from 'phosphor-react-native';
-import { Alert, Platform, ScrollView, TouchableOpacity } from 'react-native';
+// import { Camera, Signature, Trash } from 'phosphor-react-native';
+import { Alert, Platform, ScrollView } from 'react-native';
 import { Input } from '@components/Input';
 import { SignatureModal } from '@components/SignatureModal';
 import { ModalCamera } from '@components/ModalCamera';
-import { ModalSchendule } from '@components/ModalSchendule';
+import { ModalReschenduleDelivery } from '@components/ModalReschenduleDelivery';
 import { CustomerHeaderDelivery } from '@components/CustomerHeaderDelivery';
 import { api } from '@services/api';
 import { type PhotoFile } from 'react-native-vision-camera';
@@ -375,37 +382,20 @@ export function DeliveryFinalize() {
           }}
           updateUrlImage={handleSendTakedPhotoProduct}
         />
-        <ModalSchendule
+        <ModalReschenduleDelivery
           visible={isModalScheduleOpen}
           handleCloseModal={() => {
             setIsModalScheduleOpen(false);
           }}
         />
         <CustomerHeaderDelivery data={clientEdit} showBackButton={false} />
-        {/* <HStack gap="$4" justifyContent="center" alignItems="center" mt="$4">
-          <Button
-            backgroundColor="$blue700"
-            $active-bg="$blue900"
-            onPress={handlePrintCanhoto}
-            gap="$2"
-          >
-            <ButtonIcon as={Printer} size="md" color="$white" />
-            <Text color="$white">Imprimir Canhoto</Text>
-          </Button>
-          <Button
-            backgroundColor="$green700"
-            $active-bg="$green900"
-            onPress={handlePrintBoleto}
-            gap="$2"
-          >
-            <ButtonIcon as={Printer} size="md" color="$white" />
-            <Text color="$white">Imprimir Boleto</Text>
-          </Button>
-        </HStack> */}
         <ScrollView style={{ flex: 1, width: '100%' }}>
           <VStack className="p-2 mb-48">
-            <Heading size="lg" className="text-trueGray-100">
-              Fechamento entrega
+            <Heading
+              size="lg"
+              className="text-typography-700 w-full mb-2 text-center"
+            >
+              Finalizar Entrega
             </Heading>
             <HStack className="w-full justify-between">
               <Link href={deliveryItemEdit.nfeUrl}>
@@ -415,26 +405,24 @@ export function DeliveryFinalize() {
                 <LinkText size="md">{`Pedido: ${deliveryItemEdit.orderNumber}`}</LinkText>
               </Link>
             </HStack>
-            <Center className="w-full h-24 bg-trueGray-700 rounded-md mb-2 p-2 mt-2">
-              <Center
-                className="w-full h-full border-dashed border-trueGray-400 border-1 rounded-md">
-                <TouchableOpacity
-                  style={{
-                    flex: 1,
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}
-                  onPress={() => {
-                    setIsTakingPhoto(true);
-                  }}
-                >
-                  <ButtonIcon as={Camera} size="xl" className="text-amber-400" />
+            <Center className="w-full h-24 bg-background-200 rounded-md mb-2 p-2 mt-2">
+              <Button
+                variant="outline"
+                className="flex-1 items-center justify-center w-full h-full border-dashed border-2 border-tertiary-400 rounded-md"
+                onPress={() => {
+                  setIsTakingPhoto(true);
+                }}
+              >
+                <ButtonIcon
+                  as={Camera}
+                  size="xl"
+                  className="text-tertiary-400"
+                />
 
-                  <Text className="text-amber-400">Adicionar foto</Text>
-                </TouchableOpacity>
-              </Center>
+                <Text className="text-tertiary-400">Adicionar foto</Text>
+              </Button>
             </Center>
-            <Heading size="md" className="text-trueGray-100">
+            <Heading size="md" className="text-typography-700">
               CPF/CNPJ
             </Heading>
             <Controller
@@ -452,38 +440,44 @@ export function DeliveryFinalize() {
               )}
             />
             {errors.cnpj_f && (
-              <Text size="xs" className="text-red-400 mb-2">
+              <Text size="xs" className="text-error-400 mb-2">
                 {errors.cnpj_f.message}
               </Text>
             )}
-            <Center className="w-full h-48 bg-trueGray-700 rounded-md mb-2 p-2 mt-2">
-              <Center
-                className="w-full h-full border-dashed border-trueGray-400 border-1 rounded-md">
-                {!deliveryItemEdit.signatureBase64 ? (
-                  <TouchableOpacity
-                    style={{
-                      flex: 1,
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                    }}
-                    onPress={handleShowSignature}
-                  >
-                    <ButtonIcon as={Signature} size="xl" className="text-amber-400" />
+            <Center className="w-full h-48 bg-background-200 rounded-md mb-2 p-2 mt-2">
+              {!deliveryItemEdit.signatureBase64 ? (
+                <Button
+                  className="flex-1 items-center justify-center w-full h-full border-dashed border-2 border-tertiary-400 rounded-md"
+                  variant="outline"
+                  style={{
+                    flex: 1,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                  onPress={handleShowSignature}
+                >
+                  <ButtonIcon
+                    as={Signature}
+                    size="xl"
+                    className="text-tertiary-400"
+                  />
 
-                    <Text className="text-amber-400">Coletar assinatura</Text>
-                  </TouchableOpacity>
-                ) : (
+                  <Text className="text-tertiary-400">Coletar assinatura</Text>
+                </Button>
+              ) : (
+                <Center className="w-full h-full">
                   <Image
                     source={{ uri: deliveryItemEdit.signatureBase64 }}
-                    style={{ width: '100%', height: '100%' }}
+                    // style={{ width: '100%', height: '100%' }}
+                    size="2xl"
                     resizeMode="contain"
                     alt="Assinatura"
                   />
-                )}
-              </Center>
+                </Center>
+              )}
             </Center>
             <Center>
-              <Heading size="md" className="text-trueGray-100">
+              <Heading size="md" className="text-typography-700">
                 Lista de fotos
               </Heading>
               {deliveryItemEdit.DeliveryItemsPhotos &&
@@ -492,7 +486,8 @@ export function DeliveryFinalize() {
                   <HStack
                     // height="$48"
                     key={photo.id}
-                    className="w-full bg-trueGray-700 p-2 rounded-md mb-2 justify-between relative">
+                    className="w-full p-2 rounded-md mb-2 justify-between relative border border-background-400"
+                  >
                     <Image
                       size="full"
                       resizeMode="contain"
@@ -500,57 +495,64 @@ export function DeliveryFinalize() {
                         uri: photo.fileUrl,
                       }}
                       alt="image"
-                      className="w-full h-[200px]" />
+                      className="w-full h-[200px]"
+                    />
                     <Button
                       onPress={() => {
                         // Handle delete photo logic here
                         handleDeletePhoto(photo.id);
                       }}
                       aria-label="Delete photo"
-                      className="absolute top-2 right-2 opacity-40 bg-red-800  active:bg-red-600">
-                      <ButtonIcon as={Trash} size="xl" className="text-trueGray-300" />
+                      className="absolute top-2 right-2 bg-error-400  active:bg-error-500"
+                    >
+                      <ButtonIcon
+                        as={Trash}
+                        size="xl"
+                        className="text-typography-900"
+                      />
                     </Button>
                   </HStack>
                 ))
               ) : (
-                <Text size="xs" className="text-trueGray-400">
+                <Text size="xs" className="text-typography-700 mt-20">
                   Nenhuma foto adicionada.
                 </Text>
               )}
             </Center>
           </VStack>
         </ScrollView>
-        <HStack
-          className="justify-between absolute bottom-0 left-0 bg-trueGray-900 w-[100%] h-24 p-2">
+        <HStack className="justify-between absolute bottom-0 left-0 bg-background-200 w-[100%] h-24 p-2">
           <Button
-            size="lg"
             onPress={() => {
               navigation.goBack();
             }}
-            className="rounded-md w-24 h-12 bg-blue-500  active:bg-blue-700 gap-1">
-            <ButtonIcon as={ChevronLeft} size="xl" />
-            <Text size="xs" className="text-trueGray-100">
+            className="rounded-md w-32 h-12 bg-info-400  active:bg-info-600 gap-1"
+          >
+            <ButtonIcon as={ChevronLeft} className="text-typography-700" />
+            <ButtonText size="xs" className="text-typography-700">
               Voltar
-            </Text>
+            </ButtonText>
           </Button>
           <Button
-            size="lg"
+            // size="lg"
             onPress={handleShowModalSchedule}
-            className="rounded-md w-32 h-12 bg-red-500  active:bg-red-700 gap-1">
-            <ButtonIcon as={CalendarClock} size="xl" />
+            className="rounded-md w-32 h-12 bg-error-500  active:bg-error-700 gap-1"
+          >
+            <ButtonIcon as={CalendarClock} className="text-typography-700" />
 
-            <Text size="xs" className="text-trueGray-100">
+            <ButtonText size="xs" className="text-typography-700">
               Não entregue
-            </Text>
+            </ButtonText>
           </Button>
           <Button
-            size="lg"
+            // size="lg"
             onPress={handleSubmit(handleDeliveryFinish)}
-            className="rounded-md w-24 h-12 bg-green-700  active:bg-green-500 gap-1">
-            <ButtonIcon as={CheckCheck} size="lg" />
-            <Text size="xs" className="text-trueGray-100">
+            className="rounded-md w-32 h-12 bg-green-700  active:bg-green-500 gap-1"
+          >
+            <ButtonIcon as={CheckCheck} className="text-typography-700" />
+            <ButtonText size="xs" className="text-typography-700">
               Finalizar
-            </Text>
+            </ButtonText>
           </Button>
         </HStack>
       </VStack>

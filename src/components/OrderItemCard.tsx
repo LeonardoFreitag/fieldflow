@@ -182,7 +182,7 @@ export function OrderItemCard({ productItem }: OrderItemCardProps) {
 
   return (
     <HStack
-      className={` ${productItem.isDeleted ? 'bg-red-400' : 'bg-trueGray-700'} items-center p-2 pr-2 rounded-md mb-3 w-full justify-between `}
+      className={` ${productItem.isDeleted ? 'bg-error-400' : 'bg-background-200'} items-center p-2 pr-2 rounded-md mb-3 w-full justify-between `}
     >
       <Image
         source={getImageSource()}
@@ -190,10 +190,10 @@ export function OrderItemCard({ productItem }: OrderItemCardProps) {
         className="w-20 h-20 rounded-md"
       />
       <VStack className="flex-1 p-[8px] justify-between items-start">
-        <Heading size="xs" className="text-trueGray-100">
+        <Heading size="xs" className="text-typography-700">
           {`Produto: ${productItem.code} - ${productItem.description}`}
         </Heading>
-        <Text className="text-trueGray-400">
+        <Text className="text-typography-700">
           {`${Number(productItem.quantity).toLocaleString('pt-BR', {
             maximumFractionDigits: 2,
           })} ${productItem.unity} x ${Number(
@@ -208,25 +208,33 @@ export function OrderItemCard({ productItem }: OrderItemCardProps) {
             currency: 'BRL',
           })}`}
         </Text>
-        <Divider className="my-0.5 bg-trueGray-500 mb-0.5" />
+        <Divider className="my-0.5 bg-outline-500 mb-0.5" />
 
         <HStack className="mt-1 justify-between items-center w-full gap-[8px]">
           <HStack className="gap-[8px]">
             <Button
               onPress={handleAskConfirmDelete}
-              className="w-10 h-10 rounded-md bg-amber-500  active:bg-amber-600"
+              className="w-10 h-10 rounded-md bg-tertiary-300  active:bg-teriary-400"
             >
               {!productItem.isDeleted && <ButtonIcon as={Trash} size="xl" />}
               {productItem.isDeleted && (
-                <ButtonIcon as={ArchiveRestore} size="xl" />
+                <ButtonIcon
+                  as={ArchiveRestore}
+                  size="xl"
+                  className="text-typography-700"
+                />
               )}
             </Button>
             {productItem.isComposed && (
               <Button
                 onPress={handleListItemComposition}
-                className="w-10 h-10 rounded-md bg-darkBlue-400  active:bg-darkBlue-500"
+                className="w-10 h-10 rounded-md bg-info-300  active:bg-info-400"
               >
-                <ButtonIcon as={ClipboardList} size="xl" />
+                <ButtonIcon
+                  as={ClipboardList}
+                  size="xl"
+                  className="text-typography-700"
+                />
               </Button>
             )}
           </HStack>
@@ -237,21 +245,33 @@ export function OrderItemCard({ productItem }: OrderItemCardProps) {
                   onPress={() => {
                     handleShowModalQuantity(productItem.quantity);
                   }}
-                  className="w-10 h-10 rounded-md bg-blueGray-500  active:bg-blueGray-400"
+                  className="w-10 h-10 rounded-md bg-background-300  active:bg-background-400"
                 >
-                  <ButtonIcon as={Sigma} size="xl" />
+                  <ButtonIcon
+                    as={Sigma}
+                    size="xl"
+                    className="text-typography-700"
+                  />
                 </Button>
                 <Button
                   onPress={handleUpQty}
-                  className="w-10 h-10 rounded-md bg-green-700  active:bg-green-500"
+                  className="w-10 h-10 rounded-md bg-success-300  active:bg-success-400"
                 >
-                  <ButtonIcon as={Plus} size="xl" />
+                  <ButtonIcon
+                    as={Plus}
+                    size="xl"
+                    className="text-typography-700"
+                  />
                 </Button>
                 <Button
                   onPress={handleDownQty}
-                  className="w-10 h-10 rounded-md bg-red-700  active:bg-red-500"
+                  className="w-10 h-10 rounded-md bg-error-300  active:bg-error-400"
                 >
-                  <ButtonIcon as={Minus} size="xl" />
+                  <ButtonIcon
+                    as={Minus}
+                    size="xl"
+                    className="text-typography-700"
+                  />
                 </Button>
               </>
             )}

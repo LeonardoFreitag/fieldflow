@@ -1,8 +1,8 @@
-import { HStack } from "@/components/ui/hstack";
-import { Text } from "@/components/ui/text";
-import { VStack } from "@/components/ui/vstack";
-import { Heading } from "@/components/ui/heading";
-import { Button, ButtonIcon } from "@/components/ui/button";
+import { HStack } from '@ui/hstack';
+import { Text } from '@ui/text';
+import { VStack } from '@ui/vstack';
+import { Heading } from '@ui/heading';
+import { Button, ButtonIcon } from '@ui/button';
 
 import {
   AlertDialog,
@@ -11,7 +11,7 @@ import {
   AlertDialogContent,
   AlertDialogFooter,
   AlertDialogHeader,
-} from "@/components/ui/alert-dialog";
+} from '@ui/alert-dialog';
 
 import React, {
   useCallback,
@@ -31,13 +31,21 @@ import {
 import { useDispatch } from 'react-redux';
 import { useAppSelector } from '@store/store';
 import { addCoordsEdit } from '@store/slice/coords/coordsEditSlice';
-import { CaretLeft, RoadHorizon, Truck, UserList } from 'phosphor-react-native';
+// import { CaretLeft, RoadHorizon, Truck, UserList } from 'phosphor-react-native';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
-import { DoorClosed, ListCheck, Car, SaveAll } from 'lucide-react-native';
+import {
+  DoorClosed,
+  ListCheck,
+  Car,
+  SaveAll,
+  ChevronLeft,
+  Truck,
+  Binoculars,
+  Contact,
+} from 'lucide-react-native';
 import { api } from '@services/api';
 import { type DeliveryItemModel } from '@models/DeliveryItemModel';
 import {
-  addDeliveryRouteEdit,
   deleteDeliveryRouteEdit,
   updateDeliveryRouteEdit,
 } from '@store/slice/deliveryRoute/deliveryRouteEditSlice';
@@ -49,28 +57,11 @@ import { type IUpdateDeliveryRouteDTO } from '@dtos/IUpdateDeliveryRouteDTO';
 import { addClientEdit } from '@store/slice/client/clientEditSlice';
 import { addDeliveryItemEdit } from '@store/slice/deliveryRoute/deliveryItemEditSlice';
 import { Working } from '@components/Working';
+import { CarMarker } from '@/components/CarMarker';
+import { DeliveryMarker } from '@/components/DeliveryMarker';
+import { Box } from '@ui/box';
 
 const { width, height } = Dimensions.get('window');
-
-// Componente customizado para o ícone do carro
-const CarMarker = () => (
-  <View
-    style={{
-      backgroundColor: '#1E3A8A',
-      borderRadius: 20,
-      padding: 8,
-      borderWidth: 3,
-      borderColor: '#FFFFFF',
-      shadowColor: '#000',
-      shadowOffset: { width: 0, height: 2 },
-      shadowOpacity: 0.3,
-      shadowRadius: 4,
-      elevation: 5,
-    }}
-  >
-    <Car size={24} color="#FFFFFF" />
-  </View>
-);
 
 export const DeliveryDrive: React.FC = () => {
   const mapRef = useRef<MapView | null>(null);
@@ -132,41 +123,38 @@ export const DeliveryDrive: React.FC = () => {
     }, [rota]),
   );
 
-  // Executa handleSaveTravel automaticamente após reabrir a aplicação com viagem existente
-
-  const getMarkerColor = useCallback((status: string | undefined) => {
-    switch (status) {
+  // const getButtonStatusColor = useCallback((status: string) => {
+  //   switch (status) {
+  //     case 'delivered':
+  //       return '$green600';
+  //     case 'canceled':
+  //       return '$red600';
+  //     case 'charged':
+  //       return '$blue600';
+  //     case 'pending':
+  //       return '$yellow600';
+  //     case 'not_delivered':
+  //       return '$orange600';
+  //     default:
+  //       return '$blue600';
+  //   }
+  // }, []);
+  const getButtonStatusColor = (deliveryStatus: string) => {
+    switch (deliveryStatus) {
       case 'delivered':
-        return 'green';
+        return 'success';
       case 'canceled':
-        return 'red';
+        return 'error';
       case 'charged':
-        return 'blue';
+        return 'info';
       case 'pending':
-        return 'yellow';
+        return 'warning';
       case 'not_delivered':
-        return 'orange';
+        return 'tertiary';
       default:
-        return 'blue';
+        return 'info';
     }
-  }, []);
-
-  const getButtonStatusColor = useCallback((status: string) => {
-    switch (status) {
-      case 'delivered':
-        return '$green600';
-      case 'canceled':
-        return '$red600';
-      case 'charged':
-        return '$blue600';
-      case 'pending':
-        return '$yellow600';
-      case 'not_delivered':
-        return '$orange600';
-      default:
-        return '$blue600';
-    }
-  }, []);
+  };
 
   const iniciarNavegacao = useCallback((deliveryItem: DeliveryItemModel) => {
     const url = `https://www.google.com/maps/dir/?api=1&destination=${deliveryItem.latitude},${deliveryItem.longitude}&travelmode=driving`;
@@ -180,6 +168,14 @@ export const DeliveryDrive: React.FC = () => {
   }, []);
 
   const handleBackToDeliveryRoute = async () => {
+    if (existsDeliveryRouteEdit.exists) {
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'MenuRoutes' }],
+      });
+      return;
+    }
+
     navigation.reset({
       index: 0,
       routes: [{ name: 'DeliveryRoute' }],
@@ -219,7 +215,6 @@ export const DeliveryDrive: React.FC = () => {
   }, [deliveryRouteEdit.DeliveryItems]);
 
   const handleCompleteDeliveryRoute = useCallback(async () => {
-    console.log('está chamando a função handleCompleteDeliveryRoute');
     if (!listIsCompleted) {
       Alert.alert(
         'Lista incompleta',
@@ -259,8 +254,6 @@ export const DeliveryDrive: React.FC = () => {
     } finally {
       setWorking(false);
     }
-
-    console.log('completa viagem');
   }, [
     deliveryRouteEdit.id,
     dispatch,
@@ -271,7 +264,7 @@ export const DeliveryDrive: React.FC = () => {
 
   useEffect(() => {
     fetchRota();
-  }, [fetchRota]);
+  }, []);
 
   const handleCloseChargeDialog = useCallback(() => {
     setShowChargeDialog(false);
@@ -293,7 +286,6 @@ export const DeliveryDrive: React.FC = () => {
   }, [deliveryRouteEdit.DeliveryItemsCharge]);
 
   const handleSaveDeliveryRoute = useCallback(async () => {
-    console.log(deliveryRouteEdit.DeliveryRouteCoords);
     const newDeliverRoute: ICreateDeliveryRouteDTO = {
       customerId: deliveryRouteEdit.customerId,
       routeId: deliveryRouteEdit.routeId,
@@ -320,8 +312,6 @@ export const DeliveryDrive: React.FC = () => {
         deliveryOrder: item.deliveryOrder.toString(),
       })),
     };
-
-    // console.log(newDeliverRoute);
 
     try {
       const response = await api.post<DeliveryRouteModel>(
@@ -415,9 +405,6 @@ export const DeliveryDrive: React.FC = () => {
         status: 'charged',
       };
 
-      // console.log('id', deliveryItem.id);
-      // console.log('status', updatedDeliveryItem.status);
-      // console.log('data', new Date().toISOString());
       try {
         const response = await api.patch<DeliveryItemModel>(
           '/deliveryItems/status',
@@ -482,17 +469,23 @@ export const DeliveryDrive: React.FC = () => {
                     latitude: Number(deliveryItem.latitude),
                     longitude: Number(deliveryItem.longitude),
                   }}
-                  pinColor={getMarkerColor(deliveryItem.status)}
+                  // pinColor={getMarkerColor(deliveryItem.status)}
                   title={`${idx + 1}. ${deliveryItem.Client?.companyName}`}
                   onCalloutPress={() => {
                     iniciarNavegacao(deliveryItem);
                   }}
-                />
+                >
+                  <DeliveryMarker
+                    markerStatus={
+                      deliveryItem.status ? deliveryItem.status : 'pending'
+                    }
+                  />
+                </Marker>
               ))}
             {routeInitialized && rota.length > 0 && (
               <Polyline
                 coordinates={rota}
-                strokeColor="#2196F3"
+                strokeColor="#f35221"
                 strokeWidth={3}
               />
             )}
@@ -505,13 +498,15 @@ export const DeliveryDrive: React.FC = () => {
         )}
         <Button
           onPress={handleBackToDeliveryRoute}
-          className="absolute top-12 left-4 rounded-md opacity-40">
-          <ButtonIcon as={CaretLeft} size="xl" />
+          className="absolute top-12 left-4 rounded-md opacity-80"
+        >
+          <ButtonIcon as={ChevronLeft} size="xl" />
         </Button>
         {!deliveryRouteEdit.completedCharge && (
           <Button
             onPress={handleShowDialogCharge}
-            className="absolute bottom-12 left-4 rounded-md opacity-40">
+            className="absolute bottom-12 left-4 rounded-md opacity-80"
+          >
             <ButtonIcon as={Truck} size="xl" />
           </Button>
         )}
@@ -551,8 +546,9 @@ export const DeliveryDrive: React.FC = () => {
               );
             }
           }}
-          className="bg-green-600  active:bg-green-700 absolute top-12 right-4 rounded-md opacity-50">
-          <ButtonIcon as={RoadHorizon} size="xl" />
+          className="bg-success-400  active:bg-success-500 absolute top-12 right-4 rounded-md opacity-80"
+        >
+          <ButtonIcon as={Binoculars} size="xl" />
         </Button>
 
         {existsDeliveryRouteEdit.exists &&
@@ -561,8 +557,9 @@ export const DeliveryDrive: React.FC = () => {
               onPress={() => {
                 setShowAlertDialog(true);
               }}
-              className="bg-orange-600  active:bg-orange-800 absolute bottom-12 right-4 rounded-md opacity-40">
-              <ButtonIcon as={UserList} size="xl" />
+              className="bg-tertiary-300  active:bg-tertiary-300 absolute bottom-12 right-4 rounded-md opacity-80"
+            >
+              <ButtonIcon as={Contact} size="xl" />
             </Button>
           )}
       </VStack>
@@ -584,38 +581,21 @@ export const DeliveryDrive: React.FC = () => {
                     onPress={async () => {
                       await handleCallCheckIn(item);
                     }}
-                    className={` bg-${getButtonStatusColor(item.status)} w-[100%] relative `}>
+                    className={`bg-${getButtonStatusColor(item.status)}-300 active:bg-${getButtonStatusColor(item.status)}-400 w-[100%] relative `}
+                  >
                     {(item.NotDeliveredItems?.length ?? 0) > 0 && (
-                      <View
-                        style={{
-                          position: 'absolute',
-                          top: 8,
-                          right: 8,
-                          backgroundColor: 'red',
-                          borderRadius: 8,
-                          width: 16,
-                          height: 16,
-                          justifyContent: 'center',
-                          alignItems: 'center',
-                          zIndex: 1,
-                        }}
-                      >
-                        <Text
-                          style={{
-                            color: 'white',
-                            fontSize: 10,
-                            fontWeight: 'bold',
-                          }}
-                        >
+                      <Box className="absolute top-2 right-2 bg-red-600 rounded-full w-5 h-5 justify-center items-center z-10">
+                        <Text className="text-center text-typography-900 text-xs font-bold">
                           {item.NotDeliveredItems?.length ?? 0}
                         </Text>
-                      </View>
+                      </Box>
                     )}
                     <Text
                       numberOfLines={1}
                       size="md"
                       style={styles.buttonText}
-                      className="text-center text-white">
+                      className="text-center text-white"
+                    >
                       {index + 1}. {item.Client?.companyName}
                     </Text>
                   </Button>
@@ -627,15 +607,25 @@ export const DeliveryDrive: React.FC = () => {
               {listIsCompleted && (
                 <Button
                   onPress={handleCompleteDeliveryRoute}
-                  className="bg-blue-600  active:bg-blue-800 rounded-md opacity-60">
-                  <ButtonIcon as={ListCheck} size="xl" />
+                  className="bg-info-400  active:bg-info-500 rounded-md opacity-70"
+                >
+                  <ButtonIcon
+                    as={ListCheck}
+                    size="xl"
+                    className="text-typography-700"
+                  />
                 </Button>
               )}
 
               <Button
                 onPress={handleClose}
-                className="bg-red-600  active:bg-red-800 rounded-md opacity-60">
-                <ButtonIcon as={DoorClosed} size="xl" />
+                className="bg-error-400  active:bg-error-500 rounded-md opacity-70"
+              >
+                <ButtonIcon
+                  as={DoorClosed}
+                  size="xl"
+                  className="text-typography-900"
+                />
               </Button>
             </HStack>
           </AlertDialogFooter>
@@ -663,12 +653,14 @@ export const DeliveryDrive: React.FC = () => {
                     onPress={async () => {
                       await handleChargeConfirm(item);
                     }}
-                    className={` ${item.status === 'pending' ? "bg-yellow-600" : item.status === 'charged' ? "bg-blue-600" : "bg-blue-600"} w-[100%] `}>
+                    className={` ${item.status === 'pending' ? 'bg-tertiary-300' : item.status === 'charged' ? 'bg-info-300' : 'bg-info-300'} w-[100%] `}
+                  >
                     <Text
                       numberOfLines={1}
                       size="md"
                       style={styles.buttonText}
-                      className="text-center text-white">
+                      className="text-center text-typography-700"
+                    >
                       {index + 1}. {item.Client?.companyName}
                     </Text>
                   </Button>
@@ -682,9 +674,14 @@ export const DeliveryDrive: React.FC = () => {
                   onPress={async () => {
                     await handleSaveDeliveryRoute();
                   }}
-                  className="bg-green-600  active:bg-green-800 rounded-md justify-center gap-2">
-                  <ButtonIcon as={SaveAll} size="xl" />
-                  <Text size="sm" className="text-white">
+                  className="bg-success-400  active:bg-success-500 rounded-md justify-center gap-2"
+                >
+                  <ButtonIcon
+                    as={SaveAll}
+                    size="xl"
+                    className="text-typography-700"
+                  />
+                  <Text size="sm" className="text-typography-700">
                     Confirmar lista
                   </Text>
                 </Button>
@@ -695,17 +692,27 @@ export const DeliveryDrive: React.FC = () => {
                     onPress={async () => {
                       await handleCompleteCharge();
                     }}
-                    className="bg-green-600  active:bg-green-800 rounded-md justify-center gap-2">
-                    <ButtonIcon as={SaveAll} size="xl" />
-                    <Text size="sm" className="text-white">
+                    className="bg-success-300  active:bg-success-400 rounded-md justify-center gap-2"
+                  >
+                    <ButtonIcon
+                      as={SaveAll}
+                      size="xl"
+                      className="text-typography-700"
+                    />
+                    <Text size="sm" className="text-typography-700">
                       Finalizar carregamento
                     </Text>
                   </Button>
                 )}
               <Button
                 onPress={handleCloseChargeDialog}
-                className="bg-red-600  active:bg-red-800 rounded-md opacity-60">
-                <ButtonIcon as={DoorClosed} size="xl" />
+                className="bg-error-400  active:bg-error-400 rounded-md opacity-500"
+              >
+                <ButtonIcon
+                  as={DoorClosed}
+                  size="xl"
+                  className="text-typography-700"
+                />
               </Button>
             </HStack>
           </AlertDialogFooter>

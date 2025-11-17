@@ -45,6 +45,9 @@
       "@dtos/*": [
         "src/dtos/*"
       ],
+      "@screens/*": [
+        "src/screens/*"
+      ],
       "tailwind.config": [
         "./tailwind.config.js"
       ]

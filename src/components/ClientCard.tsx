@@ -1,7 +1,7 @@
-import { Button, ButtonIcon } from '@/components/ui/button';
-import { Text } from '@/components/ui/text';
-import { VStack } from '@/components/ui/vstack';
-import { HStack } from '@/components/ui/hstack';
+import { Button, ButtonIcon } from '@ui/button';
+import { Text } from '@ui/text';
+import { VStack } from '@ui/vstack';
+import { HStack } from '@ui/hstack';
 import { type TouchableOpacityProps } from 'react-native';
 import { type ClientModel } from '@models/ClientModel';
 import { HandTap, ImageBroken, Images } from 'phosphor-react-native';

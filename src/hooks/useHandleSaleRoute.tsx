@@ -58,8 +58,7 @@ export function useHandleSaleRoute() {
     });
     return listOrdenated;
   }
-  const handleSaleRoute = async (): Promise<TravelModel> => {
-    // verifica na API se existe uma viagem ativa
+  const handleSaleRoute = useCallback(async (): Promise<TravelModel> => {
     try {
       const response = await api.get<TravelModel>('/travel/current', {
         params: {
@@ -67,9 +66,6 @@ export function useHandleSaleRoute() {
           routeId: user?.user.routeId,
         },
       });
-
-      // console.log('response travel', response.data.TravelClients?.length);
-
       if (response.data) {
         dispatch(addExistsTravelEdit({ exists: true }));
         dispatch(addCanChangeRouteEdit({ canChangeRoute: false }));
@@ -131,44 +127,22 @@ export function useHandleSaleRoute() {
               ClientPhotos: clientData.ClientPhotos ?? [],
             };
           });
-
         dispatch(
           loadClientAdHocList(
             recoveryClientList.filter(client => client.dataFrom === 'ad_hoc'),
           ),
         );
-
         dispatch(loadClientList(recoveryClientList));
-        // navigation.navigate('SaleRoute');
         return response.data;
       }
     } catch (error) {
-      dispatch(
-        addExistsTravelEdit({
-          exists: false,
-        }),
-      );
-      dispatch(
-        addCanChangeRouteEdit({
-          canChangeRoute: true,
-        }),
-      );
+      dispatch(addExistsTravelEdit({ exists: false }));
+      dispatch(addCanChangeRouteEdit({ canChangeRoute: true }));
     }
-
-    dispatch(
-      addExistsTravelEdit({
-        exists: false,
-      }),
-    );
-    dispatch(
-      addCanChangeRouteEdit({
-        canChangeRoute: true,
-      }),
-    );
+    dispatch(addExistsTravelEdit({ exists: false }));
+    dispatch(addCanChangeRouteEdit({ canChangeRoute: true }));
     return {} as TravelModel;
-
-    // navigation.navigate('SaleRoute');
-  };
+  }, [dispatch, user?.user.customerId, user?.user.routeId]);
 
   const handleCreateAndSaveTravel = useCallback(
     async (
@@ -188,8 +162,8 @@ export function useHandleSaleRoute() {
             clientId: cliente.id,
             clientCode: cliente.code,
             orderInRoute: index + 1,
-            latitude: cliente.latitude ?? null,
-            longitude: cliente.longitude ?? null,
+            latitude: cliente.latitude ?? 0,
+            longitude: cliente.longitude ?? 0,
             checkInDate: new Date(),
             checkOutDate: new Date(),
             notes: '',
@@ -197,6 +171,8 @@ export function useHandleSaleRoute() {
             dataFrom: dataFrom ?? 'route',
           })),
         };
+
+        console.log('New Travel to be created:', newTravel);
 
         try {
           const response = await api.post<TravelModel>('/travel', newTravel);
@@ -214,6 +190,7 @@ export function useHandleSaleRoute() {
           dispatch(addTravelEdit(travelLocalSaved));
           dispatch(addExistsTravelEdit({ exists: true }));
           dispatch(addCanChangeRouteEdit({ canChangeRoute: false }));
+
           return travelLocalSaved;
         } catch (error) {
           console.error('Erro ao criar viagem:', error);
@@ -244,6 +221,7 @@ export function useHandleSaleRoute() {
         dispatch(addTravelEdit(travelLocalSaved));
         dispatch(addExistsTravelEdit({ exists: true }));
         dispatch(addCanChangeRouteEdit({ canChangeRoute: false }));
+
         return travelLocalSaved;
       }
       return travelEdit;
@@ -259,7 +237,7 @@ export function useHandleSaleRoute() {
     ],
   );
 
-  const fetchRota = useCallback(async () => {
+  const fetchRota = async () => {
     if (existsTravelEdit.exists && clientList.length > 0 && !routeInitialized) {
       const waypoints = clientList
         .filter(client => client.dataFrom !== 'ad_hoc')
@@ -270,14 +248,17 @@ export function useHandleSaleRoute() {
           address: `${client.streetName}, ${client.streetNumber}, ${client.city}, ${client.state}, ${client.zipCode}`,
         }));
 
+      const destinationItem = clientList[clientList.length - 1];
+
       const dataRequest: IRequestClientOptimizeDTO = {
         origin: {
           latitude: coordsEdit.latitude,
           longitude: coordsEdit.longitude,
         },
         destination: {
-          latitude: clientList[clientList.length - 1].latitude ?? 0,
-          longitude: clientList[clientList.length - 1].longitude ?? 0,
+          latitude: destinationItem.latitude ?? 0,
+          longitude: destinationItem.longitude ?? 0,
+          address: `${destinationItem.streetName}, ${destinationItem.streetNumber}, ${destinationItem.city}, ${destinationItem.state}, ${destinationItem.zipCode}`,
         },
         waypoints,
       };
@@ -311,14 +292,10 @@ export function useHandleSaleRoute() {
             longitude: client.longitude ?? 0,
           }));
 
-        // console.log('ad_hoc', clientsAdHoc.length);
-
         const clientesOrdenados = orderClientsByRoute(
           clientList,
           orderedClients,
         );
-
-        // console.log([...clientesOrdenados, ...clientsAdHoc].length);
 
         dispatch(loadClientList(clientesOrdenados));
         dispatch(loadAllClientList([...clientesOrdenados, ...clientsAdHoc]));
@@ -340,14 +317,17 @@ export function useHandleSaleRoute() {
         return;
       }
 
+      const destinationItem = clientList[clientList.length - 1];
+
       const dataRequest: IRequestClientOptimizeDTO = {
         origin: {
           latitude: coordsEdit.latitude,
           longitude: coordsEdit.longitude,
         },
         destination: {
-          latitude: clientList[clientList.length - 1].latitude ?? 0,
-          longitude: clientList[clientList.length - 1].longitude ?? 0,
+          latitude: destinationItem.latitude ?? 0,
+          longitude: destinationItem.longitude ?? 0,
+          address: `${destinationItem.streetName}, ${destinationItem.streetNumber}, ${destinationItem.city}, ${destinationItem.state}, ${destinationItem.zipCode}`,
         },
         waypoints,
       };
@@ -391,26 +371,15 @@ export function useHandleSaleRoute() {
         // console.error('Erro ao buscar rota otimizada:', error);
       }
     }
-  }, [
-    clientAdHocList,
-    clientList,
-    coordsEdit.latitude,
-    coordsEdit.longitude,
-    dispatch,
-    existsTravelEdit.exists,
-    routeInitialized,
-  ]);
+  };
 
   const handleCheckIn = async (cliente: ClientModel) => {
-    console.log('handleCheckIn', cliente.id);
     try {
       const response = await api.get<ClientModel>('/client/details', {
         params: {
           clientId: cliente.id,
         },
       });
-      console.log('response', response.data.id);
-      console.log(travelEdit.TravelClients);
 
       const clientCheckIn = travelEdit.TravelClients?.find(
         c => c.clientId === cliente.id,

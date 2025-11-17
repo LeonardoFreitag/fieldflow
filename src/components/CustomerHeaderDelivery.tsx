@@ -24,32 +24,32 @@ export function CustomerHeaderDelivery({
   }
 
   return (
-    <HStack className="bg-trueGray-700 pt-16 pb-5 px-8 items-center gap-4 justify-between">
+    <HStack className="bg-background-200 pt-16 pb-5 px-8 items-center gap-4 justify-between">
       {/* <UserPhoto source={{ uri: data.logo }} h="$16" w="$16" alt="photo" /> */}
       <VStack className="flex-1">
         <Heading
           size="xs"
           numberOfLines={1}
           ellipsizeMode="tail"
-          className="text-trueGray-100"
+          className="text-typography-700"
         >
           {data.companyName}
         </Heading>
         <Text
           size="xs"
-          className="text-trueGray-400"
+          className="text-typography-700"
         >{`${data.streetName}, ${data.streetNumber}`}</Text>
         <Text
           size="xs"
-          className="text-trueGray-400"
+          className="text-typography-700"
         >{`Bairro ${data.neighborhood}, ${data.streetNumber}`}</Text>
         <Text
           size="xs"
-          className="text-trueGray-400"
+          className="text-typography-700"
         >{`${data.city} - ${data.state}, ${data.zipCode}`}</Text>
         <Text
           size="xs"
-          className="text-trueGray-400"
+          className="text-typography-700"
         >{`Cel. ${data.cellphone ?? '-'}`}</Text>
       </VStack>
       {/* <Button
@@ -70,7 +70,6 @@ export function CustomerHeaderDelivery({
         <Button
           size="lg"
           onPress={handleGoBack}
-          variant="outline"
           className="bg-trueGray-700  active:bg-trueGray-700 border-trueGray-400"
         >
           <Icon as={ChevronLeft} size="xl" className="text-trueGray-400" />

@@ -1,14 +1,13 @@
-import { HStack } from "@/components/ui/hstack";
-import { Switch } from "@/components/ui/switch";
-import { ScrollView } from "@/components/ui/scroll-view";
-import { Text } from "@/components/ui/text";
-import { Heading } from "@/components/ui/heading";
-import { Center } from "@/components/ui/center";
-import { VStack } from "@/components/ui/vstack";
+import { HStack } from '@ui/hstack';
+import { Switch } from '@ui/switch';
+import { ScrollView } from '@ui/scroll-view';
+import { Text } from '@ui/text';
+import { Heading } from '@ui/heading';
+import { Center } from '@ui/center';
+import { VStack } from '@ui/vstack';
 // import BackgroundImage from '@assets/background.png';
 import { Input } from '@components/Input';
 import { CurrencyCircleDollar } from 'phosphor-react-native';
-import { Button } from '@components/Button';
 import { Alert, KeyboardAvoidingView, Platform } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -21,6 +20,7 @@ import { loginGet } from '@storage/login/loginGet';
 import { loginCreate } from '@storage/login/loginCreate';
 import { loginDelete } from '@storage/login/loginDelete';
 import { type LoginModel } from '@models/LoginModel';
+import { Button, ButtonText } from '@ui/button';
 
 const SignInSchema = yup.object().shape({
   email: yup.string().email('E-mail inválido').required('Campo obrigatório'),
@@ -106,21 +106,30 @@ export function SignIn() {
     >
       <ScrollView
         contentContainerStyle={{ flexGrow: 1 }}
+        // Se a sua versão de NativeWind suportar, isto ajuda muito:
+        // contentContainerClassName="flex-1 justify-center"
+        keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
       >
-        <VStack className="flex-1">
-          <Center className="w-full mt-1/2">
+        <VStack className="flex-1 bg-background-100 px-10 justify-center">
+          {/* Header / Logo */}
+          <Center className="items-center mb-10">
             <CurrencyCircleDollar size={52} weight="fill" color="green" />
-            <Heading size="2xl" className="text-trueGray-100">
+            <Heading size="2xl" className="text-typography-white mt-4">
               AutoMax GO
             </Heading>
-            <Text className="text-trueGray-100">Vendas, Entrega e Cobrança</Text>
+            <Text className="text-typography-500 mt-1">
+              Vendas, Entrega e Cobrança
+            </Text>
           </Center>
-          <VStack className="flex-1 px-10 pb-16">
-            <Center className="w-full gap-2 mt-1/5">
-              <Heading size="sm" className="text-trueGray-400">
+
+          {/* Form */}
+          <VStack className="space-y-4">
+            <Center className="items-start w-full gap-4">
+              <Heading size="sm" className="text-typography-400">
                 Acesse a conta
               </Heading>
+
               <Controller
                 control={control}
                 name="email"
@@ -149,7 +158,8 @@ export function SignIn() {
                   />
                 )}
               />
-              <HStack className="w-full justify-start items-center mt-2 mb-4 gap-2">
+
+              <HStack className="w-full items-center gap-2 mt-2 mb-2">
                 <Switch
                   size="md"
                   isDisabled={false}
@@ -159,9 +169,17 @@ export function SignIn() {
                 />
                 <Text className="text-white">Lembrar login</Text>
               </HStack>
-              <Button title="Acessar" onPress={handleSubmit(handleLogin)} />
+
+              <Button
+                onPress={handleSubmit(handleLogin)}
+                className="w-full bg-green-600 active:bg-green-700"
+              >
+                <ButtonText className="text-typography-700">Entrar</ButtonText>
+              </Button>
             </Center>
           </VStack>
+          {/* Espaço para não colar no fundo quando teclado aparece */}
+          <VStack className="h-8" />
         </VStack>
       </ScrollView>
     </KeyboardAvoidingView>

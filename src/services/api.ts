@@ -16,7 +16,7 @@ interface APIInstanceProps extends AxiosInstance {
 
 const api = axios.create({
   // baseURL: 'https://fieldflow-api.htcode.net',
-  baseURL: 'http://192.168.18.157:3335',
+  baseURL: 'http://192.168.18.168:3335',
 }) as APIInstanceProps;
 
 let failedQueue: PromiseType[] = [];
@@ -24,7 +24,6 @@ let isRefreshing = false;
 
 api.registerInterceptTokenManager = (signOut: SignOut) => {
   // Interceptor para adicionar token automaticamente nas requisições
-  // console.log('Registering token interceptor');
   const interceptTokenRequest = api.interceptors.request.use(
     async config => {
       try {

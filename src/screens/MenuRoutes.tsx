@@ -1,7 +1,7 @@
-import { VStack } from "@/components/ui/vstack";
-import { SafeAreaView } from "@/components/ui/safe-area-view";
-import { Heading } from "@/components/ui/heading";
-import { Button, ButtonIcon } from "@/components/ui/button";
+import { VStack } from '@ui/vstack';
+import { SafeAreaView } from '@ui/safe-area-view';
+import { Heading } from '@ui/heading';
+import { Button, ButtonIcon } from '@ui/button';
 import { useAuth } from '@hooks/useAuth';
 import { type DeliveryRouteModel } from '@models/DeliveryRouteModel';
 import { type RouteCollectionModel } from '@models/RouteCollectionModel';
@@ -15,10 +15,13 @@ import { addRouteCollectionEdit } from '@store/slice/routeCollection/routeCollec
 import { HandCoins, ShoppingCart, Truck } from 'lucide-react-native';
 import { useCallback, useMemo } from 'react';
 import { useDispatch } from 'react-redux';
+import { useHandleSaleRoute } from '@hooks/useHandleSaleRoute';
+import { Text } from '@ui/text';
 
 export function MenuRoutes() {
   const navigation = useNavigation();
   const dispatch = useDispatch();
+  const { handleSaleRoute } = useHandleSaleRoute();
 
   const { user } = useAuth();
 
@@ -34,6 +37,8 @@ export function MenuRoutes() {
   }, [user?.user.UserRules]);
 
   const handleCallSaleRoute = async () => {
+    await handleSaleRoute();
+    // await fetchRota();
     navigation.navigate('SaleMain');
   };
 
@@ -122,13 +127,21 @@ export function MenuRoutes() {
   return (
     <SafeAreaView>
       <VStack className="px-4 py-4 gap-12 h-full justify-center">
+        <Heading size="lg" className="text-typography-500 text-center">
+          Selecione a rota desejada
+        </Heading>
         <Button
           variant="outline"
           onPress={handleCallSaleRoute}
           disabled={!stringRules.includes('sale')}
-          className="border-trueGray-300  active:bg-trueGray-500 gap-8 h-20">
-          <ButtonIcon as={ShoppingCart} size="xl" className="text-trueGray-300" />
-          <Heading size="md" className="text-trueGray-300">
+          className="border-outline-700  bg-background-700 active:bg-background-100 gap-8 h-20"
+        >
+          <ButtonIcon
+            as={ShoppingCart}
+            size="xl"
+            className="text-typography-200"
+          />
+          <Heading size="md" className="text-typography-200">
             Vendas
           </Heading>
         </Button>
@@ -136,9 +149,10 @@ export function MenuRoutes() {
           variant="outline"
           onPress={handleCallDeliveryRoute}
           disabled={!stringRules.includes('production')}
-          className="border-trueGray-300  active:bg-trueGray-500 gap-8 h-20">
-          <ButtonIcon as={Truck} size="xl" className="text-trueGray-300" />
-          <Heading size="md" className="text-trueGray-300">
+          className="border-outline-100  bg-background-700 active:bg-background-100 gap-8 h-20"
+        >
+          <ButtonIcon as={Truck} size="xl" className="text-typography-200" />
+          <Heading size="md" className="text-typography-200">
             Entrega
           </Heading>
         </Button>
@@ -146,9 +160,14 @@ export function MenuRoutes() {
           variant="outline"
           onPress={handleCallRouteCollection}
           disabled={!stringRules.includes('expedition')}
-          className="border-trueGray-300 gap-8 h-20  active:bg-trueGray-500">
-          <ButtonIcon as={HandCoins} size="xl" className="text-trueGray-300" />
-          <Heading size="md" className="text-trueGray-300">
+          className="border-outline-100  bg-background-700 active:bg-background-100 gap-8 h-20"
+        >
+          <ButtonIcon
+            as={HandCoins}
+            size="xl"
+            className="text-typography-200"
+          />
+          <Heading size="md" className="text-typography-200">
             Cobrança
           </Heading>
         </Button>

@@ -4,6 +4,8 @@ export interface TravelClientVisitFailureModel {
   id?: string;
   travelClientId: string;
   reason: string; // ex: "Cliente ausente", "Estabelecimento fechado"
-  rescheduleDate?: Date; // caso tenha agendamento futuro
+  notes: string;
+  isRescheneduled: boolean;
+  reschenduleDate: Date | null;
   travelClient?: TravelClientsModel;
 }

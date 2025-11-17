@@ -1,8 +1,8 @@
-import { Text } from "@/components/ui/text";
-import { HStack } from "@/components/ui/hstack";
-import { VStack } from "@/components/ui/vstack";
-import { Heading } from "@/components/ui/heading";
-import { Button, ButtonIcon } from "@/components/ui/button";
+import { Text } from '@ui/text';
+import { HStack } from '@ui/hstack';
+import { VStack } from '@ui/vstack';
+import { Heading } from '@ui/heading';
+import { Button, ButtonIcon } from '@ui/button';
 import { useNavigation } from '@react-navigation/native';
 import { CustomerHeader } from '@components/CustomerHeader';
 import {
@@ -26,10 +26,9 @@ import {
 } from '@store/slice/travel/travelClientOrderPamentFormListSlice';
 import uuid from 'react-native-uuid';
 import { returnNumber } from '@utils/returnNumber';
-import { FlatList, Keyboard } from 'react-native';
+import { FlatList } from 'react-native';
 import { type TravelClientOrdersPaymentFormModel } from '@models/TravelClientOrdersPaymentFormModel';
 import { SelectPicker } from '@components/SelectPicker';
-import { Input } from '@components/Input';
 import { type TravelClientOrdersModel } from '@models/TravelClientOrdersModel';
 import { type TravelClientOrdersItemsModel } from '@models/TravelClientOrdersItemsModel';
 import { api } from '@services/api';
@@ -38,6 +37,7 @@ import { type TravelClientsModel } from '@models/TravelClientsModel';
 import { updateTravelEdit } from '@store/slice/travel/travelEditSlice';
 import { CreateTravel } from '@storage/travel/createTravelRoute';
 import { updateClientList } from '@store/slice/client/clientListSlice';
+import { Input } from '@/components/Input';
 
 const PaymentFormSchema = yup.object().shape({
   paymentFormId: yup
@@ -168,7 +168,6 @@ export function SaleFinish() {
         '/travel/travelClients',
         checkOutClient,
       );
-      console.log('chegou aqui 2');
 
       const updateTravelClientOrder = response.data;
 
@@ -209,11 +208,6 @@ export function SaleFinish() {
 
       CreateTravel(updatedTravel);
 
-      console.log('chegou aqui 3', {
-        clientEditDataFrom: clientEdit.dataFrom,
-        travelClientEditDataFrom: travelClientEdit.dataFrom,
-      });
-
       // Verificar tanto no clientEdit quanto no travelClientEdit
       if (
         clientEdit.dataFrom === 'ad_hoc' ||
@@ -221,7 +215,7 @@ export function SaleFinish() {
       ) {
         navigation.reset({
           index: 0,
-          routes: [{ name: 'SaleRoute' }],
+          routes: [{ name: 'SaleRouteDrive' }],
         });
         return;
       }
@@ -307,158 +301,158 @@ export function SaleFinish() {
   return (
     <VStack className="flex-1">
       <CustomerHeader data={clientEdit} showBackButton={false} />
-      <VStack className="p-2 flex-1 h-[100%]">
-        <Heading size="sm" className="mx-1 mt-1 text-trueGray-100">
-          {`Fechamento pedido - Itens: ${travelClientOrderEdit.TravelClientOrdersItems?.length}`}
-        </Heading>
-        <VStack
-          className="justify-between items-center p-2 rounded-md bg-trueGray-800 flex-1">
-          <Text size="sm" className="text-trueGray-100 w-full mb-2">
-            Observações:
-          </Text>
-          <Input
-            placeholder="Observações sobre o pedido..."
-            keyboardType="default"
-            autoCapitalize="none"
-            numberOfLines={4}
-            multiline
-            rounded="$md"
-            padding="$2"
-            onSubmitEditing={() => {
-              Keyboard.dismiss();
-            }}
-            blurOnSubmit={true}
-            onChangeText={text => {
-              // Atualiza as observações no estado do pedido
-              setObservations(text);
-            }}
+      <Heading size="sm" className="mx-1 mt-1 text-typography-700">
+        {`Fechamento pedido - Itens: ${travelClientOrderEdit.TravelClientOrdersItems?.length}`}
+      </Heading>
+      <VStack className="p-2 rounded-md mb-8">
+        <Text size="sm" className="text-typography-100 w-full mb-2">
+          Observações:
+        </Text>
+        <Input
+          placeholder="Observações sobre o pedido..."
+          keyboardType="default"
+          autoCapitalize="none"
+          onChangeText={setObservations}
+          value={observations}
+          // error={errors.email?.message}
+        />
+      </VStack>
+
+      <HStack className="justify-between w-full mt-2 items-end">
+        <Text size="xs" className="mx-1 mt-1 text-error-500 font-bold">
+          {`Total: ${travelOrderTotal?.toLocaleString('pt-BR', {
+            style: 'currency',
+            currency: 'BRL',
+          })}`}
+        </Text>
+        <Text size="xs" className="mx-1 mt-1 text-success-500 font-bold">
+          {`Total pago: ${totalPago?.toLocaleString('pt-BR', {
+            style: 'currency',
+            currency: 'BRL',
+          })}`}
+        </Text>
+        <Text size="xs" className="mx-1 mt-1 text-info-500 font-bold">
+          {`Saldo: ${totalRestante?.toLocaleString('pt-BR', {
+            style: 'currency',
+            currency: 'BRL',
+          })}`}
+        </Text>
+      </HStack>
+      <VStack space="md" className="mt-4 p-2 rounded-md h-[70%] justify-start">
+        <VStack className="mb-2">
+          <Heading size="sm" className="text-typography-700 mb-2">
+            Forma de pagamento
+          </Heading>
+          <Controller
+            control={control}
+            name="paymentFormId"
+            render={({ field: { onChange, value } }) => (
+              <SelectPicker
+                value={value ?? ''}
+                onValueChange={onChange}
+                selectOptions={selectOptions}
+              />
+            )}
           />
         </VStack>
-
-        <HStack className="justify-between w-full mt-2 items-end">
-          <Text size="xs" className="mx-1 mt-1 text-red-500">
-            {`Total: ${travelOrderTotal?.toLocaleString('pt-BR', {
-              style: 'currency',
-              currency: 'BRL',
-            })}`}
-          </Text>
-          <Text size="xs" className="mx-1 mt-1 text-green-500">
-            {`Total pago: ${totalPago?.toLocaleString('pt-BR', {
-              style: 'currency',
-              currency: 'BRL',
-            })}`}
-          </Text>
-          <Text size="xs" className="mx-1 mt-1 text-blue-500">
-            {`Saldo: ${totalRestante?.toLocaleString('pt-BR', {
-              style: 'currency',
-              currency: 'BRL',
-            })}`}
-          </Text>
-        </HStack>
-        <VStack space="md" className="mt-4 p-2 rounded-md h-[70%] justify-start">
-          <VStack className="mb-2">
-            <Heading size="sm" className="text-trueGray-100 mb-2">
-              Forma de pagamento
+        <HStack className="w-full justify-between gap-2 items-end">
+          <VStack className="w-full flex-1">
+            <Heading size="sm" className="text-typography-700 mb-2">
+              Valor
             </Heading>
             <Controller
               control={control}
-              name="paymentFormId"
+              name="amount"
               render={({ field: { onChange, value } }) => (
-                <SelectPicker
-                  value={value ?? ''}
-                  onValueChange={onChange}
-                  selectOptions={selectOptions}
+                <InputNumber
+                  value={value?.toString()}
+                  onChangeText={onChange}
                 />
               )}
             />
-          </VStack>
-          <HStack className="w-full justify-between gap-2 items-end">
-            <VStack className="w-full flex-1">
-              <Heading size="sm" className="text-trueGray-100 mb-2">
-                Valor
-              </Heading>
-              <Controller
-                control={control}
-                name="amount"
-                render={({ field: { onChange, value } }) => (
-                  <InputNumber
-                    value={value?.toString()}
-                    onChangeText={onChange}
-                  />
-                )}
-              />
-              {errors.amount && (
-                <Text size="xs" className="text-red-500 mt-1">
-                  {errors.amount.message}
-                </Text>
-              )}
-            </VStack>
-            <Button
-              onPress={handleImportValueFromOrder}
-              className="w-12 h-12 rounded-md bg-blue-500  active:bg-blue-700">
-              <ButtonIcon as={CornerDownLeft} size="xl" />
-            </Button>
-            <Button
-              onPress={handleIncludePaymentForm}
-              className="w-12 h-12 rounded-md bg-green-700  active:bg-green-500">
-              <ButtonIcon as={Check} size="xl" />
-            </Button>
-          </HStack>
-          <FlatList
-            data={travelClientOrdersPaymentFormList}
-            keyExtractor={paymentForm =>
-              paymentForm.id?.toString() ?? Math.random().toString()
-            }
-            renderItem={({ item }) => (
-              <HStack
-                className="justify-between items-center p-2 rounded-md bg-trueGray-600 mb-1">
-                <HStack className="flex-1 gap-10">
-                  <Text size="sm" className="text-trueGray-100 w-3/5">
-                    {item.description}
-                  </Text>
-                  <Text size="xs" className="text-trueGray-400">
-                    {item.amount.toLocaleString('pt-BR', {
-                      style: 'currency',
-                      currency: 'BRL',
-                    })}
-                  </Text>
-                </HStack>
-                <Button
-                  onPress={() => {
-                    handleRemovePaymentForm(item);
-                  }}
-                  className="w-12 h-12 rounded-md bg-red-700  active:bg-red-500">
-                  <ButtonIcon as={Trash} size="lg" />
-                </Button>
-              </HStack>
-            )}
-            ListEmptyComponent={
-              <Text size="sm" className="text-trueGray-400 text-center">
-                Nenhuma forma de pagamento adicionada.
+            {errors.amount && (
+              <Text size="xs" className="text-error-500 mt-1">
+                {errors.amount.message}
               </Text>
-            }
-          />
-        </VStack>
+            )}
+          </VStack>
+          <Button
+            onPress={handleImportValueFromOrder}
+            className="w-12 h-12 rounded-md bg-info-300  active:bg-info-400"
+          >
+            <ButtonIcon
+              as={CornerDownLeft}
+              size="xl"
+              className="text-typography-700"
+            />
+          </Button>
+          <Button
+            onPress={handleIncludePaymentForm}
+            className="w-12 h-12 rounded-md bg-success-300  active:bg-success-400"
+          >
+            <ButtonIcon as={Check} size="xl" className="text-typography-700" />
+          </Button>
+        </HStack>
+        <FlatList
+          data={travelClientOrdersPaymentFormList}
+          keyExtractor={paymentForm =>
+            paymentForm.id?.toString() ?? Math.random().toString()
+          }
+          renderItem={({ item }) => (
+            <HStack className="justify-between items-center p-2 rounded-md bg-background-0 mb-1">
+              <HStack className="flex-1 gap-10">
+                <Text size="sm" className="text-typography-700 w-3/5">
+                  {item.description}
+                </Text>
+                <Text size="xs" className="text-typography-700">
+                  {item.amount.toLocaleString('pt-BR', {
+                    style: 'currency',
+                    currency: 'BRL',
+                  })}
+                </Text>
+              </HStack>
+              <Button
+                onPress={() => {
+                  handleRemovePaymentForm(item);
+                }}
+                className="w-12 h-12 rounded-md bg-error-300  active:bg-error-400"
+              >
+                <ButtonIcon as={Trash} size="lg" />
+              </Button>
+            </HStack>
+          )}
+          ListEmptyComponent={
+            <Text size="sm" className="text-typography-400 text-center">
+              Nenhuma forma de pagamento adicionada.
+            </Text>
+          }
+        />
       </VStack>
-      <HStack
-        className="justify-between absolute bottom-0 left-0 bg-trueGray-900 w-[100%] h-24 p-2">
+      {/* </VStack> */}
+      <HStack className="justify-between absolute bottom-0 left-0 bg-background-200 w-[100%] h-24 p-2">
         <Button
           size="lg"
           onPress={() => {
             navigation.goBack();
           }}
-          className="rounded-md w-24 h-12 bg-blue-500  active:bg-blue-700 gap-1">
-          <ButtonIcon as={ChevronLeft} size="xl" />
-          <Text size="xs" className="text-trueGray-100">
+          className="rounded-md w-24 h-12 bg-info-300  active:bg-info-400 gap-1"
+        >
+          <ButtonIcon
+            as={ChevronLeft}
+            size="xl"
+            className="text-typography-700"
+          />
+          <Text size="xs" className="text-typography-700">
             Voltar
           </Text>
         </Button>
         <Button
           size="lg"
           onPress={handleFinishOrder}
-          className="rounded-md w-24 h-12 bg-green-700  active:bg-green-500 gap-1">
-          <ButtonIcon as={Send} size="lg" />
-          <Text size="xs" className="text-trueGray-100">
+          className="rounded-md w-24 h-12 bg-success-300  active:bg-success-400 gap-1"
+        >
+          <ButtonIcon as={Send} size="lg" className="text-typography-700" />
+          <Text size="xs" className="text-typography-700">
             Enviar
           </Text>
         </Button>

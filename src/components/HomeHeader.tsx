@@ -21,27 +21,27 @@ export function HomeHeader() {
   }
 
   return (
-    <HStack className="bg-trueGray-700 pt-16 pb-5 px-8 items-center gap-4">
+    <HStack className="bg-background-200 pt-16 pb-5 px-8 items-center gap-4">
       {user?.user.avatarUrl && (
         <UserPhoto
           source={{ uri: user.user.avatarUrl }}
-          className="h-16 w-16"
+          className="h-16 w-16 border-outline-100"
           alt="photo"
         />
       )}
       {!user?.user.avatarUrl && (
-        <Center className="h-16 w-16 bg-trueGray-600 rounded-full border border-trueGray-500">
+        <Center className="h-16 w-16 bg-background-300 rounded-full border border-outline-500">
           <User color="#fff" />
         </Center>
       )}
       <VStack className="flex-1">
-        <Text className="text-trueGray-200 text-sm">Olá</Text>
-        <Heading className="text-trueGray-100 text-md">
+        <Text className="text-typography-700 text-sm">Olá</Text>
+        <Heading className="text-typography-700 text-md">
           Leonardo Freitag
         </Heading>
       </VStack>
       <TouchableOpacity onPress={handleSignOut}>
-        <Icon as={LogOut} size="xl" className="text-trueGray-400" />
+        <Icon as={LogOut} size="xl" className="text-primary-50" />
       </TouchableOpacity>
     </HStack>
   );

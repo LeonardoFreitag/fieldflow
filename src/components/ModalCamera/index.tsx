@@ -1,6 +1,6 @@
 import { VStack } from '@ui/vstack';
 import { HStack } from '@ui/hstack';
-import { Button } from '@ui/button';
+import { Button, ButtonIcon } from '@ui/button';
 import {
   Camera,
   type PhotoFile,
@@ -10,27 +10,27 @@ import {
 } from 'react-native-vision-camera';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Alert, Modal, StyleSheet, View } from 'react-native';
-import {
-  Camera as CameraIcon,
-  Lightning,
-  LightningSlash,
-  CameraRotate,
-  XCircle,
-} from 'phosphor-react-native';
+
 import {
   GestureHandlerRootView,
   Gesture,
   GestureDetector,
 } from 'react-native-gesture-handler';
-import { useIsFocused } from '@react-navigation/native';
 import { useIsForeground } from '@hooks/useIsForeground';
+
+import {
+  SwitchCamera,
+  Zap,
+  ZapOff,
+  Camera as CameraIcon,
+  X,
+} from 'lucide-react-native';
 
 interface ModalCameraProps {
   isVisible: boolean;
   closeModal: () => void;
   updateUrlImage: (photoFile: PhotoFile) => void;
 }
-// MAX_ZOOM_FACTOR no longer needed since we use built-in zoom gesture
 
 export function ModalCamera({
   isVisible,
@@ -42,14 +42,15 @@ export function ModalCamera({
     'back',
   );
   const [flash, setFlash] = useState<'off' | 'on'>('off');
+  const [isInitialized, setIsInitialized] = useState(false);
+
   const { hasPermission, requestPermission } = useCameraPermission();
-
   const device = useCameraDevice(cameraPosition);
-  // check if camera page is active
-
-  const isFocussed = useIsFocused();
   const isForeground = useIsForeground();
-  const isActive = isFocussed && isForeground;
+
+  // Ativa a câmera somente quando a modal está visível e o app está em foreground
+  const isActive = isVisible && isForeground;
+
   const format = useCameraFormat(device, [
     { photoResolution: { width: 1280, height: 720 } },
   ]);
@@ -68,41 +69,41 @@ export function ModalCamera({
   }, [cameraPosition]);
 
   useEffect(() => {
-    if (!hasPermission) {
-      requestPermission();
-    }
+    if (!hasPermission) requestPermission();
   }, [hasPermission, requestPermission]);
 
-  // Reset-related logic removed as built-in zoom gesture is used
+  // Ao abrir/fechar a modal, reseta o estado de inicialização
+  useEffect(() => {
+    if (isVisible) {
+      setIsInitialized(false);
+    }
+  }, [isVisible]);
 
   const handleTakePicture = async () => {
     try {
-      if (!camera.current) return;
-      const file = await camera.current.takePhoto({
-        flash,
-      });
-
+      if (!camera.current || !isInitialized || !isActive) {
+        Alert.alert('Aguarde', 'A câmera ainda está inicializando.');
+        return;
+      }
+      const file = await camera.current.takePhoto({ flash });
       updateUrlImage(file);
       closeModal();
-    } catch (e) {
-      Alert.alert('Erro ao tirar foto');
+    } catch (e: any) {
+      Alert.alert('Erro ao tirar foto', e?.message ?? 'Tente novamente.');
     }
   };
-
-  // Using built-in zoom gesture; min/max zoom not needed here
-
-  // Using Camera's built-in enableZoomGesture instead of custom pinch handler
 
   const onDoubleTap = useCallback(() => {
     onFlipCameraPressed();
   }, [onFlipCameraPressed]);
 
-  // Gestures: single-tap to focus, double-tap to flip camera (double has priority)
+  // Gestos: só faz focus após inicialização
   const singleTap = Gesture.Tap()
     .numberOfTaps(1)
     .onEnd((e: any, success) => {
       if (!success) return;
       if (!device?.supportsFocus) return;
+      if (!isInitialized) return;
       const { x, y } = e;
       camera.current?.focus({ x, y });
     });
@@ -116,50 +117,63 @@ export function ModalCamera({
 
   const composedGesture = Gesture.Exclusive(doubleTap, singleTap);
 
-  // if (!hasPermission) return <PermissionsPage />;
-  // if (device == null) return <NoCameraDeviceError />;
-  if (!hasPermission) return null;
-  if (device == null) return null;
+  if (!hasPermission || device == null) return null;
+
   return (
     <Modal visible={isVisible} animationType="slide" transparent={false}>
       <GestureHandlerRootView style={{ flex: 1 }}>
         <GestureDetector gesture={composedGesture}>
           <View style={StyleSheet.absoluteFill}>
             <Camera
+              ref={camera}
               device={device}
               isActive={isActive}
               style={styles.cam}
               torch={flash}
-              ref={camera}
-              enableZoomGesture={true}
-              photo={true}
+              enableZoomGesture
+              photo
               format={format}
+              onInitialized={() => {
+                setIsInitialized(true);
+              }}
+              onError={e => {
+                // log opcional
+                console.warn('Camera error', e);
+              }}
             />
           </View>
         </GestureDetector>
       </GestureHandlerRootView>
-      <VStack className="flex-1 justify-end absolute top-56 right-16 opacity-60 gap-[6px]">
-        <Button onPress={onFlipCameraPressed}>
-          <CameraRotate size={24} color="#fff" />
+
+      {/* Ações */}
+      <VStack className="flex-1 justify-end absolute top-12 right-6 opacity-70 gap-[6px]">
+        <Button onPress={onFlipCameraPressed} className="bg-background-700">
+          <ButtonIcon as={SwitchCamera} size="xl" />
         </Button>
         <Button onPress={onFlashPressed}>
           {flash === 'off' ? (
-            <Lightning size={24} color="#fff" />
+            <ButtonIcon as={Zap} size="xl" />
           ) : (
-            <LightningSlash size={24} color="#fff" />
+            <ButtonIcon as={ZapOff} size="xl" />
           )}
         </Button>
       </VStack>
-      <HStack className="justify-center absolute bottom-42 left-0 w-[100%]">
-        <Button onPress={handleTakePicture} size="lg" className="opacity-60">
-          <CameraIcon size={24} color="#fff" />
+
+      <HStack className="justify-center absolute bottom-10 left-0 w-[100%]">
+        <Button
+          onPress={handleTakePicture}
+          className="opacity-70 w-44 h-14"
+          disabled={!isInitialized || !isActive}
+        >
+          <ButtonIcon as={CameraIcon} className="w-8 h-8" />
         </Button>
       </HStack>
+
       <Button
         onPress={closeModal}
-        className="absolute top-56 left-16 opacity-60"
+        className="absolute top-12 left-8 opacity-70"
       >
-        <XCircle size={24} color="#fff" />
+        <ButtonIcon as={X} size="xl" />
       </Button>
     </Modal>
   );

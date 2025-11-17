@@ -1,8 +1,8 @@
-import { VStack } from '@/components/ui/vstack';
-import { Text } from '@/components/ui/text';
-import { HStack } from '@/components/ui/hstack';
-import { Heading } from '@/components/ui/heading';
-import { Button, ButtonIcon } from '@/components/ui/button';
+import { VStack } from '@ui/vstack';
+import { Text } from '@ui/text';
+import { HStack } from '@ui/hstack';
+import { Heading } from '@ui/heading';
+import { Button, ButtonIcon } from '@ui/button';
 import { HomeHeader } from '@components/HomeHeader';
 import { useNavigation } from '@react-navigation/native';
 import { Alert, FlatList } from 'react-native';
@@ -17,7 +17,6 @@ import {
 import { useAppSelector } from '@store/store';
 import { type DeliveryQueueModel } from '@models/DeliveryQueueModel';
 import { DeliveryQueueCard } from '@components/DeliveryQueueCard';
-import { HandTap, Truck } from 'phosphor-react-native';
 import { addDeliveryRouteEdit } from '@store/slice/deliveryRoute/deliveryRouteEditSlice';
 import { type DeliveryRouteModel } from '@models/DeliveryRouteModel';
 import uuid from 'react-native-uuid';
@@ -26,6 +25,7 @@ import { addExistsDeliveryRouteEdit } from '@store/slice/deliveryRoute/existsDel
 import { type DeliveryRouteCoordsModel } from '@models/DliveryRouteCoordsModel';
 import { type DeliveryItemPhotoModel } from '@models/DeliveryItemPhotoModel';
 import { type NotDeliveredItemsModel } from '@models/NotDeliveredItemsModel';
+import { Hand, Truck } from 'lucide-react-native';
 
 export function DeliveryRoute() {
   const navigation = useNavigation();
@@ -65,6 +65,8 @@ export function DeliveryRoute() {
     const selectedDeliveries = deliveryQueueList.filter(
       item => item.isSelected,
     );
+
+    // console.log('Selected Deliveries:', selectedDeliveries);
 
     if (selectedDeliveries.length === 0) {
       Alert.alert(
@@ -109,6 +111,8 @@ export function DeliveryRoute() {
       DeliveryRouteCoords: [] as DeliveryRouteCoordsModel[],
     };
 
+    // console.log('New Delivery Route:', newDeliveryRoute);
+
     dispatch(addDeliveryRouteEdit(newDeliveryRoute));
 
     dispatch(
@@ -116,6 +120,8 @@ export function DeliveryRoute() {
         exists: false,
       }),
     );
+
+    // console.log('Navigating to DeliveryDrive screen');
 
     navigation.navigate('DeliveryDrive');
   }, [
@@ -141,10 +147,10 @@ export function DeliveryRoute() {
       <HomeHeader />
       <VStack className="flex-1 px-4 py-4">
         <HStack className="gap-4 justify-between mb-4">
-          <Heading size="sm" className="text-trueGray-100">
+          <Heading size="sm" className="text-typography-700">
             Rota de Entregas
           </Heading>
-          <Text className="text-trueGray-400">{`${deliveryQueueList.length} entregas`}</Text>
+          <Text className="text-typography-700">{`${deliveryQueueList.length} entregas`}</Text>
         </HStack>
         <FlatList
           data={deliveryQueueList}
@@ -163,20 +169,20 @@ export function DeliveryRoute() {
           )}
         />
       </VStack>
-      <HStack className="bg-trueGray-800 p-4 justify-around items-center border border-trueGray-700">
+      <HStack className="bg-background-200 p-4 items-center justify-between w-full">
         <Button
           size="lg"
           onPress={handleSelectAllDeliveries}
-          className="rounded-md h-12 w-1/3 bg-green-500  active:bg-green-700 flex"
+          className="rounded-md h-12 w-32 bg-success-300  active:bg-success-400 flex"
         >
-          <ButtonIcon as={HandTap} size="xl" />
+          <ButtonIcon as={Hand} size="xl" className="text-typography-700" />
         </Button>
         <Button
           size="lg"
           onPress={handleCreateDeliveryDrive}
-          className="rounded-md h-12 w-1/3 bg-blue-500  active:bg-blue-700 flex"
+          className="rounded-md h-12 w-32 bg-info-300  active:bg-info-400 flex"
         >
-          <ButtonIcon as={Truck} size="xl" />
+          <ButtonIcon as={Truck} size="xl" className="text-typography-700" />
         </Button>
       </HStack>
     </VStack>

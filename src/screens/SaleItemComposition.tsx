@@ -1,9 +1,9 @@
-import { Text } from "@/components/ui/text";
-import { VStack } from "@/components/ui/vstack";
-import { HStack } from "@/components/ui/hstack";
-import { Heading } from "@/components/ui/heading";
-import { Center } from "@/components/ui/center";
-import { Button, ButtonIcon } from "@/components/ui/button";
+import { Text } from '@ui/text';
+import { VStack } from '@ui/vstack';
+import { HStack } from '@ui/hstack';
+import { Heading } from '@ui/heading';
+import { Center } from '@ui/center';
+import { Button, ButtonIcon } from '@ui/button';
 import { useNavigation } from '@react-navigation/native';
 import { CustomerHeader } from '@components/CustomerHeader';
 import { ChevronLeft } from 'lucide-react-native';
@@ -35,7 +35,7 @@ export function SaleItemComposition() {
   return (
     <VStack className="flex-1">
       <CustomerHeader data={clientEdit} showBackButton={false} />
-      <Heading size="lg" className="mx-2 mt-4 text-trueGray-100">
+      <Heading size="lg" className="mx-2 mt-4 text-typography-700">
         {`${travelClientOrderItemEdit.description} - ${totalComposition?.toLocaleString(
           'pt-BR',
           { style: 'currency', currency: 'BRL' },
@@ -52,16 +52,20 @@ export function SaleItemComposition() {
           )}
         />
       </Center>
-      <HStack
-        className="justify-between absolute bottom-0 left-0 bg-trueGray-900 w-[100%] h-24 p-2">
+      <HStack className="justify-between absolute bottom-0 left-0 bg-background-200 w-[100%] h-24 p-2">
         <Button
           size="lg"
           onPress={() => {
             navigation.goBack();
           }}
-          className="rounded-md w-24 h-12 bg-blue-500  active:bg-blue-700 gap-1">
-          <ButtonIcon as={ChevronLeft} size="xl" />
-          <Text size="xs" className="text-trueGray-100">
+          className="rounded-md w-24 h-12 bg-info-300  active:bg-info-400 gap-1"
+        >
+          <ButtonIcon
+            as={ChevronLeft}
+            size="xl"
+            className="text-typography-700"
+          />
+          <Text size="xs" className="text-typography-700">
             Voltar
           </Text>
         </Button>

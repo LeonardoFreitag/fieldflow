@@ -13,8 +13,8 @@ import { Image } from '@ui/image';
 import { HStack } from '@ui/hstack';
 import { Heading } from '@ui/heading';
 import { type ProductModel } from '@models/ProductModel';
-import { Minus, Plus, Save, Sigma, X } from 'lucide-react-native';
-import { HandTap } from 'phosphor-react-native';
+import { Hand, Minus, Plus, Save, Sigma, X } from 'lucide-react-native';
+// import { HandTap } from 'phosphor-react-native';
 import React, { useMemo, useState } from 'react';
 import { Input } from './Input';
 import { useDispatch } from 'react-redux';
@@ -55,17 +55,17 @@ export function ProductCard({
   };
 
   return (
-    <HStack className="bg-trueGray-700 items-center p-2 pr-2 rounded-md mb-3 w-full justify-between">
+    <HStack className="bg-background-200 items-center p-2 pr-2 rounded-md mb-3 w-full justify-between">
       <Image
         source={getImageSource()}
         alt="Product"
         className="w-20 h-20 rounded-md"
       />
       <VStack className="flex-1 p-[8px] justify-between items-start">
-        <Heading size="xs" className="text-trueGray-100">
+        <Heading size="xs" className="text-typography-700">
           {`${product.code} - ${product.description}`}
         </Heading>
-        <Text className="text-trueGray-400">
+        <Text className="text-typography-700">
           {`${Number(product.qty).toLocaleString('pt-BR', {
             maximumFractionDigits: 2,
           })} ${product.unity} x ${Number(product.price ?? 0).toLocaleString(
@@ -79,40 +79,51 @@ export function ProductCard({
             currency: 'BRL',
           })}`}
         </Text>
-        <Divider className="my-0.5 bg-trueGray-500 mb-0.5" />
+        <Divider className="my-0.5 bg-outline-400 mb-0.5" />
 
         <HStack className="mt-1 justify-between items-center w-full gap-[8px]">
           <HStack className="gap-[8px]">
             <>
               <Button
                 onPress={handleUpQty}
-                className="w-10 h-10 rounded-md bg-green-700  active:bg-green-500"
+                className="w-10 h-10 rounded-md bg-success-300  active:bg-sucess-400"
               >
-                <ButtonIcon as={Plus} size="xl" />
+                <ButtonIcon
+                  as={Plus}
+                  size="xl"
+                  className="text-typography-700"
+                />
               </Button>
               <Button
                 onPress={handleDownQty}
-                className="w-10 h-10 rounded-md bg-red-700  active:bg-red-500"
+                className="w-10 h-10 rounded-md bg-error-300  active:bg-error-400"
               >
-                <ButtonIcon as={Minus} size="xl" />
+                <ButtonIcon
+                  as={Minus}
+                  size="xl"
+                  className="text-typography-700"
+                />
               </Button>
               <Button
                 onPress={() => {
                   handleShowModalQuantity(product);
                 }}
-                className="w-10 h-10 rounded-md bg-blueGray-500  active:bg-blueGray-400"
+                className="w-10 h-10 rounded-md bg-background-300  active:bg-background-400"
               >
-                <ButtonIcon as={Sigma} size="xl" />
+                <ButtonIcon
+                  as={Sigma}
+                  size="xl"
+                  className="text-typography-700"
+                />
               </Button>
             </>
           </HStack>
           <HStack className="gap-[8px]">
             <Button
-              // $active-bg="$green500"
               onPress={handleSelectProduct}
-              className={` ${product.selected ? 'bg-green-500' : 'bg-blueGray-600'} w-10 h-10 rounded-md `}
+              className={` ${product.selected ? 'bg-success-500' : 'bg-background-100'} w-10 h-10 rounded-md `}
             >
-              <ButtonIcon as={HandTap} size="xl" />
+              <ButtonIcon as={Hand} size="xl" className="text-typography-700" />
             </Button>
           </HStack>
         </HStack>
@@ -159,10 +170,10 @@ function ModalQuantity({
   return (
     <Modal isOpen={visible}>
       <ModalBackdrop />
-      <ModalContent className="bg-trueGray-600 rounded-md">
+      <ModalContent className="bg-background-200 rounded-md">
         <ModalHeader />
         <ModalBody>
-          <Heading className="text-blueGray-300">Quantidade</Heading>
+          <Heading className="text-typography-700">Quantidade</Heading>
           <Input
             autoFocus
             keyboardType="numeric"
@@ -173,15 +184,15 @@ function ModalQuantity({
           <HStack className="mt-2 justify-end gap-2">
             <Button
               onPress={handleSaveData}
-              className="w-20 h-10 rounded-md bg-green-700  active:bg-green-500"
+              className="w-20 h-10 rounded-md bg-success-300  active:bg-success-400"
             >
-              <ButtonIcon as={Save} size="xl" />
+              <ButtonIcon as={Save} size="xl" className="text-typography-700" />
             </Button>
             <Button
               onPress={handleCloseModal}
-              className="w-20 h-10 rounded-md bg-red-700  active:bg-red-500"
+              className="w-20 h-10 rounded-md bg-error-300  active:bg-error-400"
             >
-              <ButtonIcon as={X} size="xl" />
+              <ButtonIcon as={X} size="xl" className="text-typography-700" />
             </Button>
           </HStack>
         </ModalBody>

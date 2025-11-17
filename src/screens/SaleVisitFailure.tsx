@@ -1,9 +1,8 @@
-import { Box } from "@/components/ui/box";
-import { VStack } from "@/components/ui/vstack";
-import { HStack } from "@/components/ui/hstack";
-import { Heading } from "@/components/ui/heading";
-import { Center } from "@/components/ui/center";
-import { Button, ButtonIcon } from "@/components/ui/button";
+import { Box } from '@ui/box';
+import { VStack } from '@ui/vstack';
+import { HStack } from '@ui/hstack';
+import { Heading } from '@ui/heading';
+import { Button, ButtonIcon } from '@ui/button';
 import { useNavigation } from '@react-navigation/native';
 import { CustomerHeader } from '@components/CustomerHeader';
 import { Save, X } from 'lucide-react-native';
@@ -28,6 +27,7 @@ import {
 } from '@store/slice/travel/travelEditSlice';
 import { Keyboard, Platform, Modal, useColorScheme } from 'react-native';
 import { addExistsTravelEdit } from '@store/slice/travel/existsTravelEditSlice';
+import { Text } from '@ui/text';
 
 const SaleVisitFailureSchema = yup.object().shape({
   reason: yup.string().required('Campo obrigatório'),
@@ -160,7 +160,6 @@ export function SaleVisitFailure() {
         }
         return client;
       });
-      console.log('Updated Client List:', updatedClientList);
       dispatch(loadClientList(updatedClientList ?? []));
 
       await CreateTravel(updatedTravelEdit);
@@ -211,34 +210,26 @@ export function SaleVisitFailure() {
   };
 
   return (
-    <VStack className="flex-1">
+    <VStack className="bg-background-900 justify-starts">
       <CustomerHeader data={clientEdit} showBackButton={false} />
-      <Center className="mt-4 mx-2 min-h-1/3 px-4">
-        <Heading size="sm" className="text-trueGray-100 w-full">
+      <VStack className="px-4 gap-2 mt-4">
+        <Text size="sm" className="text-typography-100 w-full">
           Motivo da não realização da visita
-        </Heading>
+        </Text>
         <Controller
           control={control}
           name="reason"
           render={({ field: { onChange, value } }) => (
             <Input
-              placeholder="Observações sobre o pedido..."
+              placeholder="Observações..."
               keyboardType="default"
               autoCapitalize="none"
-              numberOfLines={4}
-              multiline
-              rounded="$md"
-              padding="$2"
-              value={value}
-              onSubmitEditing={() => {
-                Keyboard.dismiss();
-              }}
-              blurOnSubmit={true}
               onChangeText={onChange}
+              value={value}
             />
           )}
         />
-        <Heading size="sm" className="text-trueGray-100 w-full mt-2">
+        <Heading size="sm" className="text-typography-100 w-full mt-2">
           Agendamento
         </Heading>
         <Controller
@@ -263,10 +254,10 @@ export function SaleVisitFailure() {
             setShowScheduling(false);
           }}
         >
-          <Box
-            className="absolute left-0 right-0 top-0 bottom-0 bg-rgba(0,0,0,0.5) justify-center items-center">
+          <Box className="absolute left-0 right-0 top-0 bottom-0 bg-rgba(0,0,0,0.5) justify-center items-center">
             <Box
-              className={` ${colorScheme === 'dark' ? "bg-trueGray-900" : "bg-white"} w-[90%] max-w-[420px] rounded-lg p-4 `}>
+              className={` ${colorScheme === 'dark' ? 'bg-trueGray-900' : 'bg-white'} w-[90%] max-w-[420px] rounded-lg p-4 `}
+            >
               <DateTimePicker
                 {...iosThemeProps}
                 value={pickerDate}
@@ -302,20 +293,22 @@ export function SaleVisitFailure() {
             </Box>
           </Box>
         </Modal>
-      </Center>
+      </VStack>
       <HStack className="w-full justify-between px-4 py-2">
         <Button
           size="lg"
           onPress={() => {
             navigation.goBack();
           }}
-          className="rounded-lg w-16 h-16 bg-red-700  active:bg-red-500">
+          className="rounded-lg w-16 h-16 bg-error-700  active:bg-error-800"
+        >
           <ButtonIcon as={X} size="xl" />
         </Button>
         <Button
           size="lg"
           onPress={handleSubmit(handleSubmitVisitFailure)}
-          className="rounded-lg w-16 h-16 bg-green-700  active:bg-green-500">
+          className="rounded-lg w-16 h-16 bg-success-700  active:bg-success-800"
+        >
           <ButtonIcon as={Save} size="xl" />
         </Button>
       </HStack>

@@ -1,9 +1,9 @@
-import { Text } from "@/components/ui/text";
-import { VStack } from "@/components/ui/vstack";
-import { HStack } from "@/components/ui/hstack";
-import { Heading } from "@/components/ui/heading";
-import { Center } from "@/components/ui/center";
-import { Button, ButtonIcon } from "@/components/ui/button";
+import { Text } from '@ui/text';
+import { VStack } from '@ui/vstack';
+import { HStack } from '@ui/hstack';
+import { Heading } from '@ui/heading';
+import { Center } from '@ui/center';
+import { Button, ButtonIcon } from '@ui/button';
 import { useNavigation } from '@react-navigation/native';
 import { CustomerHeader } from '@components/CustomerHeader';
 import { CheckCheck, ChevronLeft, X } from 'lucide-react-native';
@@ -174,36 +174,40 @@ export function SaleAddNewItem() {
   return (
     <VStack className="flex-1">
       <CustomerHeader data={clientEdit} showBackButton={false} />
-      <Heading size="sm" className="mx-1 mt-1 text-trueGray-100">
+      <Heading
+        size="md"
+        className="mx-1 mt-1 text-typography-700 w-full text-center"
+      >
         Adicionar produto
       </Heading>
       <HStack className="justify-between">
-        <Heading size="xs" className="mx-1 mt-1 text-trueGray-100">
+        <Heading size="md" className="mx-1 mt-1 text-typography-700">
           {`Selecionados: ${productsSelected.length}`}
         </Heading>
-        <Heading size="xs" className="mx-1 mt-1 text-green-500">
+        <Heading size="md" className="mx-1 mt-1 text-success-600">
           {`Total: ${totalProductsSelected.toLocaleString('pt-BR', {
             style: 'currency',
             currency: 'BRL',
           })}`}
         </Heading>
       </HStack>
-      <HStack className="mx-1 mt-1 mb-1 w-full bg-trueGray-600 p-2 rounded-md gap-2">
+      <HStack className="mx-1 mt-1 mb-1 w-full p-2 rounded-md gap-2">
         <Input
           placeholder="Pesquise por produto..."
           keyboardType="default"
           autoCapitalize="none"
           onChangeText={setTextTyped}
           value={textTyped}
-          w="$full"
+          className="w-full"
         />
         <Button
           size="lg"
           onPress={() => {
             setTextTyped('');
           }}
-          className="rounded-md w-12 h-12 gap-1">
-          <ButtonIcon as={X} size="xl" />
+          className="rounded-md w-12 h-12 gap-1 bg-error-300 active:bg-error-400"
+        >
+          <ButtonIcon as={X} size="xl" className="text-typography-700" />
         </Button>
       </HStack>
       <Center className="mt-2 mx-2">
@@ -226,25 +230,34 @@ export function SaleAddNewItem() {
           )}
         />
       </Center>
-      <HStack
-        className="justify-between absolute bottom-0 left-0 bg-trueGray-900 w-[100%] h-24 p-2">
+      <HStack className="justify-between absolute bottom-0 left-0 bg-background-100 w-[100%] h-24 p-2">
         <Button
           size="lg"
           onPress={() => {
             navigation.goBack();
           }}
-          className="rounded-md w-24 h-12 bg-blue-500  active:bg-blue-700 gap-1">
-          <ButtonIcon as={ChevronLeft} size="xl" />
-          <Text size="xs" className="text-trueGray-100">
+          className="rounded-md w-24 h-12 bg-info-300  active:bg-info-400 gap-1"
+        >
+          <ButtonIcon
+            as={ChevronLeft}
+            size="xl"
+            className="text-typography-700"
+          />
+          <Text size="xs" className="text-typography-700">
             Voltar
           </Text>
         </Button>
         <Button
           size="lg"
           onPress={handleInsertProducts}
-          className="rounded-md w-24 h-12 bg-green-700  active:bg-green-500 gap-1">
-          <ButtonIcon as={CheckCheck} size="xl" />
-          <Text size="xs" className="text-trueGray-100">
+          className="rounded-md w-24 h-12 bg-success-300  active:bg-success-400 gap-1"
+        >
+          <ButtonIcon
+            as={CheckCheck}
+            size="xl"
+            className="text-typography-700"
+          />
+          <Text size="xs" className="text-typography-700">
             Inserir
           </Text>
         </Button>

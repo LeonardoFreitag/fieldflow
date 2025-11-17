@@ -11,15 +11,15 @@ export function Working({ visible }: WorkingProps) {
   return (
     <Modal isOpen={visible}>
       <ModalBackdrop />
-      <ModalContent className="bg-trueGray-600 rounded-md w-80">
+      <ModalContent className="bg-background-600 rounded-md w-80">
         <ModalBody scrollEnabled={false}>
           <Center className="flex-1 justify-center items-center z-1000 p-4">
             <Spinner
               size="large"
               accessibilityLabel="Carregando"
-              className="text-trueGray-300"
+              className="text-typography-300"
             />
-            <Text size="lg" className="text-trueGray-100">
+            <Text size="3xl" className="text-typography-100">
               Trabalhando...
             </Text>
           </Center>

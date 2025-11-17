@@ -1,8 +1,7 @@
-import { Heading } from "@/components/ui/heading";
-import { Text } from "@/components/ui/text";
-import { VStack } from "@/components/ui/vstack";
-import { HStack } from "@/components/ui/hstack";
-import { Button, ButtonIcon } from "@/components/ui/button";
+import { Text } from '@ui/text';
+import { VStack } from '@ui/vstack';
+import { HStack } from '@ui/hstack';
+import { Button, ButtonIcon } from '@ui/button';
 import { ClientRouteCard } from '@components/ClientRouteCard';
 import { HomeHeader } from '@components/HomeHeader';
 import { Input } from '@components/Input';
@@ -21,7 +20,10 @@ import { useNavigation } from '@react-navigation/native';
 import { api } from '@services/api';
 import { loadAllClientList } from '@store/slice/client/allClientListSlice';
 import { addClientEdit } from '@store/slice/client/clientEditSlice';
-import { loadClientList } from '@store/slice/client/clientListSlice';
+import {
+  loadClientList,
+  updateClientList,
+} from '@store/slice/client/clientListSlice';
 import {
   loadClientRouteList,
   updateClientRouteList,
@@ -29,10 +31,20 @@ import {
 import { addTravelClientEdit } from '@store/slice/travel/travelClientEditSlice';
 import { updateTravelEdit } from '@store/slice/travel/travelEditSlice';
 import { useAppSelector } from '@store/store';
-import { ChevronLeft, Plus, X } from 'lucide-react-native';
+import {
+  BrushCleaning,
+  ChevronLeft,
+  MapIcon,
+  Plus,
+  PlusIcon,
+  X,
+} from 'lucide-react-native';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Alert, FlatList } from 'react-native';
 import { useDispatch } from 'react-redux';
+import { ClientListHeader } from '@/components/ClientListHeader';
+import { addExistsTravelEdit } from '@store/slice/travel/existsTravelEditSlice';
+import { ClearTravel } from '@storage/travel/clearTravelRoute';
 
 export type FilterType = 'suggested' | 'all';
 
@@ -45,9 +57,10 @@ export function SaleMain() {
   const clientAdHocList = useAppSelector(state => state.clientAdHocList);
   const travelEdit = useAppSelector(state => state.travelEdit);
   const existsTravelEdit = useAppSelector(state => state.existsTravelEdit);
-  const [routeToday, setRouteToday] = useState(false);
+  const [routeToday, setRouteToday] = useState(true);
   const [working, setWorking] = useState(false);
   const coordsEdit = useAppSelector(state => state.coordsEdit);
+  // const canChangeRouteEdit = useAppSelector(state => state.canChangeRouteEdit);
 
   const { user } = useAuth();
 
@@ -122,14 +135,17 @@ export function SaleMain() {
             address: `${client.streetName}, ${client.streetNumber}, ${client.city}, ${client.state}, ${client.zipCode}`,
           }));
 
+        const destinationItem = listOfClients[listOfClients.length - 1];
+
         const dataRequest: IRequestClientOptimizeDTO = {
           origin: {
             latitude: coordsEdit.latitude,
             longitude: coordsEdit.longitude,
           },
           destination: {
-            latitude: listOfClients[listOfClients.length - 1].latitude ?? 0,
-            longitude: listOfClients[listOfClients.length - 1].longitude ?? 0,
+            latitude: destinationItem.latitude ?? 0,
+            longitude: destinationItem.longitude ?? 0,
+            address: `${destinationItem.streetName}, ${destinationItem.streetNumber}, ${destinationItem.city}, ${destinationItem.state}, ${destinationItem.zipCode}`,
           },
           waypoints,
         };
@@ -182,14 +198,17 @@ export function SaleMain() {
             address: `${client.streetName}, ${client.streetNumber}, ${client.city}, ${client.state}, ${client.zipCode}`,
           }));
 
+        const destinationItem = listOfClients[listOfClients.length - 1];
+
         const dataRequest: IRequestClientOptimizeDTO = {
           origin: {
             latitude: coordsEdit.latitude,
             longitude: coordsEdit.longitude,
           },
           destination: {
-            latitude: listOfClients[listOfClients.length - 1].latitude ?? 0,
-            longitude: listOfClients[listOfClients.length - 1].longitude ?? 0,
+            latitude: destinationItem.latitude ?? 0,
+            longitude: destinationItem.longitude ?? 0,
+            address: `${destinationItem.streetName}, ${destinationItem.streetNumber}, ${destinationItem.city}, ${destinationItem.state}, ${destinationItem.zipCode}`,
           },
           waypoints,
         };
@@ -286,8 +305,12 @@ export function SaleMain() {
   }, [dispatch, user?.user.customerId, user?.user.routeId]);
 
   useEffect(() => {
+    if (routeToday) {
+      handleGetClientRoutToDay();
+      return;
+    }
     loadClientsByRoute();
-  }, [loadClientsByRoute]);
+  }, [handleGetClientRoutToDay, loadClientsByRoute, routeToday]);
 
   const handleSelectCustomer = (clientItem: ClientModel) => {
     dispatch(
@@ -297,6 +320,19 @@ export function SaleMain() {
       }),
     );
   };
+
+  // const handleSelectCustomer = useCallback(
+  //   (clientItem: ClientModel) => {
+  //     const selected = clientItem.isSelected ? clientItem.isSelected : false;
+  //     dispatch(
+  //       updateClientList({
+  //         ...clientItem,
+  //         isSelected: !selected,
+  //       }),
+  //     );
+  //   },
+  //   [dispatch],
+  // );
 
   const handleAddToRoute = async () => {
     const selectedClients = clientRouteList.filter(client => client.isSelected);
@@ -320,7 +356,7 @@ export function SaleMain() {
 
       await handleSaleRoute();
 
-      navigation.navigate('SaleRoute');
+      // navigation.navigate('SaleRoute');
 
       return;
     }
@@ -358,7 +394,7 @@ export function SaleMain() {
 
       await handleSaleRoute();
 
-      navigation.navigate('SaleRoute');
+      // navigation.navigate('SaleRoute');
     } catch (error) {
       console.error('Error adding clients to route:', error);
     } finally {
@@ -367,22 +403,6 @@ export function SaleMain() {
   };
 
   const handleAddNewSale = async (clientItem: ClientModel) => {
-    // const selectedClients = clientRouteList.filter(client => client.isSelected);
-
-    // if (selectedClients.length === 0) {
-    //   return;
-    // }
-
-    // if (selectedClients.length > 1) {
-    //   Alert.alert(
-    //     'Atenção',
-    //     'Por favor, selecione apenas um cliente para iniciar um novo pedido.',
-    //   );
-    //   return;
-    // }
-
-    // const clientSelectedForSale = selectedClients[0];
-
     dispatch(addClientEdit(clientItem));
 
     if (!existsTravelEdit.exists) {
@@ -457,9 +477,6 @@ export function SaleMain() {
 
       if (!targetClient) {
         // Se não encontrou na rota otimizada, usar o cliente original
-        console.log(
-          'Cliente não encontrado na rota otimizada, usando cliente original',
-        );
         const dataTravel = await handleSaleRoute();
         await handleCheckIn(clientItem, dataTravel);
         navigation.navigate('SaleCheckIn');
@@ -482,35 +499,94 @@ export function SaleMain() {
     return clientRouteList.filter((client: ClientModel) => client.isSelected);
   }, [clientRouteList]);
 
+  const handleStartSaleRouteDrive = useCallback(() => {
+    if (!existsTravelEdit.exists) {
+      const selectedClients = clientList.filter(client => client.isSelected);
+
+      const clientsWithStatus: ClientModel[] = selectedClients.map(client => ({
+        ...client,
+        status: client.status ? client.status : 'pending',
+      }));
+      dispatch(loadClientList(clientsWithStatus));
+    }
+
+    navigation.navigate('SaleRouteDrive');
+  }, [clientList, dispatch, existsTravelEdit.exists, navigation]);
+
+  const handleClearSelection = useCallback(() => {
+    if (existsTravelEdit.exists) {
+      ClearTravel();
+      dispatch(
+        addExistsTravelEdit({
+          exists: false,
+        }),
+      );
+    }
+    dispatch(
+      loadClientList(
+        clientList.map((client: ClientModel) => ({
+          ...client,
+          isSelected: false,
+        })),
+      ),
+    );
+  }, [existsTravelEdit.exists, dispatch, clientList]);
+
+  const continueIsDisable = useMemo(() => {
+    const minVisits = user?.user.customer.maxVisitsSales ?? 0;
+    if (minVisits === 0) return false;
+    return clientList.length < minVisits;
+  }, [clientList.length, user?.user.customer.maxVisitsSales]);
+
   return (
     <>
       <Working visible={working} />
       <VStack className="flex-1">
         <HomeHeader />
         <VStack className="flex-1 px-2 py-2">
+          <HStack className="mb-4 justify-between items-center flex-row">
+            <ClientListHeader
+              selectedFilter={routeToday ? 'suggested' : 'all'}
+              onChangeFilter={filter => {
+                if (filter === 'suggested') {
+                  setRouteToday(true);
+                  handleGetClientRoutToDay();
+                } else {
+                  setRouteToday(false);
+                  loadClientsByRoute();
+                }
+              }}
+              search={textTyped}
+              onChangeSearch={setTextTyped}
+            />
+          </HStack>
           <HStack className="mb-2 justify-between items-center flex-row">
-            <Heading size="sm" className="text-trueGray-100">
-              {`Selecionados (${clientSelecteds.length})`}
-            </Heading>
-            <Text className="text-trueGray-400">{`${clientRouteList.length} clientes`}</Text>
+            <Text size="md" className="text-typography-700">
+              {`Selecionados: ${clientSelecteds.length}`}
+            </Text>
+            <Text size="md" className="text-typography-700">
+              {`Rota: ${clientList.length}`}
+            </Text>
+            <Text className="text-typography-700">{`${clientRouteList.length} clientes`}</Text>
           </HStack>
 
-          <HStack className="mb-2 w-full bg-trueGray-600 p-2 rounded-md gap-2">
+          <HStack className="mb-2 w-full p-2 rounded-md gap-2">
             <Input
               placeholder="Pesquise pelo cliente..."
               keyboardType="default"
               autoCapitalize="none"
               onChangeText={setTextTyped}
               value={textTyped}
-              w="$full"
+              // className="w-full"
             />
             <Button
               size="lg"
               onPress={() => {
                 setTextTyped('');
               }}
-              className="rounded-md w-12 h-12 gap-1">
-              <ButtonIcon as={X} size="xl" />
+              className="rounded-md w-12 h-12 gap-1 bg-error-500 active:bg-error-600"
+            >
+              <ButtonIcon as={X} size="xl" className="text-typography-900" />
             </Button>
           </HStack>
 
@@ -537,27 +613,64 @@ export function SaleMain() {
             />
           )}
         </VStack>
-        <HStack
-          className="justify-between absolute bottom-0 left-0 bg-trueGray-900 w-[100%] h-24 p-2">
+        <HStack className="justify-between absolute bottom-0 left-0 bg-background-50 w-[100%] h-24 p-2">
           <Button
             size="lg"
             onPress={() => {
               navigation.goBack();
             }}
-            className="rounded-md w-24 h-12 bg-blue-500  active:bg-blue-700 gap-1">
-            <ButtonIcon as={ChevronLeft} size="xl" />
-            <Text size="xs" className="text-trueGray-100">
+            className="rounded-md w-24 h-12 bg-info-300  active:bg-info-300 gap-1"
+          >
+            <ButtonIcon
+              as={ChevronLeft}
+              size="xl"
+              className="text-typography-700"
+            />
+            <Text size="xs" className="text-typography-700">
               Voltar
             </Text>
           </Button>
 
           <Button
             size="lg"
+            onPress={handleClearSelection}
+            className="rounded-md h-12 w-12 bg-error-500 flex"
+          >
+            <ButtonIcon
+              as={BrushCleaning}
+              size="xl"
+              className="text-typography-700"
+            />
+          </Button>
+
+          <Button
+            size="lg"
             onPress={handleAddToRoute}
-            className="rounded-md w-24 h-12 bg-green-700  active:bg-green-500 gap-1">
-            <ButtonIcon as={Plus} size="lg" />
-            <Text size="xs" className="text-trueGray-100">
-              Rota
+            className="rounded-md h-12 w-12 bg-success-300 flex"
+          >
+            <ButtonIcon
+              as={PlusIcon}
+              size="xl"
+              className="text-typography-700"
+            />
+          </Button>
+
+          <Button
+            size="lg"
+            onPress={handleStartSaleRouteDrive}
+            className="rounded-md w-24 h-12 bg-success-300  active:bg-success-500 gap-1"
+            disabled={continueIsDisable}
+          >
+            <ButtonIcon
+              as={MapIcon}
+              size="lg"
+              className="text-typography-700"
+            />
+            <Text
+              size="xs"
+              className="text-trueGray-100 text-typography-700 text-center"
+            >
+              Mapa
             </Text>
           </Button>
         </HStack>

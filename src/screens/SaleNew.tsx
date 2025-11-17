@@ -1,9 +1,9 @@
-import { Text } from "@/components/ui/text";
-import { HStack } from "@/components/ui/hstack";
-import { VStack } from "@/components/ui/vstack";
-import { Heading } from "@/components/ui/heading";
-import { Center } from "@/components/ui/center";
-import { Button, ButtonIcon } from "@/components/ui/button";
+import { Text } from '@ui/text';
+import { HStack } from '@ui/hstack';
+import { VStack } from '@ui/vstack';
+import { Heading } from '@ui/heading';
+import { Center } from '@ui/center';
+import { Button, ButtonIcon } from '@ui/button';
 import { useNavigation } from '@react-navigation/native';
 import { CustomerHeader } from '@components/CustomerHeader';
 import { ChevronLeft, Plus, Save } from 'lucide-react-native';
@@ -65,18 +65,18 @@ export function SaleNew() {
   return (
     <VStack className="flex-1">
       <CustomerHeader data={clientEdit} showBackButton={false} />
-      <Heading size="sm" className="mx-1 mt-1 text-trueGray-100">
+      <Heading size="sm" className="mx-1 mt-1 text-typography-700">
         Novo pedido
       </Heading>
       <HStack className="justify-between">
-        <Heading size="sm" className="mx-1 mt-1 text-trueGray-100">
+        <Heading size="sm" className="mx-1 mt-1 text-typography-700">
           {`Itens: ${
             travelClientOrderEdit.TravelClientOrdersItems
               ? travelClientOrderEdit.TravelClientOrdersItems.length
               : 0
           }`}
         </Heading>
-        <Heading size="sm" className="mx-1 mt-1 text-green-500">
+        <Heading size="sm" className="mx-1 mt-1 text-success-600">
           {`Total: ${orderTotal.toLocaleString('pt-BR', {
             style: 'currency',
             currency: 'BRL',
@@ -94,34 +94,40 @@ export function SaleNew() {
           renderItem={({ item }) => <OrderItemCard productItem={item} />}
         />
       </Center>
-      <HStack
-        className="justify-between absolute bottom-0 left-0 bg-trueGray-900 w-[100%] h-24 p-2">
+      <HStack className="justify-between absolute bottom-0 left-0 bg-background-100 w-[100%] h-24 p-2">
         <Button
           size="lg"
           onPress={() => {
             navigation.goBack();
           }}
-          className="rounded-md w-24 h-12 bg-blue-500  active:bg-blue-700 gap-1">
-          <ButtonIcon as={ChevronLeft} size="xl" />
-          <Text size="xs" className="text-trueGray-100">
+          className="rounded-md w-32 h-12 bg-info-300  active:bg-info-400 gap-1"
+        >
+          <ButtonIcon
+            as={ChevronLeft}
+            size="xl"
+            className="text-typography-700"
+          />
+          <Text size="xs" className="text-typography-700">
             Voltar
           </Text>
         </Button>
         <Button
           size="lg"
           onPress={handleSaleFinish}
-          className="rounded-md w-24 h-12 bg-green-700  active:bg-green-500 gap-1">
-          <ButtonIcon as={Save} size="lg" />
-          <Text size="xs" className="text-trueGray-100">
+          className="rounded-md w-32 h-12 bg-success-300  active:bg-success-400 gap-1"
+        >
+          <ButtonIcon as={Save} size="lg" className="text-typography-700" />
+          <Text size="xs" className="text-typography-700">
             Finalizar
           </Text>
         </Button>
         <Button
           size="lg"
           onPress={handleAddSaleItem}
-          className="rounded-md w-24 h-12 bg-green-700  active:bg-green-500 gap-1">
-          <ButtonIcon as={Plus} size="xl" />
-          <Text size="xs" className="text-trueGray-100">
+          className="rounded-md w-32 h-12 bg-success-300  active:bg-success-400 gap-1"
+        >
+          <ButtonIcon as={Plus} size="xl" className="text-typography-700" />
+          <Text size="xs" className="text-typography-700">
             Produto
           </Text>
         </Button>

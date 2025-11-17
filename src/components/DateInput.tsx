@@ -11,17 +11,20 @@ type Props = ComponentProps<typeof InputField> & {
 export function DateInput({ buttonPress, ...rest }: Props) {
   return (
     <HStack className="items-center w-full">
-      <GlueStackInput className="bg-trueGray-700 h-12 bw-1 br-md flex-1 @focus:border-green-500 @focus:border-1">
+      <GlueStackInput className="bg-background-50 h-12 bw-1 br-md flex-1">
         <InputField
-          placeholderTextColor="$trueGray400"
           {...rest}
-          className="text-trueGray-100 text-sm font-body"
+          className="text-typography-700 text-sm font-body"
         />
         <Button
           onPress={buttonPress}
-          className="h-12 w-12 rounded-md bg-trueGray-900  active:bg-trueGray-500"
+          className="h-12 w-12 rounded-md bg-background-50  active:bg-trueGray-500"
         >
-          <ButtonIcon as={Calendar1} size="xl" className="h-12" />
+          <ButtonIcon
+            as={Calendar1}
+            size="xl"
+            className="h-12 text-typography-700"
+          />
         </Button>
       </GlueStackInput>
     </HStack>

@@ -58,6 +58,11 @@ export function useHandleDeliveryRoute() {
           address: `${deliveryItem.Client?.streetName}, ${deliveryItem.Client?.streetNumber}, ${deliveryItem.Client?.city}, ${deliveryItem.Client?.state}, ${deliveryItem.Client?.zipCode}`,
         })) ?? [];
 
+      const destinationItem =
+        deliveryRouteEdit.DeliveryItems[
+          deliveryRouteEdit.DeliveryItems.length - 1
+        ];
+
       const dataRequest: IRequestClientOptimizeDTO = {
         origin: {
           latitude: Number(coordsEdit.latitude),
@@ -67,21 +72,14 @@ export function useHandleDeliveryRoute() {
           latitude:
             deliveryRouteEdit.DeliveryItems &&
             deliveryRouteEdit.DeliveryItems.length > 0
-              ? Number(
-                  deliveryRouteEdit.DeliveryItems[
-                    deliveryRouteEdit.DeliveryItems.length - 1
-                  ].Client?.latitude ?? 0,
-                )
+              ? Number(destinationItem.Client?.latitude ?? 0)
               : 0,
           longitude:
             deliveryRouteEdit.DeliveryItems &&
             deliveryRouteEdit.DeliveryItems.length > 0
-              ? Number(
-                  deliveryRouteEdit.DeliveryItems[
-                    deliveryRouteEdit.DeliveryItems.length - 1
-                  ].Client?.longitude ?? 0,
-                )
+              ? Number(destinationItem.Client?.longitude ?? 0)
               : 0,
+          address: `${destinationItem.Client?.streetName}, ${destinationItem.Client?.streetNumber}, ${destinationItem.Client?.city}, ${destinationItem.Client?.state}, ${destinationItem.Client?.zipCode}`,
         },
         waypoints,
       };
@@ -135,64 +133,11 @@ export function useHandleDeliveryRoute() {
         // console.error('Erro ao buscar rota otimizada:', error);
       }
     } else if (existsDeliveryRouteEdit.exists && !routeInitialized) {
-      // const waypoints =
-      //   deliveryRouteEdit.DeliveryItems?.map(deliveryItem => ({
-      //     id: deliveryItem.id,
-      //     latitude: Number(deliveryItem.latitude) ?? 0,
-      //     longitude: Number(deliveryItem.longitude) ?? 0,
-      //     address: `${deliveryItem.Client?.streetName}, ${deliveryItem.Client?.streetNumber}, ${deliveryItem.Client?.city}, ${deliveryItem.Client?.state}, ${deliveryItem.Client?.zipCode}`,
-      //   })) ?? [];
-
-      // const dataRequest: IRequestClientOptimizeDTO = {
-      //   origin: {
-      //     latitude: Number(coordsEdit.latitude),
-      //     longitude: Number(coordsEdit.longitude),
-      //   },
-      //   destination: {
-      //     latitude:
-      //       deliveryRouteEdit.DeliveryItems &&
-      //       deliveryRouteEdit.DeliveryItems.length > 0
-      //         ? Number(
-      //             deliveryRouteEdit.DeliveryItems[
-      //               deliveryRouteEdit.DeliveryItems.length - 1
-      //             ].latitude ?? 0,
-      //           )
-      //         : 0,
-      //     longitude:
-      //       deliveryRouteEdit.DeliveryItems &&
-      //       deliveryRouteEdit.DeliveryItems.length > 0
-      //         ? Number(
-      //             deliveryRouteEdit.DeliveryItems[
-      //               deliveryRouteEdit.DeliveryItems.length - 1
-      //             ].longitude ?? 0,
-      //           )
-      //         : 0,
-      //   },
-      //   waypoints,
-      // };
-
-      // try {
-      //   const response = await api.post<RouteOptimizationResult>(
-      //     '/client/routeOptimize',
-      //     dataRequest,
-      //   );
-
-      //   const { orderedClients } = response.data;
-
-      //   const { optimizedRoute: rotaGoogle } = response.data;
-
-      //   const pontos = polyline.decode(rotaGoogle.overview_polyline.points);
-
       const coordenadas = deliveryRouteEdit.DeliveryRouteCoords.map(p => ({
         latitude: p.latitude,
         longitude: p.longitude,
       }));
       setRota(coordenadas);
-
-      // const orderedDelivery = orderClientsByRoute(
-      //   deliveryRouteEdit.DeliveryItems ?? [],
-      //   orderedClients,
-      // );
 
       dispatch(
         updateDeliveryRouteEdit({
@@ -202,9 +147,6 @@ export function useHandleDeliveryRoute() {
         }),
       );
       setRouteInitialized(true);
-      // } catch (error) {
-      //   // console.error('Erro ao buscar rota otimizada:', error);
-      // }
     }
   }, [
     coordsEdit.latitude,

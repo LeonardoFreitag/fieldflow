@@ -1,8 +1,8 @@
-import { HStack } from "@/components/ui/hstack";
-import { Text } from "@/components/ui/text";
-import { VStack } from "@/components/ui/vstack";
-import { Heading } from "@/components/ui/heading";
-import { Button, ButtonIcon } from "@/components/ui/button";
+import { HStack } from '@ui/hstack';
+import { Text } from '@ui/text';
+import { VStack } from '@ui/vstack';
+import { Heading } from '@ui/heading';
+import { Button, ButtonIcon } from '@ui/button';
 
 import {
   AlertDialog,
@@ -11,7 +11,7 @@ import {
   AlertDialogContent,
   AlertDialogFooter,
   AlertDialogHeader,
-} from "@/components/ui/alert-dialog";
+} from '@ui/alert-dialog';
 
 import React, {
   useCallback,
@@ -31,9 +31,15 @@ import {
 import { useDispatch } from 'react-redux';
 import { useAppSelector } from '@store/store';
 import { addCoordsEdit } from '@store/slice/coords/coordsEditSlice';
-import { CaretLeft, RoadHorizon, UserList } from 'phosphor-react-native';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
-import { DoorClosed, ListCheck, Car, SaveAll } from 'lucide-react-native';
+import {
+  Binoculars,
+  ChevronLeft,
+  Contact,
+  DoorClosed,
+  ListCheck,
+  SaveAll,
+} from 'lucide-react-native';
 import { api } from '@services/api';
 import { type RouteCollectionItemsModel } from '@models/RouteCollectionItemsModel';
 import { type DeliveryRouteModel } from '@models/DeliveryRouteModel';
@@ -48,28 +54,10 @@ import { type ICreateRouteCollectionDTO } from '@dtos/ICreateRouteCollectionDTO'
 import { type RouteCollectionModel } from '@models/RouteCollectionModel';
 import { addExistsRouteCollectionEdit } from '@store/slice/routeCollection/existsRouteCollectionEditSlice';
 import { useHandleRouteCollection } from '@hooks/useHandleRouteCollection';
+import { CarMarker } from '@/components/CarMarker';
+import { ReceberMarker } from '@/components/ReceberMarker';
 
 const { width, height } = Dimensions.get('window');
-
-// Componente customizado para o ícone do carro
-const CarMarker = () => (
-  <View
-    style={{
-      backgroundColor: '#1E3A8A',
-      borderRadius: 20,
-      padding: 8,
-      borderWidth: 3,
-      borderColor: '#FFFFFF',
-      shadowColor: '#000',
-      shadowOffset: { width: 0, height: 2 },
-      shadowOpacity: 0.3,
-      shadowRadius: 4,
-      elevation: 5,
-    }}
-  >
-    <Car size={24} color="#FFFFFF" />
-  </View>
-);
 
 export const ReceberDrive: React.FC = () => {
   const mapRef = useRef<MapView | null>(null);
@@ -149,15 +137,15 @@ export const ReceberDrive: React.FC = () => {
   const getButtonStatusColor = useCallback((status: string) => {
     switch (status) {
       case 'visited':
-        return '$orange600';
+        return 'bg-tertiary-400';
       case 'not_visited':
-        return '$red600';
+        return 'bg-error-400';
       case 'open':
-        return '$blue600';
+        return 'bg-info-300';
       case 'visited_received':
-        return '$green600';
+        return 'bg-success-400';
       default:
-        return '$blue600';
+        return 'bg-info-300';
     }
   }, []);
 
@@ -355,26 +343,28 @@ export const ReceberDrive: React.FC = () => {
           >
             {routeInitialized &&
               routeCollectionEdit.RouteCollectionItems &&
-              routeCollectionEdit.RouteCollectionItems.map(
-                (deliveryItem, idx) => (
-                  <Marker
-                    key={idx}
-                    coordinate={{
-                      latitude: Number(deliveryItem.latitude),
-                      longitude: Number(deliveryItem.longitude),
-                    }}
-                    pinColor={getMarkerColor(deliveryItem.status)}
-                    title={`${idx + 1}. ${deliveryItem.Client?.companyName}`}
-                    onCalloutPress={() => {
-                      iniciarNavegacao(deliveryItem);
-                    }}
+              routeCollectionEdit.RouteCollectionItems.map((receber, idx) => (
+                <Marker
+                  key={idx}
+                  coordinate={{
+                    latitude: Number(receber.latitude),
+                    longitude: Number(receber.longitude),
+                  }}
+                  // pinColor={getMarkerColor(receber.status)}
+                  title={`${idx + 1}. ${receber.Client?.companyName}`}
+                  onCalloutPress={() => {
+                    iniciarNavegacao(receber);
+                  }}
+                >
+                  <ReceberMarker
+                    markerStatus={receber.status ? receber.status : 'pending'}
                   />
-                ),
-              )}
+                </Marker>
+              ))}
             {routeInitialized && rota && rota.length > 0 && (
               <Polyline
                 coordinates={rota}
-                strokeColor="#2196F3"
+                strokeColor="#f35221"
                 strokeWidth={3}
               />
             )}
@@ -387,8 +377,13 @@ export const ReceberDrive: React.FC = () => {
         )}
         <Button
           onPress={handleBackToDeliveryRoute}
-          className="absolute top-12 left-4 rounded-md opacity-40">
-          <ButtonIcon as={CaretLeft} size="xl" />
+          className="absolute top-12 left-4 rounded-md opacity-40"
+        >
+          <ButtonIcon
+            as={ChevronLeft}
+            size="xl"
+            className="text-typography-0"
+          />
         </Button>
         <Button
           variant="solid"
@@ -429,16 +424,18 @@ export const ReceberDrive: React.FC = () => {
               );
             }
           }}
-          className="bg-green-600  active:bg-green-700 absolute top-12 right-4 rounded-md opacity-50">
-          <ButtonIcon as={RoadHorizon} size="xl" />
+          className="bg-success-400  active:bg-success-500 absolute top-12 right-4 rounded-md opacity-70"
+        >
+          <ButtonIcon as={Binoculars} size="xl" className="text-typography-0" />
         </Button>
 
         <Button
           onPress={() => {
             setShowAlertDialog(true);
           }}
-          className="bg-orange-600  active:bg-orange-800 absolute bottom-12 right-4 rounded-md opacity-40">
-          <ButtonIcon as={UserList} size="xl" />
+          className="bg-tertiary-400  active:bg-tertiary-500 absolute bottom-12 right-4 rounded-md opacity-70"
+        >
+          <ButtonIcon as={Contact} size="xl" className="text-typography-0" />
         </Button>
       </VStack>
       <AlertDialog isOpen={showAlertDialog} onClose={handleClose} size="lg">
@@ -459,7 +456,8 @@ export const ReceberDrive: React.FC = () => {
                     onPress={async () => {
                       await handleCallCheckIn(item);
                     }}
-                    className={` bg-${getButtonStatusColor(item.status)} w-[100%] relative `}>
+                    className={`${getButtonStatusColor(item.status)} w-[100%] relative `}
+                  >
                     {item.RouteCollectionNotFoundClient.length > 0 && (
                       <View
                         style={{
@@ -490,7 +488,8 @@ export const ReceberDrive: React.FC = () => {
                       numberOfLines={1}
                       size="md"
                       style={styles.buttonText}
-                      className="text-center text-white">
+                      className="text-center text-white"
+                    >
                       {index + 1}. {item.Client?.companyName}
                     </Text>
                   </Button>
@@ -502,8 +501,13 @@ export const ReceberDrive: React.FC = () => {
               {listIsCompleted && (
                 <Button
                   onPress={handleCompleteRouteCollection}
-                  className="bg-blue-600  active:bg-blue-800 rounded-md opacity-60">
-                  <ButtonIcon as={ListCheck} size="xl" />
+                  className="bg-info-400  active:bg-info-500 rounded-md opacity-70"
+                >
+                  <ButtonIcon
+                    as={ListCheck}
+                    size="xl"
+                    className="text-typography-0"
+                  />
                 </Button>
               )}
               {routeCollectionEdit.status === 'created' && (
@@ -511,14 +515,24 @@ export const ReceberDrive: React.FC = () => {
                   onPress={async () => {
                     await handleSaveRouteCollection();
                   }}
-                  className="bg-green-600  active:bg-green-800 rounded-md opacity-60">
-                  <ButtonIcon as={SaveAll} size="xl" />
+                  className="bg-success-400  active:bg-success-500 rounded-md opacity-70"
+                >
+                  <ButtonIcon
+                    as={SaveAll}
+                    size="xl"
+                    className="text-typography-900"
+                  />
                 </Button>
               )}
               <Button
                 onPress={handleClose}
-                className="bg-red-600  active:bg-red-800 rounded-md opacity-60">
-                <ButtonIcon as={DoorClosed} size="xl" />
+                className="bg-error-400 active:bg-error-400 rounded-md opacity-60"
+              >
+                <ButtonIcon
+                  as={DoorClosed}
+                  size="xl"
+                  className="text-typography-900"
+                />
               </Button>
             </HStack>
           </AlertDialogFooter>

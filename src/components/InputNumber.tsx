@@ -32,22 +32,15 @@ export function InputNumber({ value, onChangeText, ...rest }: Props) {
     [onChangeText],
   );
 
-  // const errored = useMemo(() => {
-  //   if (error !== '') {
-  //     return true;
-  //   }
-  //   return false;
-  // }, [error]);
-
   useEffect(() => {
     formatValue(String(value));
   }, [formatValue, value]);
 
   return (
-    <GlueStackInput className="bg-trueGray-700 h-12 px-1 borderWidth-1 borderRadius-md @focus:border-green-500 @focus:border-1 flex-1">
+    <GlueStackInput className=" h-12 px-1 borderWidth-1 borderRadius-md">
       <InputField
         {...rest}
-        className="text-trueGray-100 text-sm font-body text-right placeholder:text-trueGray-400"
+        className="text-typography-700 text-sm text-right"
         keyboardType="number-pad"
         value={formatedValue}
         onChangeText={formatValue}

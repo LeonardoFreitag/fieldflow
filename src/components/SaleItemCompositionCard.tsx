@@ -8,7 +8,7 @@ import { type TravelClientOrdersItemsCompositionModel } from '@models/TravelClie
 import { updateTravelClientOrderEdit } from '@store/slice/travel/travelClientOrderEditSlice';
 import { updateTravelClientOrderItemsEdit } from '@store/slice/travel/travelClientOrderItemEditSlice';
 import { useAppSelector } from '@store/store';
-import { ArchiveRestore, Trash } from 'lucide-react-native';
+import { ArchiveRestore, Trash, Undo2 } from 'lucide-react-native';
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import productPlaceholder from '@assets/product.png'; // Placeholder for product image
@@ -64,7 +64,7 @@ export function SaleItemCompositionCard({
 
   return (
     <HStack
-      className={` ${travelClientOrderItemComposition.removed ? 'bg-red-500' : 'bg-trueGray-700'} items-start p-2 pr-2 rounded-md mb-3 w-full justify-between relative `}
+      className={` ${travelClientOrderItemComposition.removed ? 'bg-warning-100' : 'bg-background-200'} items-start p-2 pr-2 rounded-md mb-3 w-full justify-between relative `}
     >
       <Image
         source={getImageSource()}
@@ -72,22 +72,21 @@ export function SaleItemCompositionCard({
         className="w-20 h-20 rounded-md"
       />
       <VStack className="flex-1 p-[8px] justify-between items-start">
-        <Heading size="xs" className="text-trueGray-100">
+        <Heading size="xs" className="text-typography-700">
           {`${travelClientOrderItemComposition.pCode} - ${travelClientOrderItemComposition.pDescription}`}
         </Heading>
-        <Text className="text-trueGray-400">
+        <Text className="text-typography-700">
           {`${travelClientOrderItemComposition.pQuantity.toLocaleString(
             'pt-BR',
             {
               maximumFractionDigits: 2,
             },
-          )} ${travelClientOrderItemComposition.pUnity} x ${travelClientOrderItemComposition.pPrice.toLocaleString(
-            'pt-BR',
-            {
-              style: 'currency',
-              currency: 'BRL',
-            },
-          )} = ${(
+          )} ${travelClientOrderItemComposition.pUnity} x ${Number(
+            travelClientOrderItemComposition.pPrice,
+          ).toLocaleString('pt-BR', {
+            style: 'currency',
+            currency: 'BRL',
+          })} = ${(
             Number(travelClientOrderItemComposition.pQuantity) *
               Number(travelClientOrderItemComposition.pPrice) || 0
           ).toLocaleString('pt-BR', {
@@ -98,13 +97,13 @@ export function SaleItemCompositionCard({
       </VStack>
       <Button
         onPress={handleDeleteItemComposition}
-        className="w-10 h-10 rounded-md bg-amber-500  active:bg-amber-600 absolute bottom-2 right-2"
+        className="w-10 h-10 rounded-md bg-error-300  active:bg-error-400 absolute bottom-2 right-2"
       >
         {!travelClientOrderItemComposition.removed && (
-          <ButtonIcon as={Trash} size="xl" />
+          <ButtonIcon as={Trash} size="xl" className="text-typography-700" />
         )}
         {travelClientOrderItemComposition.removed && (
-          <ButtonIcon as={ArchiveRestore} size="xl" />
+          <ButtonIcon as={Undo2} size="xl" className="text-typography-700" />
         )}
       </Button>
     </HStack>

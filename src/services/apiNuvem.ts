@@ -100,8 +100,8 @@ api.registerInterceptTokenManager = (signOut: SignOut) => {
           requestErro.response.data.message === 'Token invalid' ||
           requestErro.response.data.message === 'Token expired'
         ) {
-          const { refresh_token } = await tokenGet();
-          if (!refresh_token) {
+          const { refreshToken } = await tokenGet();
+          if (!refreshToken) {
             signOut();
             return await Promise.reject(requestErro);
           }
@@ -128,11 +128,11 @@ api.registerInterceptTokenManager = (signOut: SignOut) => {
           return await new Promise(async (resolve, reject) => {
             try {
               const { data } = await api.post('/users/sessions/refresh_token', {
-                refresh_token,
+                refreshToken,
               });
               tokenCreate({
                 token: data.token,
-                refresh_token: data.refreshToken,
+                refreshToken: data.refreshToken,
               });
 
               if (originalRequestConfig.data) {

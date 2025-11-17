@@ -12,23 +12,20 @@ import { Heading } from '@ui/heading';
 import { Center } from '@ui/center';
 import { Button, ButtonIcon } from '@ui/button';
 // import { useState } from 'react';
-import { Camera, Check, Save, X } from 'lucide-react-native';
+import { Camera, Save, X } from 'lucide-react-native';
 import { Controller, useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Input } from './Input';
-import { Platform, useColorScheme, Modal as RNModal } from 'react-native';
-import { useMemo, useState } from 'react';
+import { Platform, useColorScheme } from 'react-native';
+import { useEffect, useMemo, useState } from 'react';
 import { ModalCamera } from './ModalCamera';
 import { type PhotoFile } from 'react-native-vision-camera';
 import { api } from '@services/api';
 import { useAppSelector } from '@store/store';
 import { useNavigation } from '@react-navigation/native';
-import { type RouteCollectionItemsModel } from '@models/RouteCollectionItemsModel';
 import { useDispatch } from 'react-redux';
 import { Working } from './Working';
-import { updateRouteCollectionEdit } from '@store/slice/routeCollection/routeCollectionEditSlice';
-import { updateRouteCollectionItemsEdit } from '@store/slice/routeCollection/routeCollectionItemsEditSlice';
 import {
   Select,
   SelectTrigger,
@@ -51,6 +48,19 @@ import {
 } from '@ui/checkbox';
 import { DateInput } from '@components/DateInput';
 import { ModalDate } from './ModalDate';
+import { type ClientModel } from '@/models/ClientModel';
+import { type TravelModel } from '@/models/TravelModel';
+import { CreateTravel } from '@/storage/travel/createTravelRoute';
+import {
+  addTravelEdit,
+  updateTravelEdit,
+} from '@/store/slice/travel/travelEditSlice';
+import { addExistsTravelEdit } from '@/store/slice/travel/existsTravelEditSlice';
+import { loadClientList } from '@/store/slice/client/clientListSlice';
+import { useAuth } from '@/hooks/useAuth';
+import { loadReasonList } from '@/store/slice/reason/reasonListSlice';
+import { type ReasonModel } from '@/models/ReasonModel';
+import { loadAllClientList } from '@/store/slice/client/allClientListSlice';
 
 const SchenduleSchema = yup.object().shape({
   reason: yup.string().required('Campo obrigatório'),
@@ -71,7 +81,7 @@ interface ModalSchenduleFormData {
   rescheduleDate: Date | null;
 }
 
-export function ModalCollection({
+export function ModalReschenduleSale({
   visible,
   handleCloseModal,
 }: ModalSchenduleProps) {
@@ -79,16 +89,17 @@ export function ModalCollection({
   const navigation = useNavigation();
   const [isTakingPhoto, setIsTakingPhoto] = useState(false);
   const [pendingPhoto, setPendingPhoto] = useState<PhotoFile | null>(null);
-  const routeCollectionItemsEdit = useAppSelector(
-    state => state.routeCollectionItemsEdit,
-  );
-  const routeCollectionEdit = useAppSelector(
-    state => state.routeCollectionEdit,
-  );
   const reasonList = useAppSelector(state => state.reasonList);
+  const travelEdit = useAppSelector(state => state.travelEdit);
+  const clientEdit = useAppSelector(state => state.clientEdit);
+  const clientList = useAppSelector(state => state.clientList);
   const [working, setWorking] = useState(false);
   const [showScheduling, setShowScheduling] = useState(false);
   const [pickerDate, setPickerDate] = useState<Date>(new Date());
+  const allClientList = useAppSelector(state => state.allClientList);
+
+  const { user } = useAuth();
+
   const colorScheme = useColorScheme();
   const iosThemeProps =
     Platform.OS === 'ios'
@@ -99,8 +110,6 @@ export function ModalCollection({
     control,
     handleSubmit,
     formState: { errors },
-    reset,
-    watch,
     setValue,
   } = useForm({
     resolver: yupResolver(SchenduleSchema),
@@ -114,8 +123,49 @@ export function ModalCollection({
 
   const handleSave = async (formData: ModalSchenduleFormData) => {
     if (!pendingPhoto) return;
+
+    const travelClientId = travelEdit.TravelClients?.find(
+      travelClient => travelClient.clientId === clientEdit.id,
+    )?.id;
+
+    if (!travelClientId) {
+      return;
+    }
     try {
       setWorking(true);
+      // Validar se os dados necessários existem
+      if (!travelEdit.orderedClients || !travelEdit.TravelClients) {
+        // Reconstrói orderedClients a partir de TravelClients se não existir
+        const reconstructedOrderedClients =
+          travelEdit.TravelClients?.map(travelClient => {
+            if (travelClient.Client) {
+              return {
+                ...travelClient.Client,
+                isSelected: true,
+                status: travelClient.status || 'pending',
+                latitude: travelClient.latitude ?? travelClient.Client.latitude,
+                longitude:
+                  travelClient.longitude ?? travelClient.Client.longitude,
+              } as ClientModel;
+            }
+            return null;
+          }).filter((client): client is ClientModel => client !== null) ?? [];
+
+        const travelLocalSaved: TravelModel = {
+          ...travelEdit,
+          orderedClients:
+            reconstructedOrderedClients.length > 0
+              ? reconstructedOrderedClients
+              : clientList,
+          route: travelEdit.route,
+        };
+
+        await CreateTravel(travelLocalSaved);
+        dispatch(addTravelEdit(travelLocalSaved));
+        dispatch(addExistsTravelEdit({ exists: true }));
+      }
+
+      // salvar na api
       const data = new FormData();
       let newUriImage = '';
       if (Platform.OS === 'android') {
@@ -123,7 +173,7 @@ export function ModalCollection({
       } else {
         newUriImage = pendingPhoto.path;
       }
-      const newFileName = `${routeCollectionItemsEdit.id}_${Date.now()}.jpg`;
+      const newFileName = `${travelClientId}_${Date.now()}.jpg`;
 
       data.append(
         'photoFile',
@@ -135,22 +185,19 @@ export function ModalCollection({
           }),
         ),
       );
-
       const { reason, notes, rescheduleDate, isRescheduled } = formData;
 
       const response = await api.post(
-        '/routeCollectionNotFoundClient/upload',
+        '/travel/travelClientsVisitFailure',
         data,
         {
           params: {
-            routeCollectionItemsId: routeCollectionItemsEdit.id,
+            travelClientId,
             reason,
             notes,
             isRescheduled,
             rescheduleDate,
             fileName: newFileName,
-            checkInDate: routeCollectionItemsEdit.checkInDate,
-            checkOutDate: new Date(), // Set the current date as check-out date
           },
           headers: {
             'Content-Type': 'multipart/form-data',
@@ -158,44 +205,51 @@ export function ModalCollection({
         },
       );
 
-      const updatedRouteCollectionItemsEdit: RouteCollectionItemsModel = {
-        ...routeCollectionItemsEdit,
-        status: 'not_visited',
-        RouteCollectionNotFoundClient:
-          routeCollectionItemsEdit.RouteCollectionNotFoundClient
-            ? [
-                ...routeCollectionItemsEdit.RouteCollectionNotFoundClient,
+      const updatedTravelEdit: TravelModel = {
+        ...travelEdit,
+        orderedClients: clientList.map(client => {
+          if (client.id === clientEdit.id) {
+            return {
+              ...client,
+              status: 'not_visited', // Marca o cliente como não visitado
+            };
+          }
+          return client;
+        }),
+        TravelClients: travelEdit.TravelClients?.map(travelClient => {
+          if (travelClient.clientId === clientEdit.id) {
+            return {
+              ...travelClient,
+              status: 'not_visited', // Marca o cliente como não visitado
+              TravelClientVisitFailures: [
+                ...(travelClient.TravelClientVisitFailures ?? []),
                 response.data,
-              ]
-            : [response.data],
+              ], // Adiciona o registro de visita não realizada
+            };
+          }
+          return travelClient;
+        }),
       };
 
-      dispatch(updateRouteCollectionItemsEdit(updatedRouteCollectionItemsEdit));
+      dispatch(updateTravelEdit(updatedTravelEdit));
 
-      const newRouteCollectionItemssList: RouteCollectionItemsModel[] =
-        routeCollectionEdit.RouteCollectionItems.map(item =>
-          item.id === updatedRouteCollectionItemsEdit.id
-            ? updatedRouteCollectionItemsEdit
-            : item,
-        );
-
-      dispatch(
-        updateRouteCollectionEdit({
-          ...routeCollectionEdit,
-          RouteCollectionItems: newRouteCollectionItemssList,
-        }),
-      );
-
-      reset();
-
-      setPendingPhoto(null);
-      handleCloseModal();
-      navigation.reset({
-        index: 0,
-        routes: [{ name: 'ReceberDrive' }],
+      const updatedClientList = clientList.map(client => {
+        if (client.id === clientEdit.id) {
+          return {
+            ...client,
+            status: 'not_visited', // Marca o cliente como não visitado
+          };
+        }
+        return client;
       });
+      dispatch(loadClientList(updatedClientList ?? []));
+      dispatch(loadAllClientList(updatedClientList ?? []));
+
+      await CreateTravel(updatedTravelEdit);
+
+      navigation.navigate('SaleRouteDrive');
     } catch (error) {
-      console.error('Erro ao enviar foto e motivo:', error);
+      console.error('Error submitting visit failure:', error);
     } finally {
       setWorking(false);
     }
@@ -212,13 +266,34 @@ export function ModalCollection({
     setIsTakingPhoto(true);
   };
 
-  const reasonListCollection = useMemo(() => {
-    return reasonList.filter(reason => reason.category === 'cobranca');
-  }, [reasonList]);
-
   const handleUpdateScheduling = (schedulingDate: Date) => {
     setValue('rescheduleDate', schedulingDate as never);
   };
+
+  useEffect(() => {
+    const fetchReasonList = async () => {
+      try {
+        setWorking(true);
+        const response = await api.get<ReasonModel[]>(
+          '/reason/list-by-customerId',
+          {
+            params: {
+              customerId: user?.user.customerId,
+            },
+          },
+        );
+        const reasons = response.data.filter(
+          reason => reason.category === 'vendas',
+        );
+        dispatch(loadReasonList(reasons));
+      } catch (error) {
+        console.error('Error fetching reasons:', error);
+      } finally {
+        setWorking(false);
+      }
+    };
+    fetchReasonList();
+  }, [dispatch, user?.user.customerId]);
 
   return (
     <>
@@ -385,25 +460,27 @@ export function ModalCollection({
                 />
               )}
             />
-            <ModalDate
-              showScheduling={showScheduling}
-              setShowScheduling={setShowScheduling}
-              handleUpdateScheduling={handleUpdateScheduling}
-              pickerDate={pickerDate}
-              setPickerDate={setPickerDate}
-            />
+            {showScheduling && (
+              <ModalDate
+                showScheduling={showScheduling}
+                setShowScheduling={setShowScheduling}
+                handleUpdateScheduling={handleUpdateScheduling}
+                pickerDate={pickerDate}
+                setPickerDate={setPickerDate}
+              />
+            )}
             <HStack className="mt-2 justify-end gap-2">
-              <Button
-                onPress={handleSubmit(handleSave)}
-                className="w-32 h-14 rounded-md bg-success-400  active:bg-success-500"
-              >
-                <ButtonIcon as={Save} className="text-typography-900 w-7 h-7" />
-              </Button>
               <Button
                 onPress={handleCloseModal}
                 className="w-32 h-14 rounded-md bg-error-400  active:bg-error-500"
               >
                 <ButtonIcon as={X} className="text-typography-900 w-7 h-7" />
+              </Button>
+              <Button
+                onPress={handleSubmit(handleSave)}
+                className="w-32 h-14 rounded-md bg-success-400  active:bg-success-500"
+              >
+                <ButtonIcon as={Save} className="text-typography-900 w-7 h-7" />
               </Button>
             </HStack>
           </ModalBody>

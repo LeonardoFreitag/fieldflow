@@ -60,6 +60,11 @@ export function useHandleRouteCollection() {
           address: `${routeCollectionItem.Client?.streetName}, ${routeCollectionItem.Client?.streetNumber}, ${routeCollectionItem.Client?.city}, ${routeCollectionItem.Client?.state}, ${routeCollectionItem.Client?.zipCode}`,
         })) ?? [];
 
+      const destinationItem =
+        routeCollectionEdit.RouteCollectionItems[
+          routeCollectionEdit.RouteCollectionItems.length - 1
+        ];
+
       const dataRequest: IRequestClientOptimizeDTO = {
         origin: {
           latitude: Number(coordsEdit.latitude),
@@ -69,21 +74,14 @@ export function useHandleRouteCollection() {
           latitude:
             routeCollectionEdit.RouteCollectionItems &&
             routeCollectionEdit.RouteCollectionItems.length > 0
-              ? Number(
-                  routeCollectionEdit.RouteCollectionItems[
-                    routeCollectionEdit.RouteCollectionItems.length - 1
-                  ].Client?.latitude ?? 0,
-                )
+              ? Number(destinationItem.Client?.latitude ?? 0)
               : 0,
           longitude:
             routeCollectionEdit.RouteCollectionItems &&
             routeCollectionEdit.RouteCollectionItems.length > 0
-              ? Number(
-                  routeCollectionEdit.RouteCollectionItems[
-                    routeCollectionEdit.RouteCollectionItems.length - 1
-                  ].Client?.longitude ?? 0,
-                )
+              ? Number(destinationItem.Client?.longitude ?? 0)
               : 0,
+          address: `${destinationItem.Client?.streetName}, ${destinationItem.Client?.streetNumber}, ${destinationItem.Client?.city}, ${destinationItem.Client?.state}, ${destinationItem.Client?.zipCode}`,
         },
         waypoints,
       };

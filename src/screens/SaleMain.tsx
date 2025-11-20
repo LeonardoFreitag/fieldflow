@@ -20,10 +20,7 @@ import { useNavigation } from '@react-navigation/native';
 import { api } from '@services/api';
 import { loadAllClientList } from '@store/slice/client/allClientListSlice';
 import { addClientEdit } from '@store/slice/client/clientEditSlice';
-import {
-  loadClientList,
-  updateClientList,
-} from '@store/slice/client/clientListSlice';
+import { loadClientList } from '@store/slice/client/clientListSlice';
 import {
   loadClientRouteList,
   updateClientRouteList,

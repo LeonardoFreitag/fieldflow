@@ -302,9 +302,12 @@ export function ReceberFinalize() {
   };
 
   const saldo = useMemo(() => {
-    const valorDuplicata = routeCollectionItemsEdit.Receber.valorDuplicata;
-    const totalRecebido = totalPayments || 0;
-    return valorDuplicata - totalRecebido;
+    const valorDuplicata =
+      Number(routeCollectionItemsEdit.Receber.valorDuplicata) || 0;
+    const totalRecebido = Number(totalPayments) || 0;
+    const saldoCents =
+      Math.round(valorDuplicata * 100) - Math.round(totalRecebido * 100);
+    return saldoCents / 100;
   }, [routeCollectionItemsEdit.Receber.valorDuplicata, totalPayments]);
 
   const handleImportValueFromOrder = () => {
@@ -375,7 +378,8 @@ export function ReceberFinalize() {
     let receberUpdated: ReceberModel = {
       ...routeCollectionItemsEdit.Receber,
     };
-    if (saldo === 0) {
+    const isFullyPaid = Math.round(saldo * 100) === 0;
+    if (isFullyPaid) {
       receberUpdated = {
         ...receberUpdated,
         recebimento: new Date(),

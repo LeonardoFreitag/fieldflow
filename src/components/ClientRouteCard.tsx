@@ -39,6 +39,15 @@ export function ClientRouteCard({
             size="sm"
             className="text-typography-700"
           >{`${data.city} - ${data.state}`}</Text>
+          <Text
+            className={
+              data.ClientPhotos.length === 0
+                ? 'text-error-500'
+                : 'text-success-500'
+            }
+          >
+            Foto
+          </Text>
         </VStack>
         <VStack className="items-center justify-center w-[40px] h-[40px] rounded-md absolute top-1 right-1">
           <Button
